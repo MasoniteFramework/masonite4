@@ -1,3 +1,4 @@
 pytest
 black
 inflection
+pendulum>=2,<3

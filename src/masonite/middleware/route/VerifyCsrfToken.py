@@ -1,4 +1,7 @@
-class VerifyCsrfToken:
+from .. import Middleware
+
+
+class VerifyCsrfToken(Middleware):
     def before(self, request, response):
         print(request.cookie_jar.get("csrf_token"))
 

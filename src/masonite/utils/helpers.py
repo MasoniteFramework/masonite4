@@ -85,3 +85,132 @@ def response_statuses():
         510: "510 Not Extended",
         511: "511 Network Authentication Required",
     }
+
+
+"""Time Module."""
+
+
+def cookie_expire_time(str_time):
+    """Take a string like 1 month or 5 minutes and returns a pendulum instance.
+
+    Arguments:
+        str_time {string} -- Could be values like 1 second or 3 minutes
+
+    Returns:
+        pendulum -- Returns Pendulum instance
+    """
+    import pendulum
+
+    if str_time != "expired":
+        number = int(str_time.split(" ")[0])
+        length = str_time.split(" ")[1]
+
+        if length in ("second", "seconds"):
+            # Sat, 06 Jun 2020 15:36:16 GMT
+            return (
+                pendulum.now("GMT")
+                .add(seconds=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("minute", "minutes"):
+            return (
+                pendulum.now("GMT")
+                .add(minutes=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("hour", "hours"):
+            return (
+                pendulum.now("GMT").add(hours=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("days", "days"):
+            return (
+                pendulum.now("GMT").add(days=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("week", "weeks"):
+            return pendulum.now("GMT").add(weeks=1).format("ddd, DD MMM YYYY H:mm:ss")
+        elif length in ("month", "months"):
+            return (
+                pendulum.now("GMT")
+                .add(months=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("year", "years"):
+            return (
+                pendulum.now("GMT").add(years=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+
+        return None
+    else:
+        return pendulum.now("GMT").subtract(years=20).format("ddd, DD MMM YYYY H:mm:ss")
+
+
+def parse_human_time(str_time):
+    """Take a string like 1 month or 5 minutes and returns a pendulum instance.
+
+    Arguments:
+        str_time {string} -- Could be values like 1 second or 3 minutes
+
+    Returns:
+        pendulum -- Returns Pendulum instance
+    """
+    import pendulum
+
+    if str_time != "expired":
+        number = int(str_time.split(" ")[0])
+        length = str_time.split(" ")[1]
+
+        if length in ("second", "seconds"):
+            return pendulum.now("GMT").add(seconds=number)
+        elif length in ("minute", "minutes"):
+            return pendulum.now("GMT").add(minutes=number)
+        elif length in ("hour", "hours"):
+            return pendulum.now("GMT").add(hours=number)
+        elif length in ("days", "days"):
+            return pendulum.now("GMT").add(days=number)
+        elif length in ("week", "weeks"):
+            return pendulum.now("GMT").add(weeks=1)
+        elif length in ("month", "months"):
+            return pendulum.now("GMT").add(months=number)
+        elif length in ("year", "years"):
+            return pendulum.now("GMT").add(years=number)
+
+        return None
+    else:
+        return pendulum.now("GMT").subtract(years=20)
+
+
+def generate_wsgi(wsgi=None):
+    import io
+
+    if wsgi is None:
+        wsgi = {}
+    data = {
+        "wsgi.version": (1, 0),
+        "wsgi.multithread": False,
+        "wsgi.multiprocess": True,
+        "wsgi.run_once": False,
+        "wsgi.input": io.BytesIO(),
+        "SERVER_SOFTWARE": "gunicorn/19.7.1",
+        "REQUEST_METHOD": "GET",
+        "QUERY_STRING": "application=Masonite",
+        "RAW_URI": "/",
+        "SERVER_PROTOCOL": "HTTP/1.1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_ACCEPT": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "HTTP_UPGRADE_INSECURE_REQUESTS": "1",
+        "HTTP_COOKIE": "setcookie=value",
+        "HTTP_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
+        "HTTP_ACCEPT_LANGUAGE": "en-us",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate",
+        "HTTP_CONNECTION": "keep-alive",
+        "wsgi.url_scheme": "http",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "62241",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "PATH_INFO": "/",
+        "SCRIPT_NAME": "",
+    }
+
+    data.update(wsgi)
+    return data
