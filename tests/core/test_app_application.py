@@ -1,5 +1,5 @@
 from src.masonite.tests import TestCase
-from src.masonite.app import Application
+from src.masonite.foundation import Application
 import os
 
 

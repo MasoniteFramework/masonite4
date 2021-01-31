@@ -1,9 +1,9 @@
-from ..utils.helpers import flatten_routes
+from ..utils.helpers import flatten
 
 
 class RouteCapsule:
-    def __init__(self, *routes):
-        self.routes = flatten_routes(routes)
+    def __init__(self, *routes, module_location=None):
+        self.routes = flatten(routes)
 
     def find(self, path, request_method, subdomain=None):
         print(self.routes)
@@ -21,3 +21,7 @@ class RouteCapsule:
             print(route)
             if route.match_name(name):
                 return route
+
+    def set_controller_module_location(self, location):
+        self.controller_module_location = location
+        return self

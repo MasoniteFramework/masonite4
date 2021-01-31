@@ -4,4 +4,6 @@ from .exceptions import (
     ContainerError,
     MissingContainerBindingNotFound,
     StrictContainerException,
+    ResponseError,
+    InvalidHTTPStatusCode,
 )

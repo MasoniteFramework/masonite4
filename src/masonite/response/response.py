@@ -4,22 +4,19 @@ import json
 import mimetypes
 from pathlib import Path
 
-from .app import App
-from .exceptions import ResponseError
-from .helpers.Extendable import Extendable
-from .headers import HeaderBag, Header
-from .helpers.status import response_statuses
-from .exceptions import InvalidHTTPStatusCode
+from ..exceptions import ResponseError, InvalidHTTPStatusCode
+from ..headers import HeaderBag, Header
+from ..utils.helpers import response_statuses
 
 
-class Response(Extendable):
+class Response:
     """A Response object to be used to abstract the logic of getting a response ready to be returned.
 
     Arguments:
         app {masonite.app.App} -- The Masonite container.
     """
 
-    def __init__(self, app: App):
+    def __init__(self, app):
         self.app = app
         self.request = self.app.make("Request")
         self.content = ""
@@ -169,10 +166,8 @@ class Response(Extendable):
 
         if isinstance(view, str):
             self.content = bytes(view, "utf-8")
-            self.app.bind("Response", bytes(view, "utf-8"))
         else:
             self.content = view
-            self.app.bind("Response", view)
 
         self.make_headers()
 

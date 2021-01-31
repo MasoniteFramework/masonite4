@@ -2,7 +2,7 @@
 
 import inspect
 
-from .exceptions import (
+from ..exceptions import (
     ContainerError,
     MissingContainerBindingNotFound,
     StrictContainerException,
@@ -15,23 +15,19 @@ class Container:
     Performs bindings and resolving of objects to and from the container.
     """
 
-    def __init__(
-        self, strict=False, override=True, resolve_parameters=False, remember=False
-    ):
-        """App class constructor."""
-        self.providers = {}
-        self.strict = strict
-        self.override = override
-        self.resolve_parameters = resolve_parameters
-        self.remember = remember
-        self._hooks = {
-            "make": {},
-            "bind": {},
-            "resolve": {},
-        }
+    objects = {}
+    strict = False
+    override = True
+    resolve_parameters = {}
+    remember = False
+    _hooks = {
+        "make": {},
+        "bind": {},
+        "resolve": {},
+    }
 
-        self.swaps = {}
-        self._remembered = {}
+    swaps = {}
+    _remembered = {}
 
     def bind(self, name, class_obj):
         """Bind classes into the container with a key value pair.
@@ -49,14 +45,14 @@ class Container:
                     class_obj, name
                 )
             )
-        if self.strict and name in self.providers:
+        if self.strict and name in self.objects:
             raise StrictContainerException(
                 "You cannot override a key inside a strict container"
             )
 
-        if self.override or name not in self.providers:
+        if self.override or name not in self.objects:
             self.fire_hook("bind", name, class_obj)
-            self.providers.update({name: class_obj})
+            self.objects.update({name: class_obj})
 
         return self
 
@@ -91,8 +87,8 @@ class Container:
             object -- Returns the object that is fetched.
         """
 
-        if name in self.providers:
-            obj = self.providers[name]
+        if name in self.objects:
+            obj = self.objects[name]
             self.fire_hook("make", name, obj)
             if inspect.isclass(obj):
                 obj = self.resolve(obj, *arguments)
@@ -120,7 +116,7 @@ class Container:
             bool
         """
         if isinstance(name, str):
-            return name in self.providers
+            return name in self.objects
         else:
             try:
                 self._find_obj(name)
@@ -249,7 +245,7 @@ class Container:
             #    '*ExceptionHook'
             #    'Sentry*'
             #    'Sentry*Hook'
-            for key, value in self.providers.items():
+            for key, value in self.objects.items():
                 if isinstance(key, str):
                     if search.startswith("*"):
                         if key.endswith(search.split("*")[1]):
@@ -268,7 +264,7 @@ class Container:
                             "There is no '*' in your collection search"
                         )
         else:
-            for provider_key, provider_class in self.providers.items():
+            for provider_key, provider_class in self.objects.items():
                 if (
                     inspect.isclass(provider_class)
                     and issubclass(provider_class, search)
@@ -295,7 +291,7 @@ class Container:
                 return self.swaps[parameter.annotation](parameter.annotation, self)
             return obj
 
-        for _, provider_class in self.providers.items():
+        for _, provider_class in self.objects.items():
 
             if (
                 parameter.annotation == provider_class
@@ -337,8 +333,8 @@ class Container:
         """
         parameter = str(keyword)
 
-        if parameter != "self" and parameter in self.providers:
-            obj = self.providers[parameter]
+        if parameter != "self" and parameter in self.objects:
+            obj = self.objects[parameter]
             self.fire_hook("resolve", parameter, obj)
             return obj
         elif "=" in parameter:
@@ -442,7 +438,7 @@ class Container:
         Returns:
             object -- Returns the object in the container
         """
-        for _, provider_class in self.providers.items():
+        for _, provider_class in self.objects.items():
             if obj in (provider_class, provider_class.__class__):
                 return_obj = provider_class
                 self.fire_hook("resolve", obj, return_obj)

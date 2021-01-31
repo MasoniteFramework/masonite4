@@ -1,5 +1,6 @@
 from .Cookie import Cookie
-from ..helpers import cookie_expire_time
+
+# from ..helpers import cookie_expire_time
 
 
 class CookieJar:

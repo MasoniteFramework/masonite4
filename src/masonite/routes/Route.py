@@ -1,5 +1,5 @@
 from .HTTPRoute import HTTPRoute
-from ..utils.helpers import flatten_routes
+from ..utils.helpers import flatten
 
 
 class Route:
@@ -13,6 +13,8 @@ class Route:
         "signed": r"([\w\-=]+)",
     }
 
+    controller_module_location = "app.http.controllers"
+
     def __init__(self, routes=[]):
         if routes:
             self.routes = routes
@@ -25,7 +27,12 @@ class Route:
     @classmethod
     def get(self, url, controller, **options):
         route = HTTPRoute(
-            url, controller, request_method=["get"], compilers=self.compilers, **options
+            url,
+            controller,
+            request_method=["get"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            **options
         )
         self.routes.append(route)
         return route
@@ -124,3 +131,7 @@ class Route:
     def compile(self, key, to=""):
         self.compilers.update({key: to})
         return self
+
+    @classmethod
+    def set_controller_module_location(self, controller_location):
+        self.controller_module_location = controller_location

@@ -6,10 +6,16 @@ from ..exceptions import InvalidRouteCompileException, RouteMiddlewareNotFound
 
 class HTTPRoute:
     def __init__(
-        self, url, controller=None, request_method=["get"], name=None, compilers=None
+        self,
+        url,
+        controller=None,
+        request_method=["get"],
+        name=None,
+        compilers=None,
+        module_location="app.http.controllers",
     ):
         self.url = url
-        self.module_location = "app.http.controllers"
+        self.module_location = module_location
         self.controller = controller
         self.controller_class = None
         self.controller_method = None
@@ -19,7 +25,7 @@ class HTTPRoute:
         self.list_middleware = []
         self.e = None
         self.compilers = compilers or {}
-        self._find_controller(controller)
+        self._find_controller(controller, self.module_location)
         self.compile_route_to_regex()
 
     def match(self, path, request_method, subdomain=None):
@@ -50,7 +56,7 @@ class HTTPRoute:
         self._domain = subdomain
         return self
 
-    def _find_controller(self, controller):
+    def _find_controller(self, controller, module):
         """Find the controller to attach to the route.
 
         Arguments:
@@ -118,7 +124,7 @@ class HTTPRoute:
         if self.e:
             print(
                 "\033[93mCannot find controller {}. Did you create this one?".format(
-                    self.output
+                    self.controller
                 ),
                 "\033[0m",
             )
