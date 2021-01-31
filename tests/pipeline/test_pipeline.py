@@ -5,26 +5,27 @@ import os
 
 
 class PipeTestOne:
-    def handle(self, request):
+    def handle(self, request, response):
         request.one = 1
 
         return request
 
 
 class PipeTestTwo:
-    def handle(self, request):
+    def handle(self, request, response):
         request.two = 2
 
         return request
 
 
 class PipeTestBreak:
-    def handle(self, request):
-        return False
+    def handle(self, request, response):
+
+        return response
 
 
 class PipeTestThree:
-    def handle(self, request):
+    def handle(self, request, response):
         request.three = 3
 
         return request
@@ -32,14 +33,16 @@ class PipeTestThree:
 
 class TestPipeline(TestCase):
     def test_pipeline_sets_attributes(self):
-        request = Request()
-        pipeline = Pipeline(request).through([PipeTestOne, PipeTestTwo])
+        request = Request({})
+        request2 = Request({})
+        pipeline = Pipeline(request, request2).through([PipeTestOne, PipeTestTwo])
         self.assertTrue(request.one == 1)
         self.assertTrue(request.two == 2)
 
     def test_pipeline_exits(self):
-        request = Request()
-        pipeline = Pipeline(request).through([PipeTestOne, PipeTestBreak])
+        request = Request({})
+        request2 = Request({})
+        pipeline = Pipeline(request, request2).through([PipeTestOne, PipeTestBreak])
         self.assertTrue(request.one == 1)
         with self.assertRaises(AttributeError):
             self.assertTrue(request.two == 2)

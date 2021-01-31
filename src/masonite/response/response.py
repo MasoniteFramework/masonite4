@@ -187,7 +187,6 @@ class Response:
         if not location:
             location = self.request.redirect_url
 
-        self.request.reset_headers()
         self.header_bag.add(Header("Location", location))
         self.view("Redirecting ...")
 
