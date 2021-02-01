@@ -4,9 +4,12 @@ from src.masonite.routes import Route, RouteCapsule
 
 class TestRoutes(TestCase):
     def test_can_add_routes(self):
-        Route.get("/home", "TestController")
-        Route.post("/login", "TestController")
-        self.assertEqual(len(Route().routes), 2)
+        router = RouteCapsule(
+            Route.get("/home", "TestController"),
+            Route.post("/login", "TestController")
+        )
+
+        self.assertEqual(len(router.routes), 2)
 
     def test_can_find_route(self):
         router = RouteCapsule(Route.get("/home", "TestController"))
