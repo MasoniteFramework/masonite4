@@ -81,6 +81,9 @@ class View:
 
         return self
 
+    def get_content(self):
+        return self.rendered_template
+
     def _render(self):
         try:
             # Try rendering the template with '.html' appended
@@ -248,7 +251,6 @@ class View:
             )
 
         else:
-            print(self.environments)
             loader = ChoiceLoader(self.environments)
 
             # Set the searchpath since some packages look for this object
