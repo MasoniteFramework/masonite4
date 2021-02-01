@@ -1,5 +1,6 @@
 from ..cookies import CookieJar
 from ..headers import HeaderBag
+from ..input import InputBag
 
 
 class Request:
@@ -15,10 +16,12 @@ class Request:
         self.environ = environ
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
+        self.input_bag = InputBag()
 
     def load(self):
         self.cookie_jar.load(self.environ)
         self.header_bag.load(self.environ)
+        self.input_bag.load(self.environ)
 
     def get_path(self):
         return self.environ.get("PATH_INFO")

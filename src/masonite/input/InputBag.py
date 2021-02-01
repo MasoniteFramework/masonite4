@@ -22,8 +22,8 @@ class InputBag:
 
     def parse(self, environ):
         if "QUERY_STRING" in environ:
-
             self.query_string = self.query_parse(environ["QUERY_STRING"])
+
         if "wsgi.input" in environ:
             if "application/json" in environ.get("CONTENT_TYPE", ""):
                 try:
@@ -32,6 +32,7 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
+
                 if isinstance(request_body, bytes):
                     request_body = request_body.decode("utf-8")
 
@@ -41,6 +42,7 @@ class InputBag:
                 else:
                     for name, value in json.loads(request_body or "{}").items():
                         self.post_data.update({name: Input(name, value)})
+
             elif "application/x-www-form-urlencoded" in environ.get("CONTENT_TYPE", ""):
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
