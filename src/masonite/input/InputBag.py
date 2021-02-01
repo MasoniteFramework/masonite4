@@ -78,17 +78,39 @@ class InputBag:
 
                 request_body = environ["wsgi.input"].read(request_body_size)
 
-    def get(self, name, default=None):
+    def get(self, name, default=None, clean=True, quote=True):
 
         input = Dot().dot(name, self.all(), default=default)
         if isinstance(input, (dict, str)):
-            return input
+            return self.clean(input, clean=clean)
         elif hasattr(input, "value"):
-            return input.value
+            return self.clean(input.value, clean=clean)
         else:
-            return input
+            return self.clean(input, clean=clean)
 
         return default
+
+    def clean(self, value, clean=True, quote=True):
+        if not clean:
+            return value
+
+        import html
+
+        try:
+            if isinstance(value, str):
+                return html.escape(value, quote=quote)
+            elif isinstance(value, list):
+                return [html.escape(x, quote=quote) for x in value]
+            elif isinstance(value, int):
+                return value
+            elif isinstance(value, dict):
+                return {
+                    key: html.escape(val, quote=quote) for (key, val) in value.items()
+                }
+        except (AttributeError, TypeError):
+            pass
+
+        return value
 
     def has(self, *names):
         return all((name in self.all()) for name in names)

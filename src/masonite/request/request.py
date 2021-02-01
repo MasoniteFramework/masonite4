@@ -28,3 +28,21 @@ class Request:
 
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")
+
+    def input(self, name, default=False, clean=False, quote=True):
+        """Get a specific input value.
+
+        Arguments:
+            name {string} -- Key of the input data
+
+        Keyword Arguments:
+            default {string} -- Default value if input does not exist (default: {False})
+            clean {bool} -- Whether or not the return value should be
+                            cleaned (default: {True})
+
+        Returns:
+            string
+        """
+        name = str(name)
+
+        return self.input_bag.get(name, default=default, clean=clean, quote=quote)

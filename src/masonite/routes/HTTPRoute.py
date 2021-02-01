@@ -132,7 +132,6 @@ class HTTPRoute:
 
         if app:
             controller = app.resolve(self.controller_class)
-            print("cc", controller)
             # Resolve Controller Method
             response = app.resolve(
                 getattr(controller, self.controller_method),
