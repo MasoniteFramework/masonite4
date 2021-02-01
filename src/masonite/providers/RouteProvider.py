@@ -18,6 +18,7 @@ class RouteProvider(Provider):
             RouteCapsule(
                 Route.get("/", "WelcomeController@show"),
                 Route.get("/test", "WelcomeController@test"),
+                Route.get("/view", "WelcomeController@view"),
             ),
         )
 
@@ -36,3 +37,5 @@ class RouteProvider(Provider):
             response.view(route.get_response(self.application))
 
             Pipeline(request, response).through([VerifyCsrfToken], handler="after")
+        else:
+            raise Exception(f"NO route found for {request.get_path()}")

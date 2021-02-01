@@ -6,4 +6,6 @@ from .exceptions import (
     StrictContainerException,
     ResponseError,
     InvalidHTTPStatusCode,
+    RequiredContainerBindingNotFound,
+    ViewException,
 )
