@@ -39,6 +39,9 @@ class HTTPRoute:
 
         return route_math and domain_match
 
+    def get_name(self):
+        return self._name
+
     def matches(self, path):
         return re.match(self._compiled_regex, path) or re.match(
             self._compiled_regex_end, path

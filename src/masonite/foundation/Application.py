@@ -15,6 +15,9 @@ class Application(Container):
     def set_response_handler(self, response_handler):
         self.response_handler = response_handler
 
+    def get_response_handler(self):
+        return self.response_handler
+
     def register_providers(self, *providers):
         for provider in providers:
             provider = provider(self)

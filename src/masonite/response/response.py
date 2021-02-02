@@ -58,11 +58,8 @@ class Response:
 
         return self.header_bag.add(Header(name, value))
 
-    def get_and_reset_headers(self):
-        header = self.header_bag
-        self.header_bag = HeaderBag()
-        self._status = None
-        return header.render() + self.request.cookie_jar.render_response()
+    def get_headers(self):
+        return self.header_bag.render()
 
     def get_response_content(self):
         return self.data()

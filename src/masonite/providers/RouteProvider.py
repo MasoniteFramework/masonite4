@@ -24,8 +24,8 @@ class RouteProvider(Provider):
 
     def boot(self):
         router = self.application.make("router")
-        request = self.application.make("Request")
-        response = self.application.make("Response")
+        request = self.application.make("request")
+        response = self.application.make("response")
 
         route = router.find(request.get_path(), request.get_request_method())
 
