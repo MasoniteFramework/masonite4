@@ -5,8 +5,7 @@ from src.masonite.routes import Route, RouteCapsule
 class TestRoutes(TestCase):
     def test_can_add_routes(self):
         router = RouteCapsule(
-            Route.get("/home", "TestController"),
-            Route.post("/login", "TestController")
+            Route.get("/home", "TestController"), Route.post("/login", "TestController")
         )
 
         self.assertEqual(len(router.routes), 2)
