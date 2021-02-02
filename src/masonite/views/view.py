@@ -188,7 +188,7 @@ class View:
         except TemplateNotFound:
             return False
 
-    def add_environment(self, template_location, loader=PackageLoader):
+    def add(self, template_location, loader=PackageLoader):
         """Add an environment to the templates.
 
         Arguments:

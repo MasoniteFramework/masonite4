@@ -138,10 +138,10 @@ class HTTPRoute:
                 # *self.request.url_params.values() TODO
             )
 
-        if hasattr(response, "rendered_template"):
-            response = response.rendered_template
+            if hasattr(response, "rendered_template"):
+                response = response.rendered_template
 
-        return response
+            return response
 
     def middleware(self, *args):
         """Load a list of middleware to run.

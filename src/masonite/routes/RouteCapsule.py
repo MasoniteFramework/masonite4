@@ -25,3 +25,6 @@ class RouteCapsule:
     def set_controller_module_location(self, location):
         self.controller_module_location = location
         return self
+
+    def add(self, *routes):
+        self.routes.append(*routes)

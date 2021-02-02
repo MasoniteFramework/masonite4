@@ -7,7 +7,7 @@ import os
 class TestView(TestCase):
     def setUp(self):
         self.view = View(Application(os.getcwd()))
-        self.view.add_environment("tests/integrations/templates")
+        self.view.add("tests/integrations/templates")
 
     def test_can_render_view(self):
         self.assertTrue("Welcome" in self.view.render("welcome").get_content())

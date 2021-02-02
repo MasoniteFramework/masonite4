@@ -1,5 +1,6 @@
 from src.masonite.foundation import Application, response_handler, Kernel
 from src.masonite.providers import FrameworkProvider, RouteProvider, ViewProvider
+from tests.integrations.config.providers import PROVIDERS
 import os
 
 
@@ -12,13 +13,7 @@ application.register_providers(
     Kernel,
 )
 
-"""Bind important keys to the application. TODO: make this all bound maybe in a new Kernel class
-"""
-application.add_providers(
-    FrameworkProvider,
-    RouteProvider,
-    ViewProvider
-)
+application.add_providers(*PROVIDERS)
 
 
 

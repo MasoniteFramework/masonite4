@@ -16,6 +16,16 @@ class TestRoutes(TestCase):
         route = router.find("/home/", "GET")
         self.assertTrue(route)
 
+    def test_can_add_routes_after(self):
+        router = RouteCapsule(Route.get("/home", "TestController"))
+
+        router.add(Route.get("/added", None))
+
+        print(router.routes)
+
+        route = router.find("/added", "GET")
+        self.assertTrue(route)
+
     def test_can_find_route_with_parameter(self):
         router = RouteCapsule(Route.get("/home/@id", "TestController"))
 

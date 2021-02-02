@@ -32,6 +32,7 @@ setup(
         'inflection',
         'pendulum>=2,<3',
         'jinja2',
+        "cleo>=0.8.1,<0.9",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[

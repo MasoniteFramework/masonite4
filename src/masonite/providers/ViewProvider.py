@@ -8,9 +8,9 @@ class ViewProvider(Provider):
 
     def register(self):
         view = View(self.application)
-        view.add_environment(self.application.make("views.location"))
+        view.add(self.application.make("views.location"))
 
-        self.application.bind("View", view)
+        self.application.bind("view", view)
 
     def boot(self):
         pass
