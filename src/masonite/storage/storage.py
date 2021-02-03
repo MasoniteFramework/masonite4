@@ -1,5 +1,4 @@
 class StorageCapsule:
-
     def __init__(self, base_path=None):
         self.storage_templates = {}
         self.base_path = base_path or {}

@@ -3,11 +3,12 @@ from src.masonite.foundation import Application, Kernel
 from src.masonite.providers import RouteProvider
 from src.masonite.routes import Route, RouteCapsule
 from src.masonite.tests import HttpTestResponse
+import os
 
 
 class TestCase(TestCase):
     def setUp(self):
-        self.application = Application()
+        self.application = Application(os.getcwd())
         self.application.register_providers(Kernel)
         self.application.add_providers(RouteProvider)
         self.application.bind(

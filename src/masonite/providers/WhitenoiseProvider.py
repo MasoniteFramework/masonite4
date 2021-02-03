@@ -15,7 +15,9 @@ class WhitenoiseProvider(Provider):
             autorefresh=True,
         )
 
-        for location, alias in self.application.make('storage').get_storage_assets().items():
+        for location, alias in (
+            self.application.make("storage").get_storage_assets().items()
+        ):
             response_handler.add_files(location, prefix=alias)
 
         self.application.set_response_handler(response_handler)

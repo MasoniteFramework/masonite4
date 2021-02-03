@@ -15,11 +15,7 @@ class RouteProvider(Provider):
         )
         self.application.bind(
             "router",
-            RouteCapsule(
-                Route.get("/", "WelcomeController@show"),
-                Route.get("/test", "WelcomeController@test"),
-                Route.get("/view", "WelcomeController@view"),
-            ),
+            RouteCapsule(),
         )
 
     def boot(self):
