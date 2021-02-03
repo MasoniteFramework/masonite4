@@ -1,4 +1,4 @@
-def response_handler(application, environ, start_response):
+def response_handler(environ, start_response):
     """The WSGI Application Server.
 
     Arguments:
@@ -8,6 +8,8 @@ def response_handler(application, environ, start_response):
     Returns:
         WSGI Response
     """
+    from wsgi import application
+
     application.bind("environ", environ)
 
     """Add Environ To Service Container
@@ -33,8 +35,7 @@ def response_handler(application, environ, start_response):
     to next.
     """
 
-    response = application.make("response")
-    request = application.make("request")
+    request, response = application.make("request"), application.make("response")
 
     start_response(
         response.get_status_code(),

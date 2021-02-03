@@ -1,6 +1,8 @@
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
-from src.masonite.commands import TinkerCommand, CommandCapsule
+from ..commands import TinkerCommand, CommandCapsule
+from ..storage import StorageCapsule
+import os
 
 
 class Kernel:
@@ -12,6 +14,7 @@ class Kernel:
         self.register_commands()
         self.register_controllers()
         self.register_templates()
+        self.register_storage()
 
     def register_controllers(self):
         print("register controllers")
@@ -20,8 +23,22 @@ class Kernel:
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
 
+    def register_storage(self):
+        storage = StorageCapsule(self.application.base_path)
+        storage.add_storage_assets({
+            # folder          # template alias
+            "tests/integrations/storage/static": "static/",
+            "tests/integrations/storage/compiled": "static/",
+            "tests/integrations/storage/uploads": "static/",
+            "tests/integrations/storage/public": "/",
+        })
+        self.application.bind("storage", storage)
+
     def register_framework(self):
         self.application.set_response_handler(response_handler)
+        self.application.use_storage_path(
+            os.path.join(self.application.base_path, "storage")
+        )
 
     def register_commands(self):
         self.application.bind(

@@ -11,23 +11,14 @@ class WhitenoiseProvider(Provider):
 
         response_handler = WhiteNoise(
             self.application.get_response_handler(),
-            root=os.path.join(os.getcwd(), "storage"),
+            root=self.application.get_storage_path(),
             autorefresh=True,
         )
 
-        for location, alias in {
-            # folder          # template alias
-            "storage/static": "static/",
-            "storage/compiled": "static/",
-            "storage/uploads": "static/",
-            "storage/public": "/",
-        }.items():
+        for location, alias in self.application.make('storage').get_storage_assets().items():
             response_handler.add_files(location, prefix=alias)
 
-        self.application.bind(
-            "response_handler",
-            response_handler,
-        )
+        self.application.set_response_handler(response_handler)
 
     def boot(self):
         return
