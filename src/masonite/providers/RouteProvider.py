@@ -1,7 +1,9 @@
 from .Provider import Provider
 from ..routes import RouteCapsule, Route
 from ..pipeline import Pipeline
-from ..middleware.route import VerifyCsrfToken
+
+# from ..middleware.route import VerifyCsrfToken
+import pydoc
 
 
 class RouteProvider(Provider):
@@ -13,9 +15,14 @@ class RouteProvider(Provider):
         Route.set_controller_module_location(
             self.application.make("controller.location")
         )
+
         self.application.bind(
             "router",
-            RouteCapsule(),
+            RouteCapsule(
+                Route.get("/", "WelcomeController@show"),
+                Route.get("/test", "WelcomeController@test"),
+                Route.get("/view", "WelcomeController@view"),
+            ),
         )
 
     def boot(self):
@@ -28,10 +35,24 @@ class RouteProvider(Provider):
         # Run before middleware
 
         if route:
-            Pipeline(request, response).through([VerifyCsrfToken], handler="before")
+            Pipeline(request, response).through(
+                self.application.make("middleware").get_http_middleware(),
+                handler="before",
+            )
+            Pipeline(request, response).through(
+                self.application.make("middleware").get_route_middleware(["web"]),
+                handler="before",
+            )
 
             response.view(route.get_response(self.application))
 
-            Pipeline(request, response).through([VerifyCsrfToken], handler="after")
+            Pipeline(request, response).through(
+                self.application.make("middleware").get_route_middleware(["web"]),
+                handler="after",
+            )
+            Pipeline(request, response).through(
+                self.application.make("middleware").get_http_middleware(),
+                handler="after",
+            )
         else:
             raise Exception(f"NO route found for {request.get_path()}")

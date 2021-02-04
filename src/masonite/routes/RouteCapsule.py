@@ -6,7 +6,6 @@ class RouteCapsule:
         self.routes = flatten(routes)
 
     def find(self, path, request_method, subdomain=None):
-        print(self.routes)
         for route in self.routes:
             if route.match(path, request_method, subdomain=subdomain):
                 return route
