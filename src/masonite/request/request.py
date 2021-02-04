@@ -20,7 +20,7 @@ class Request:
         self.load()
 
     def load(self):
-        self.cookie_jar.load(self.environ["HTTP_COOKIE"])
+        self.cookie_jar.load(self.environ.get("HTTP_COOKIE", ""))
         self.header_bag.load(self.environ)
         self.input_bag.load(self.environ)
 
