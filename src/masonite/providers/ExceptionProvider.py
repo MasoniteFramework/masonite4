@@ -19,7 +19,7 @@ class MasoniteHandler:
             {
                 "WSGI": {
                     "Path": request.get_path(),
-                    "Input": request.all() or None,
+                    "Input": request.input_bag.all_as_values() or None,
                     # 'Parameters': request.url_params,
                     "Request Method": request.get_request_method(),
                 },

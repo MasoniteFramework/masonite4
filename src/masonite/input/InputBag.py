@@ -23,6 +23,8 @@ class InputBag:
     def parse(self, environ):
         if "QUERY_STRING" in environ:
             self.query_string = self.query_parse(environ["QUERY_STRING"])
+        
+        print('qs', self.query_string)
 
         if "wsgi.input" in environ:
             if "application/json" in environ.get("CONTENT_TYPE", ""):

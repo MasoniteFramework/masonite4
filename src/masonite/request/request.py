@@ -17,9 +17,10 @@ class Request:
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
         self.input_bag = InputBag()
+        self.load()
 
     def load(self):
-        self.cookie_jar.load(self.environ)
+        self.cookie_jar.load(self.environ["HTTP_COOKIE"])
         self.header_bag.load(self.environ)
         self.input_bag.load(self.environ)
 
