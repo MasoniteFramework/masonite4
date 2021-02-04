@@ -1,6 +1,6 @@
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
-from ..commands import TinkerCommand, CommandCapsule
+from ..commands import TinkerCommand, CommandCapsule, KeyCommand
 from ..storage import StorageCapsule
 import os
 
@@ -47,7 +47,7 @@ class Kernel:
     def register_commands(self):
         self.application.bind(
             "commands",
-            CommandCapsule(
-                CommandApplication("Masonite Version:", "4.0").add(TinkerCommand())
+            CommandCapsule(CommandApplication("Masonite Version:", "4.0")).add(
+                TinkerCommand(), KeyCommand()
             ),
         )

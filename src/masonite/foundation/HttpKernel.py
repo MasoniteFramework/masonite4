@@ -30,13 +30,7 @@ class HttpKernel:
             self.application.make("controller.location")
         )
 
-
         self.application.bind(
             "router",
-            RouteCapsule(
-                *pydoc.locate(self.application.make("routes.web")).routes
-                # Route.get("/", "WelcomeController@show"),
-                # Route.get("/test", "WelcomeController@test"),
-                # Route.get("/view", "WelcomeController@view"),
-            ),
+            RouteCapsule(*pydoc.locate(self.application.make("routes.web")).routes),
         )

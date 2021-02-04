@@ -4,6 +4,13 @@ from src.masonite.providers import (
     RouteProvider,
     ViewProvider,
     WhitenoiseProvider,
+    ExceptionProvider,
 )
 
-PROVIDERS = [FrameworkProvider, RouteProvider, ViewProvider, WhitenoiseProvider]
+PROVIDERS = [
+    FrameworkProvider,
+    RouteProvider,
+    ViewProvider,
+    WhitenoiseProvider,
+    ExceptionProvider,
+]

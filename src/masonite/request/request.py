@@ -52,3 +52,6 @@ class Request:
             return self.cookie_jar.get(name)
         else:
             return self.cookie_jar.add(name, value)
+
+    def all(self):
+        return self.input_bag.all()

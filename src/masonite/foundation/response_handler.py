@@ -22,11 +22,11 @@ def response_handler(environ, start_response):
     # Run all service provider boot methods if the wsgi attribute is true.
     # """
 
-    # try:
-    for provider in application.get_providers():
-        application.resolve(provider.boot)
-    # except Exception as e:
-    #     container.make("ExceptionHandler").load_exception(e)
+    try:
+        for provider in application.get_providers():
+            application.resolve(provider.boot)
+    except Exception as e:
+        application.make("ExceptionHandler").load_exception(e)
 
     """We Are Ready For Launch
     If we have a solid response and not redirecting then we need to return
