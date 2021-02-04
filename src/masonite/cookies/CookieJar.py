@@ -48,8 +48,9 @@ class CookieJar:
 
     def load(self, cookie_string):
         for compound_value in cookie_string.split("; "):
-            key, value = compound_value.split("=", 1)
-            self.load_cookie(key, value)
+            if '=' in compound_value:
+                key, value = compound_value.split("=", 1)
+                self.load_cookie(key, value)
         return self
 
     def render_response(self):
