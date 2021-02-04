@@ -46,3 +46,9 @@ class Request:
         name = str(name)
 
         return self.input_bag.get(name, default=default, clean=clean, quote=quote)
+
+    def cookie(self, name, value=None):
+        if value is None:
+            return self.cookie_jar.get(name)
+        else:
+            return self.cookie_jar.add(name, value)

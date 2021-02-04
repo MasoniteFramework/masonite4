@@ -3,19 +3,22 @@ from cleo import Application as CommandApplication
 from ..commands import TinkerCommand, CommandCapsule
 from ..storage import StorageCapsule
 import os
-from ..middleware import MiddlewareCapsule, VerifyCsrfToken
+from ..middleware import MiddlewareCapsule, VerifyCsrfToken, SessionMiddleware
+from ..routes import RouteCapsule, Route
+import pydoc
 
 
 class HttpKernel:
 
-    http_middleware = [VerifyCsrfToken]
-    route_middleware = {"web": []}
+    http_middleware = []
+    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken]}
 
     def __init__(self, app):
         self.application = app
 
     def register(self):
         self.register_middleware()
+        self.register_routes()
 
     def register_middleware(self):
         middleware = MiddlewareCapsule()
@@ -23,4 +26,17 @@ class HttpKernel:
         self.application.bind("middleware", middleware)
 
     def register_routes(self):
-        pass
+        Route.set_controller_module_location(
+            self.application.make("controller.location")
+        )
+
+
+        self.application.bind(
+            "router",
+            RouteCapsule(
+                *pydoc.locate(self.application.make("routes.web")).routes
+                # Route.get("/", "WelcomeController@show"),
+                # Route.get("/test", "WelcomeController@test"),
+                # Route.get("/view", "WelcomeController@view"),
+            ),
+        )

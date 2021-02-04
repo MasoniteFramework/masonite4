@@ -42,6 +42,8 @@ class Kernel:
             os.path.join(self.application.base_path, "storage")
         )
 
+        self.application.bind("routes.web", "tests.integrations.web.Route")
+
     def register_commands(self):
         self.application.bind(
             "commands",

@@ -1,1 +1,0 @@
-from .VerifyCsrfToken import VerifyCsrfToken
