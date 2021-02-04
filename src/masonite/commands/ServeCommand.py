@@ -45,26 +45,28 @@ class ServeCommand(Command):
             application = server.serve(
                 port=self.option("port"),
                 restart_delay=self.option("reload-interval"),
-                liveport=5500, 
+                liveport=5500,
                 root=application.base_path,
-                debug=True, 
+                debug=True,
             )
             return
 
-        reloader = hupper.start_reloader('src.masonite.commands.ServeCommand.main')
+        reloader = hupper.start_reloader("src.masonite.commands.ServeCommand.main")
 
         # monitor an extra file
         reloader.watch_files([".env", application.get_storage_path()])
 
+
 def main(args=sys.argv[1:]):
     from wsgi import application
+
     host = "127.0.0.1"
     port = "8000"
-    if '--host' in args:
-        host = args[args.index('--host') + 1]
-    if '--port' in args:
-        port = args[args.index('--host') + 1]
-    if '-p' in args:
-        port = args[args.index('-p') + 1]
+    if "--host" in args:
+        host = args[args.index("--host") + 1]
+    if "--port" in args:
+        port = args[args.index("--host") + 1]
+    if "-p" in args:
+        port = args[args.index("-p") + 1]
 
     waitress.serve(application, host=host, port=port)

@@ -211,7 +211,6 @@ def generate_wsgi(wsgi=None):
         "PATH_INFO": "/",
         "SCRIPT_NAME": "",
     }
-
     data.update(wsgi)
     return data
 

@@ -23,8 +23,6 @@ class InputBag:
     def parse(self, environ):
         if "QUERY_STRING" in environ:
             self.query_string = self.query_parse(environ["QUERY_STRING"])
-        
-        print('qs', self.query_string)
 
         if "wsgi.input" in environ:
             if "application/json" in environ.get("CONTENT_TYPE", ""):
@@ -79,6 +77,7 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
+                self.post_data.update(json.loads(bytes(request_body).decode("utf-8")))
 
     def get(self, name, default=None, clean=True, quote=True):
 

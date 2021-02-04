@@ -32,8 +32,7 @@ class HTTPRoute:
         route_math = (
             re.match(self._compiled_regex, path)
             or re.match(self._compiled_regex_end, path)
-            and request_method.lower() in self.request_method
-        )
+        ) and request_method.lower() in self.request_method
 
         domain_match = subdomain == self._domain
 
@@ -48,7 +47,6 @@ class HTTPRoute:
         )
 
     def match_name(self, name):
-        print("match?", name, self._name)
         return name == self._name
 
     def name(self, name):
@@ -282,7 +280,6 @@ class HTTPRoute:
             matching_regex = self._compiled_regex_end
         try:
             parameter_dict = {}
-            print(path, matching_regex)
             for index, value in enumerate(matching_regex.match(path).groups()):
                 parameter_dict[
                     self.url_list[index]

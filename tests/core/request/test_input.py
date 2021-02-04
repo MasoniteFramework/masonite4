@@ -1,5 +1,6 @@
 from src.masonite.tests import TestCase, MockInput
 from src.masonite.input import InputBag
+import json, io
 
 
 class TestInput(TestCase):
@@ -15,6 +16,16 @@ class TestInput(TestCase):
         bag.load({"QUERY_STRING": "hello=you&goodbye=me"})
         self.assertEqual(bag.get("hello"), "you")
         self.assertEqual(bag.get("goodbye"), "me")
+
+    def test_can_parse_post_data(self):
+        bag = InputBag()
+        bag.load(
+            {
+                "CONTENT_LENGTH": len(str(json.dumps({"__token": 1}))),
+                "wsgi.input": io.BytesIO(bytes(json.dumps({"__token": 1}), "utf-8")),
+            }
+        )
+        self.assertEqual(bag.get("__token"), 1)
 
     def test_can_parse_duplicate_values(self):
         bag = InputBag()

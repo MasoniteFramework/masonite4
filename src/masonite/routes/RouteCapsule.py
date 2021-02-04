@@ -17,7 +17,6 @@ class RouteCapsule:
 
     def find_by_name(self, name):
         for route in self.routes:
-            print(route)
             if route.match_name(name):
                 return route
 

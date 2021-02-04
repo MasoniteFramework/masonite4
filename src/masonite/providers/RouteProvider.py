@@ -21,8 +21,6 @@ class RouteProvider(Provider):
         request = self.application.make("request")
         response = self.application.make("response")
 
-        print('input', request.all())
-
         route = router.find(request.get_path(), request.get_request_method())
 
         # Run before middleware

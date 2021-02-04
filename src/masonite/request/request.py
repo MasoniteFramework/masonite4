@@ -48,11 +48,33 @@ class Request:
 
         return self.input_bag.get(name, default=default, clean=clean, quote=quote)
 
-    def cookie(self, name, value=None):
+    def cookie(self, name, value=None, encrypt=True):
+
+        if value and encrypt:
+            value = self.app.make("sign").sign(value)
         if value is None:
-            return self.cookie_jar.get(name)
+            if self.cookie_jar.exists(name):
+                return self.cookie_jar.get(name).value
+            return None
         else:
             return self.cookie_jar.add(name, value)
 
+    def header(self, name, value=None):
+        if value is None:
+            return self.header_bag.get(name)
+        else:
+            return self.header_bag.add(name, value)
+
     def all(self):
         return self.input_bag.all()
+
+    def is_not_safe(self):
+        """Check if the current request is not a get request.
+
+        Returns:
+            bool
+        """
+        if not self.get_request_method() in ("GET", "OPTIONS", "HEAD"):
+            return True
+
+        return False

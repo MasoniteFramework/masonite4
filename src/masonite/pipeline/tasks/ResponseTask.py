@@ -4,5 +4,4 @@ class ResponseTask:
 
     def handle(self, request):
 
-        print(request)
         return request

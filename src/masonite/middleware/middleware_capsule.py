@@ -17,7 +17,6 @@ class MiddlewareCapsule:
             self.route_middleware.pop(middleware)
         elif middleware in self.http_middleware:
             self.http_middleware.pop(self.http_middleware.index(middleware))
-
         return self
 
     def get_route_middleware(self, keys=None):

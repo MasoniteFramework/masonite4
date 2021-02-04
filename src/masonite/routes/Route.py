@@ -44,6 +44,7 @@ class Route:
             controller,
             request_method=["post"],
             compilers=self.compilers,
+            module_location=self.controller_module_location,
             **options
         )
         self.routes.append(route)
@@ -57,6 +58,7 @@ class Route:
                 controller,
                 request_method=["put"],
                 compilers=self.compilers,
+                module_location=self.controller_module_location,
                 **options
             )
         )
@@ -69,6 +71,7 @@ class Route:
             controller,
             request_method=["patch"],
             compilers=self.compilers,
+            module_location=self.controller_module_location,
             **options
         )
         self.routes.append(route)
@@ -81,6 +84,7 @@ class Route:
             controller,
             request_method=["delete"],
             compilers=self.compilers,
+            module_location=self.controller_module_location,
             **options
         )
         self.routes.append(route)
@@ -93,6 +97,7 @@ class Route:
             controller,
             request_method=["options"],
             compilers=self.compilers,
+            module_location=self.controller_module_location,
             **options
         )
         self.routes.append(route)
@@ -135,3 +140,4 @@ class Route:
     @classmethod
     def set_controller_module_location(self, controller_location):
         self.controller_module_location = controller_location
+        return self

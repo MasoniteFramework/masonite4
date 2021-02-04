@@ -13,11 +13,12 @@ class CookieJar:
         self.cookies.update({name: Cookie(name, value, **options)})
 
     def all(self):
-        return self.cookies
+        cookies = self.loaded_cookies
+        cookies.update(self.cookies)
+        return cookies
 
     def get(self, name):
-        aggregate = self.loaded_cookies
-        aggregate.update(self.cookies)
+        aggregate = self.all()
         return aggregate.get(name)
 
     def exists(self, name):
@@ -48,7 +49,7 @@ class CookieJar:
 
     def load(self, cookie_string):
         for compound_value in cookie_string.split("; "):
-            if '=' in compound_value:
+            if "=" in compound_value:
                 key, value = compound_value.split("=", 1)
                 self.load_cookie(key, value)
         return self

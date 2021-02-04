@@ -21,8 +21,6 @@ class TestRoutes(TestCase):
 
         router.add(Route.get("/added", None))
 
-        print(router.routes)
-
         route = router.find("/added", "GET")
         self.assertTrue(route)
 
@@ -106,3 +104,12 @@ class TestRoutes(TestCase):
 
         route = router.find("/domain/2", "get", "sub")
         self.assertTrue(route)
+
+    def test_finds_correct_methods(self):
+        router = RouteCapsule(Route.get("/test/1", "TestController@show"))
+
+        route = router.find("/test/1", "get")
+        self.assertTrue(route)
+
+        route = router.find("/test/1", "post")
+        self.assertIsNone(route)

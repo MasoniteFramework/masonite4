@@ -1,21 +1,23 @@
 class HttpTestResponse:
-    def __init__(self, application, route):
+    def __init__(self, application, request, response, route):
         self.application = application
+        self.request = request
+        self.response = response
         self.route = route
         self.content = None
         self.status = None
         self.get_response()
 
     def get_response(self):
-        self.content = self.route.get_response(self.application)
+        self.content = self.response.get_response_content()
         return self
 
     def assertContains(self, content):
-        assert content in self.content
+        assert content in str(self.content), f"{content} not found."
         return self
 
     def assertNotContains(self, content):
-        assert content not in self.content
+        assert content not in str(self.content)
         return self
 
     def assertIsNamed(self, name):

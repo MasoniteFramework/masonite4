@@ -17,8 +17,8 @@ class HttpKernel:
         self.application = app
 
     def register(self):
-        self.register_middleware()
         self.register_routes()
+        self.register_middleware()
 
     def register_middleware(self):
         middleware = MiddlewareCapsule()

@@ -50,7 +50,6 @@ class TestCookies(unittest.TestCase):
     def test_cookie_with_expired_already(self):
         cookiejar = CookieJar()
         time = cookie_expire_time("expired")
-        print(time)
         cookiejar.add("cookie1", "name", path="/", expires=time, timezone="GMT")
         self.assertEqual(
             cookiejar.render_response(),

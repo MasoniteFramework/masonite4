@@ -11,6 +11,7 @@ class FrameworkProvider:
         pass
 
     def boot(self):
-        print("framework boot")
-        self.application.bind("request", Request(self.application.make("environ")))
+        request = Request(self.application.make("environ"))
+        request.app = self.application
+        self.application.bind("request", request)
         self.application.bind("response", Response(self.application))

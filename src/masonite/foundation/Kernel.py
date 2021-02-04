@@ -2,6 +2,7 @@ from .response_handler import response_handler
 from cleo import Application as CommandApplication
 from ..commands import TinkerCommand, CommandCapsule, KeyCommand, ServeCommand
 from ..storage import StorageCapsule
+from ..auth import Sign
 import os
 
 
@@ -17,7 +18,6 @@ class Kernel:
         self.register_storage()
 
     def register_controllers(self):
-        print("register controllers")
         self.application.bind("controller.location", "tests.integrations.controllers")
 
     def register_templates(self):
@@ -43,6 +43,9 @@ class Kernel:
         )
 
         self.application.bind("routes.web", "tests.integrations.web.Route")
+        self.application.bind(
+            "sign", Sign("-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
+        )
 
     def register_commands(self):
         self.application.bind(

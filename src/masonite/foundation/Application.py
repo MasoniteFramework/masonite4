@@ -22,7 +22,6 @@ class Application(Container):
         for provider in providers:
             provider = provider(self)
             provider.register()
-            print(provider)
         return self
 
     def use_storage_path(self, path):
@@ -36,7 +35,6 @@ class Application(Container):
             provider = provider(self)
             provider.register()
             self.providers.append(provider)
-            print(provider)
 
         return self
 
