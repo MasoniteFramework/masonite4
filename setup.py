@@ -33,9 +33,10 @@ setup(
         "pendulum>=2,<3",
         "jinja2",
         "cleo>=0.8.1,<0.9",
-        "hupper>=1.10,<1.11"
-        "waitress>=1.4,<1.5"
-        "bcrypt>=3.2,<3.3"
+        "hupper>=1.10,<1.11",
+        "waitress>=1.4,<1.5",
+        "bcrypt>=3.2,<3.3",
+        "whitenoise>=5.2,<5.3"
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
