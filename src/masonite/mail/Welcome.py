@@ -1,10 +1,10 @@
 from .Mailable import Mailable
 
-class Welcome(Mailable):
 
+class Welcome(Mailable):
     def build(self):
-        (self
-            .to("joe")
+        (
+            self.to("joe")
             .subject("Masonite 4")
             .from_("joe@masoniteproject.com")
             .text("Hello from Masonite!")

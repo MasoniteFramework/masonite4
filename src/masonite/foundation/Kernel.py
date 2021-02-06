@@ -4,6 +4,7 @@ from ..commands import TinkerCommand, CommandCapsule, KeyCommand, ServeCommand
 from ..storage import StorageCapsule
 from ..auth import Sign
 import os
+from ..environment import LoadEnvironment
 
 
 class Kernel:
@@ -11,11 +12,19 @@ class Kernel:
         self.application = app
 
     def register(self):
+        self.load_environment()
+        self.set_framework_options()
         self.register_framework()
         self.register_commands()
         self.register_controllers()
         self.register_templates()
         self.register_storage()
+
+    def load_environment(self):
+        LoadEnvironment()
+
+    def set_framework_options(self):
+        self.application.bind("config.mail", "tests.integrations.config.mail")
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")

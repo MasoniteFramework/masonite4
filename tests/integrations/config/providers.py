@@ -5,7 +5,9 @@ from src.masonite.providers import (
     ViewProvider,
     WhitenoiseProvider,
     ExceptionProvider,
+    MailProvider,
 )
+
 
 PROVIDERS = [
     FrameworkProvider,
@@ -13,4 +15,5 @@ PROVIDERS = [
     ViewProvider,
     WhitenoiseProvider,
     ExceptionProvider,
+    MailProvider,
 ]
