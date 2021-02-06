@@ -2,3 +2,4 @@ pytest
 black
 cryptography
 masonite-orm
+hupper=1.10.2
