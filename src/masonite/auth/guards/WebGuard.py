@@ -57,40 +57,45 @@ class WebGuard(AuthenticationGuard):
                 )
             )
 
-        auth_column = self.auth_model.__auth__
+        auth_column = self.auth_model.get_authenticatable_column()
+
+        attempt = self.auth_model.attempt()
+        if attempt:
+            self.driver.save(attempt)
+        return False
 
         try:
-            # Try to login multiple or statements if given an auth list
-            if isinstance(auth_column, list):
-                model = self.auth_model.where(auth_column[0], name)
+            # # Try to login multiple or statements if given an auth list
+            # if isinstance(auth_column, list):
+            #     model = self.auth_model.where(auth_column[0], name)
 
-                for authentication_column in auth_column[1:]:
-                    model.or_where(authentication_column, name)
+            #     for authentication_column in auth_column[1:]:
+            #         model.or_where(authentication_column, name)
 
-                model = model.first()
-            else:
-                model = self.auth_model.where(auth_column, name).first()
+            #     model = model.first()
+            # else:
+            #     model = self.auth_model.where(auth_column, name).first()
 
             # MariaDB/MySQL can store the password as string
             # while PostgreSQL can store it as bytes
             # This is to prevent to double encode the password as bytes
-            password_as_bytes = self._get_password_column(model)
-            if not isinstance(password_as_bytes, bytes):
-                password_as_bytes = bytes(password_as_bytes or "", "utf-8")
+            # password_as_bytes = self._get_password_column(model)
+            # if not isinstance(password_as_bytes, bytes):
+            #     password_as_bytes = bytes(password_as_bytes or "", "utf-8")
 
-            if model and bcrypt.checkpw(bytes(password, "utf-8"), password_as_bytes):
-                if not self._once:
-                    remember_token = str(uuid.uuid4())
-                    model.remember_token = remember_token
-                    model.save()
-                    self.driver.save(remember_token, model=model)
-                self.app.make("request").set_user(model)
-                return model
+            # if model and bcrypt.checkpw(bytes(password, "utf-8"), password_as_bytes):
+            #     if not self._once:
+            #         remember_token = str(uuid.uuid4())
+            #         model.remember_token = remember_token
+            #         model.save()
+            #         self.driver.save(remember_token, model=model)
+            #     self.app.make("request").set_user(model)
+            #     return model
 
-        except Exception as exception:
-            raise exception
+        # except Exception as exception:
+        #     raise exception
 
-        return False
+        # return False
 
     def logout(self):
         """Logout the current authenticated user.
