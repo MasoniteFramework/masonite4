@@ -30,6 +30,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         "inflection>=0.3<0.4",
+        "exceptionite>=1.0<1.1",
         "pendulum>=2,<3",
         "jinja2>=2.11<2.12",
         "cleo>=0.8.1,<0.9",
