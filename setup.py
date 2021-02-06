@@ -76,7 +76,6 @@ setup(
         "masonite.headers",
         "masonite.input",
         "masonite.middleware",
-        "masonite.middleware.http",
         "masonite.middleware.route",
         "masonite.pipeline",
         "masonite.pipeline.tasks",
