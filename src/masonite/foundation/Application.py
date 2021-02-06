@@ -15,19 +15,26 @@ class Application(Container):
     def set_response_handler(self, response_handler):
         self.response_handler = response_handler
 
+    def get_response_handler(self):
+        return self.response_handler
+
     def register_providers(self, *providers):
         for provider in providers:
             provider = provider(self)
             provider.register()
-            print(provider)
         return self
+
+    def use_storage_path(self, path):
+        self.storage_path = path
+
+    def get_storage_path(self):
+        return self.storage_path
 
     def add_providers(self, *providers):
         for provider in providers:
             provider = provider(self)
             provider.register()
             self.providers.append(provider)
-            print(provider)
 
         return self
 
@@ -41,4 +48,4 @@ class Application(Container):
         return self.providers
 
     def __call__(self, *args, **kwargs):
-        return self.response_handler(self, *args, **kwargs)
+        return self.response_handler(*args, **kwargs)

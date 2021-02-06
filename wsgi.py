@@ -1,5 +1,5 @@
-from src.masonite.foundation import Application, response_handler
-from src.masonite.providers import WSGIProvider, FrameworkProvider, RouteProvider
+from src.masonite.foundation import Application, Kernel, HttpKernel
+from tests.integrations.config.providers import PROVIDERS
 import os
 
 
@@ -9,19 +9,8 @@ application = Application(os.getcwd())
 """
 
 application.register_providers(
-    WSGIProvider
+    Kernel,
+    HttpKernel
 )
 
-"""Bind important keys to the application
-"""
-application.bind(
-    "controller.location", 
-    "tests.integrations.controllers"
-)
-
-application.add_providers(
-    FrameworkProvider,
-    RouteProvider
-)
-
-
+application.add_providers(*PROVIDERS)

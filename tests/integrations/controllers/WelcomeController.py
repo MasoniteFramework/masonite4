@@ -1,4 +1,5 @@
 from src.masonite.controllers import Controller
+from src.masonite.views import View
 
 
 class WelcomeController(Controller):
@@ -6,4 +7,7 @@ class WelcomeController(Controller):
         return "welcome"
 
     def test(self):
-        return "test"
+        return 2 / 0
+
+    def view(self, view: View):
+        return view.render("welcome")

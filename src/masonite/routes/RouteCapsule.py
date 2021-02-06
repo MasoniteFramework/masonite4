@@ -6,7 +6,6 @@ class RouteCapsule:
         self.routes = flatten(routes)
 
     def find(self, path, request_method, subdomain=None):
-        print(self.routes)
         for route in self.routes:
             if route.match(path, request_method, subdomain=subdomain):
                 return route
@@ -18,10 +17,12 @@ class RouteCapsule:
 
     def find_by_name(self, name):
         for route in self.routes:
-            print(route)
             if route.match_name(name):
                 return route
 
     def set_controller_module_location(self, location):
         self.controller_module_location = location
         return self
+
+    def add(self, *routes):
+        self.routes.append(*routes)

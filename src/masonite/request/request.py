@@ -1,5 +1,6 @@
 from ..cookies import CookieJar
 from ..headers import HeaderBag
+from ..input import InputBag
 
 
 class Request:
@@ -15,13 +16,81 @@ class Request:
         self.environ = environ
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
+        self.input_bag = InputBag()
+        self.load()
 
     def load(self):
-        self.cookie_jar.load(self.environ)
+        self.cookie_jar.load(self.environ.get("HTTP_COOKIE", ""))
         self.header_bag.load(self.environ)
+        self.input_bag.load(self.environ)
 
     def get_path(self):
         return self.environ.get("PATH_INFO")
 
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")
+
+    def input(self, name, default=False, clean=False, quote=True):
+        """Get a specific input value.
+
+        Arguments:
+            name {string} -- Key of the input data
+
+        Keyword Arguments:
+            default {string} -- Default value if input does not exist (default: {False})
+            clean {bool} -- Whether or not the return value should be
+                            cleaned (default: {True})
+
+        Returns:
+            string
+        """
+        name = str(name)
+
+        return self.input_bag.get(name, default=default, clean=clean, quote=quote)
+
+    def cookie(self, name, value=None, encrypt=True):
+
+        if value and encrypt:
+            value = self.app.make("sign").sign(value)
+        if value is None:
+            if self.cookie_jar.exists(name):
+                return self.cookie_jar.get(name).value
+            return None
+        else:
+            return self.cookie_jar.add(name, value)
+
+    def delete_cookie(self, name):
+        self.cookie_jar.delete(name)
+        print(self.cookie_jar.all())
+        return self
+
+    def header(self, name, value=None):
+        if value is None:
+            return self.header_bag.get(name)
+        else:
+            return self.header_bag.add(name, value)
+
+    def all(self):
+        return self.input_bag.all()
+
+    def is_not_safe(self):
+        """Check if the current request is not a get request.
+
+        Returns:
+            bool
+        """
+        if not self.get_request_method() in ("GET", "OPTIONS", "HEAD"):
+            return True
+
+        return False
+
+    def user(self):
+        return self._user
+
+    def set_user(self, user):
+        self._user = user
+        return self
+
+    def remove_user(self):
+        self._user = None
+        return self

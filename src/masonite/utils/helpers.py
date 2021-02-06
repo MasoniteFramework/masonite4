@@ -85,3 +85,422 @@ def response_statuses():
         510: "510 Not Extended",
         511: "511 Network Authentication Required",
     }
+
+
+"""Time Module."""
+
+
+def cookie_expire_time(str_time):
+    """Take a string like 1 month or 5 minutes and returns a pendulum instance.
+
+    Arguments:
+        str_time {string} -- Could be values like 1 second or 3 minutes
+
+    Returns:
+        pendulum -- Returns Pendulum instance
+    """
+    import pendulum
+
+    if str_time != "expired":
+        number = int(str_time.split(" ")[0])
+        length = str_time.split(" ")[1]
+
+        if length in ("second", "seconds"):
+            # Sat, 06 Jun 2020 15:36:16 GMT
+            return (
+                pendulum.now("GMT")
+                .add(seconds=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("minute", "minutes"):
+            return (
+                pendulum.now("GMT")
+                .add(minutes=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("hour", "hours"):
+            return (
+                pendulum.now("GMT").add(hours=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("days", "days"):
+            return (
+                pendulum.now("GMT").add(days=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("week", "weeks"):
+            return pendulum.now("GMT").add(weeks=1).format("ddd, DD MMM YYYY H:mm:ss")
+        elif length in ("month", "months"):
+            return (
+                pendulum.now("GMT")
+                .add(months=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("year", "years"):
+            return (
+                pendulum.now("GMT").add(years=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+
+        return None
+    else:
+        return pendulum.now("GMT").subtract(years=20).format("ddd, DD MMM YYYY H:mm:ss")
+
+
+def parse_human_time(str_time):
+    """Take a string like 1 month or 5 minutes and returns a pendulum instance.
+
+    Arguments:
+        str_time {string} -- Could be values like 1 second or 3 minutes
+
+    Returns:
+        pendulum -- Returns Pendulum instance
+    """
+    import pendulum
+
+    if str_time != "expired":
+        number = int(str_time.split(" ")[0])
+        length = str_time.split(" ")[1]
+
+        if length in ("second", "seconds"):
+            return pendulum.now("GMT").add(seconds=number)
+        elif length in ("minute", "minutes"):
+            return pendulum.now("GMT").add(minutes=number)
+        elif length in ("hour", "hours"):
+            return pendulum.now("GMT").add(hours=number)
+        elif length in ("days", "days"):
+            return pendulum.now("GMT").add(days=number)
+        elif length in ("week", "weeks"):
+            return pendulum.now("GMT").add(weeks=1)
+        elif length in ("month", "months"):
+            return pendulum.now("GMT").add(months=number)
+        elif length in ("year", "years"):
+            return pendulum.now("GMT").add(years=number)
+
+        return None
+    else:
+        return pendulum.now("GMT").subtract(years=20)
+
+
+def generate_wsgi(wsgi=None):
+    import io
+
+    if wsgi is None:
+        wsgi = {}
+    data = {
+        "wsgi.version": (1, 0),
+        "wsgi.multithread": False,
+        "wsgi.multiprocess": True,
+        "wsgi.run_once": False,
+        "wsgi.input": io.BytesIO(),
+        "SERVER_SOFTWARE": "gunicorn/19.7.1",
+        "REQUEST_METHOD": "GET",
+        "QUERY_STRING": "application=Masonite",
+        "RAW_URI": "/",
+        "SERVER_PROTOCOL": "HTTP/1.1",
+        "HTTP_HOST": "127.0.0.1:8000",
+        "HTTP_ACCEPT": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "HTTP_UPGRADE_INSECURE_REQUESTS": "1",
+        "HTTP_COOKIE": "setcookie=value",
+        "HTTP_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7",
+        "HTTP_ACCEPT_LANGUAGE": "en-us",
+        "HTTP_ACCEPT_ENCODING": "gzip, deflate",
+        "HTTP_CONNECTION": "keep-alive",
+        "wsgi.url_scheme": "http",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REMOTE_PORT": "62241",
+        "SERVER_NAME": "127.0.0.1",
+        "SERVER_PORT": "8000",
+        "PATH_INFO": "/",
+        "SCRIPT_NAME": "",
+    }
+    data.update(wsgi)
+    return data
+
+
+class Dot:
+    def dot(self, search, dictionary, default=None):
+        """The search string in dot notation to look into the dictionary for.
+
+        Arguments:
+            search {string} -- This should be a string in dot notation
+                                like 'key.key.value'.
+            dictionary {dict} -- A normal dictionary which will be searched using
+                                the search string in dot notation.
+
+        Keyword Arguments:
+            default {string} -- The default value if nothing is found
+                                in the dictionary. (default: {None})
+
+        Returns:
+            string -- Returns the value found the dictionary or the default
+                        value specified above if nothing is found.
+        """
+        if "." not in search:
+            if search == "":
+                return dictionary
+            try:
+                return dictionary[search]
+            except KeyError:
+                return default
+
+        searching = search.split(".")
+        possible = None
+        if "*" not in search:
+            return self.flatten(dictionary).get(search, default)
+
+        while searching:
+            dic = dictionary
+            for value in searching:
+                if not dic:
+                    if "*" in searching:
+                        return []
+                    return default
+
+                if isinstance(dic, list):
+                    try:
+                        return collect(dic).pluck(searching[searching.index("*") + 1])
+                    except KeyError:
+                        return []
+
+                if not isinstance(dic, dict):
+                    return default
+
+                dic = dic.get(value)
+
+                if isinstance(dic, str) and dic.isnumeric():
+                    continue
+
+                if (
+                    dic
+                    and not isinstance(dic, int)
+                    and hasattr(dic, "__len__")
+                    and len(dic) == 1
+                    and not isinstance(dic[list(dic)[0]], dict)
+                ):
+                    possible = dic
+
+            if not isinstance(dic, dict):
+                return dic
+
+            del searching[-1]
+        return possible
+
+    def flatten(self, d, parent_key="", sep="."):
+        items = []
+        for k, v in d.items():
+            new_key = parent_key + sep + k if parent_key else k
+            if isinstance(v, MutableMapping):
+                items.append((new_key, v))
+                items.extend(self.flatten(v, new_key, sep=sep).items())
+            elif isinstance(v, list):
+                for index, val in enumerate(v):
+                    items.extend(
+                        self.flatten({str(index): val}, new_key, sep=sep).items()
+                    )
+            else:
+                items.append((new_key, v))
+
+        return dict(items)
+
+    def locate(self, search_path, default=""):
+        """Locate the object from the given search path
+
+        Arguments:
+            search_path {string} -- A search path to fetch the object
+                                    from like config.application.debug.
+
+        Keyword Arguments:
+            default {string} -- A default string if the search path is
+                                not found (default: {''})
+
+        Returns:
+            any -- Could be a string, object or anything else that is fetched.
+        """
+        value = self.find(search_path, default)
+
+        if isinstance(value, dict):
+            return self.dict_dot(".".join(search_path.split(".")[3:]), value, default)
+
+        if value is not None:
+            return value
+
+        return default
+
+    def dict_dot(self, search, dictionary, default=""):
+        """Takes a dot notation representation of a dictionary and fetches it from the dictionary.
+
+        This will take something like s3.locations and look into the s3 dictionary and fetch the locations
+        key.
+
+        Arguments:
+            search {string} -- The string to search for in the dictionary using dot notation.
+            dictionary {dict} -- The dictionary to search through.
+
+        Returns:
+            string -- The value of the dictionary element.
+        """
+        return self.dot(search, dictionary, default)
+
+    def find(self, search_path, default=""):
+        """Used for finding both the uppercase and specified version.
+
+        Arguments:
+            search_path {string} -- The search path to find the module,
+                                    dictionary key, object etc. This is typically
+                                    in the form of dot notation 'config.application.debug'
+
+        Keyword Arguments:
+            default {string} -- The default value to return if the search path
+                                could not be found. (default: {''})
+
+        Returns:
+            any -- Could be a string, object or anything else that is fetched.
+        """
+        value = pydoc.locate(search_path)
+
+        if value:
+            return value
+
+        paths = search_path.split(".")
+
+        value = pydoc.locate(".".join(paths[:-1]) + "." + paths[-1].upper())
+
+        if value or value is False:
+            return value
+
+        search_path = -1
+
+        # Go backwards through the dot notation until a match is found.
+        ran = 0
+        while ran < len(paths):
+            try:
+                value = pydoc.locate(
+                    ".".join(paths[:search_path]) + "." + paths[search_path].upper()
+                )
+            except IndexError:
+                return default
+
+            if value:
+                break
+
+            value = pydoc.locate(
+                ".".join(paths[:search_path]) + "." + paths[search_path]
+            )
+
+            if value:
+                break
+
+            search_path -= 1
+            ran += 1
+
+        if not value or inspect.ismodule(value):
+            return default
+
+        return value
+
+
+def compile_route_to_url(route, params={}):
+    """Compile the route url into a usable url.
+
+    Converts /url/@id into /url/1. Used for redirection
+
+    Arguments:
+        route {string} -- An uncompiled route
+                            like (/dashboard/@user:string/@id:int)
+
+    Keyword Arguments:
+        params {dict} -- Dictionary of parameters to pass to the route (default: {{}})
+
+    Returns:
+        string -- Returns a compiled string (/dashboard/joseph/1)
+    """
+    if "http" in route:
+        return route
+
+    # Split the url into a list
+    split_url = route.split("/")
+
+    # Start beginning of the new compiled url
+    compiled_url = "/"
+
+    # Iterate over the list
+    for url in split_url:
+        if url:
+            # if the url contains a parameter variable like @id:int
+            if "@" in url:
+                url = url.replace("@", "").split(":")[0]
+                if isinstance(params, dict):
+                    compiled_url += str(params[url]) + "/"
+                elif isinstance(params, list):
+                    compiled_url += str(params.pop(0)) + "/"
+            elif "?" in url:
+                url = url.replace("?", "").split(":")[0]
+                if isinstance(params, dict):
+                    compiled_url += str(params.get(url, "/")) + "/"
+                elif isinstance(params, list):
+                    compiled_url += str(params.pop(0)) + "/"
+            else:
+                compiled_url += url + "/"
+
+    compiled_url = compiled_url.replace("//", "")
+    # The loop isn't perfect and may have an unwanted trailing slash
+    if compiled_url.endswith("/") and not route.endswith("/"):
+        compiled_url = compiled_url[:-1]
+
+    # The loop isn't perfect and may have 2 slashes next to eachother
+    if "//" in compiled_url:
+        compiled_url = compiled_url.replace("//", "/")
+
+    return compiled_url
+
+
+def cookie_expire_time(str_time):
+    """Take a string like 1 month or 5 minutes and returns a pendulum instance.
+
+    Arguments:
+        str_time {string} -- Could be values like 1 second or 3 minutes
+
+    Returns:
+        pendulum -- Returns Pendulum instance
+    """
+    import pendulum
+
+    if str_time != "expired":
+        number = int(str_time.split(" ")[0])
+        length = str_time.split(" ")[1]
+
+        if length in ("second", "seconds"):
+            # Sat, 06 Jun 2020 15:36:16 GMT
+            return (
+                pendulum.now("GMT")
+                .add(seconds=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("minute", "minutes"):
+            return (
+                pendulum.now("GMT")
+                .add(minutes=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("hour", "hours"):
+            return (
+                pendulum.now("GMT").add(hours=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("days", "days"):
+            return (
+                pendulum.now("GMT").add(days=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("week", "weeks"):
+            return pendulum.now("GMT").add(weeks=1).format("ddd, DD MMM YYYY H:mm:ss")
+        elif length in ("month", "months"):
+            return (
+                pendulum.now("GMT")
+                .add(months=number)
+                .format("ddd, DD MMM YYYY H:mm:ss")
+            )
+        elif length in ("year", "years"):
+            return (
+                pendulum.now("GMT").add(years=number).format("ddd, DD MMM YYYY H:mm:ss")
+            )
+
+        return None
+    else:
+        return pendulum.now("GMT").subtract(years=20).format("ddd, DD MMM YYYY H:mm:ss")

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
-from ..utils.helpers import response_statuses
+from ..utils.helpers import response_statuses, compile_route_to_url
 
 
 class Response:
@@ -18,7 +18,6 @@ class Response:
 
     def __init__(self, app):
         self.app = app
-        self.request = self.app.make("Request")
         self.content = ""
         self._status = None
         self.statuses = response_statuses()
@@ -59,11 +58,8 @@ class Response:
 
         return self.header_bag.add(Header(name, value))
 
-    def get_and_reset_headers(self):
-        header = self.header_bag
-        self.header_bag = HeaderBag()
-        self._status = None
-        return header.render() + self.request.cookie_jar.render_response()
+    def get_headers(self):
+        return self.header_bag.render()
 
     def get_response_content(self):
         return self.data()
@@ -157,8 +153,6 @@ class Response:
             view = str(view)
         elif isinstance(view, Responsable):
             view = view.get_response()
-        elif isinstance(view, self.request.__class__):
-            view = self.data()
         elif view is None:
             raise ResponseError(
                 "Responses cannot be of type: None. Did you return anything in your responsable method?"
@@ -173,7 +167,7 @@ class Response:
 
         return self.data()
 
-    def redirect(self, location=None, status=302):
+    def redirect(self, location=None, params=None, name=None, url=None, status=302):
         """Set the redirection on the server.
 
         Keyword Arguments:
@@ -184,12 +178,24 @@ class Response:
             string -- Returns the data to be returned.
         """
         self.status(status)
-        if not location:
-            location = self.request.redirect_url
+        if params is None:
+            params = {}
 
-        self.request.reset_headers()
-        self.header_bag.add(Header("Location", location))
-        self.view("Redirecting ...")
+        if location:
+            self.header_bag.add(Header("Location", location))
+            self.view("Redirecting ...")
+        elif name:
+            route = self.app.make("router").find_by_name(name)
+            if not route:
+                raise ValueError(f"Route with the name '{name}' not found.")
+
+            self.header_bag.add(
+                Header("Location", compile_route_to_url(route.url, params))
+            )
+            self.view("Redirecting ...")
+        elif url:
+            self.header_bag.add(Header("Location", url))
+            self.view("Redirecting ...")
 
         return self.data()
 

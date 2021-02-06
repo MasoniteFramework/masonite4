@@ -32,12 +32,14 @@ class HTTPRoute:
         route_math = (
             re.match(self._compiled_regex, path)
             or re.match(self._compiled_regex_end, path)
-            and request_method.lower() in self.request_method
-        )
+        ) and request_method.lower() in self.request_method
 
         domain_match = subdomain == self._domain
 
         return route_math and domain_match
+
+    def get_name(self):
+        return self._name
 
     def matches(self, path):
         return re.match(self._compiled_regex, path) or re.match(
@@ -45,7 +47,6 @@ class HTTPRoute:
         )
 
     def match_name(self, name):
-        print("match?", name, self._name)
         return name == self._name
 
     def name(self, name):
@@ -97,6 +98,7 @@ class HTTPRoute:
             else:
                 module = importlib.import_module("{0}".format(module_location))
 
+            print("find controller")
             # Get the controller from the module
             self.controller_class = getattr(module, get_controller)
 
@@ -105,6 +107,8 @@ class HTTPRoute:
         except ImportError as e:
             import sys
             import traceback
+
+            raise e
 
             _, _, exc_tb = sys.exc_info()
             self.e = e
@@ -132,17 +136,16 @@ class HTTPRoute:
 
         if app:
             controller = app.resolve(self.controller_class)
-            print("cc", controller)
             # Resolve Controller Method
             response = app.resolve(
                 getattr(controller, self.controller_method),
                 # *self.request.url_params.values() TODO
             )
 
-        if hasattr(response, "rendered_template"):
-            response = response.rendered_template
+            if hasattr(response, "rendered_template"):
+                response = response.rendered_template
 
-        return response
+            return response
 
     def middleware(self, *args):
         """Load a list of middleware to run.
@@ -280,7 +283,6 @@ class HTTPRoute:
             matching_regex = self._compiled_regex_end
         try:
             parameter_dict = {}
-            print(path, matching_regex)
             for index, value in enumerate(matching_regex.match(path).groups()):
                 parameter_dict[
                     self.url_list[index]
