@@ -89,8 +89,6 @@ class HTTPRoute:
         # like 'LoginController' and 'Auth.LoginController'
         get_controller = mod[0].split(".")[-1]
 
-        print('module location', module_location)
-
         try:
             # Import the module
             if isinstance(controller, str):
