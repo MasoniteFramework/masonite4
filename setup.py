@@ -37,7 +37,8 @@ setup(
         "hupper>=1.10,<1.11",
         "waitress>=1.4,<1.5",
         "bcrypt>=3.2,<3.3",
-        "whitenoise>=5.2,<5.3"
+        "whitenoise>=5.2,<5.3",
+        "python-dotenv>=0.15,<0.16",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
