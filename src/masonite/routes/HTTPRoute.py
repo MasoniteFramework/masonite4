@@ -89,6 +89,8 @@ class HTTPRoute:
         # like 'LoginController' and 'Auth.LoginController'
         get_controller = mod[0].split(".")[-1]
 
+        print('module location', module_location)
+
         try:
             # Import the module
             if isinstance(controller, str):
@@ -98,6 +100,7 @@ class HTTPRoute:
             else:
                 module = importlib.import_module("{0}".format(module_location))
 
+            print('find controller')
             # Get the controller from the module
             self.controller_class = getattr(module, get_controller)
 
@@ -106,6 +109,7 @@ class HTTPRoute:
         except ImportError as e:
             import sys
             import traceback
+            raise e
 
             _, _, exc_tb = sys.exc_info()
             self.e = e

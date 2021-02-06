@@ -25,13 +25,13 @@ class Route:
         return self
 
     @classmethod
-    def get(self, url, controller, **options):
+    def get(self, url, controller, module_location=None, **options):
         route = HTTPRoute(
             url,
             controller,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=module_location or self.controller_module_location,
             **options
         )
         self.routes.append(route)
