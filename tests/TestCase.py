@@ -21,7 +21,7 @@ class TestCase(TestCase):
         self.application.bind(
             "router",
             RouteCapsule(
-                Route.set_controller_module_location("tests.integrations.web").get(
+                Route.set_controller_module_location("tests.integrations.controllers").get(
                     "/", "WelcomeController@show"
                 )
             ),

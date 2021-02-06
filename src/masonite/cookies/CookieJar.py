@@ -17,6 +17,9 @@ class CookieJar:
         cookies.update(self.cookies)
         return cookies
 
+    def all_added(self):
+        return self.cookies
+
     def get(self, name):
         aggregate = self.all()
         return aggregate.get(name)
@@ -56,7 +59,7 @@ class CookieJar:
 
     def render_response(self):
         cookies = []
-        for name, cookie in self.all().items():
+        for name, cookie in self.all_added().items():
             cookies.append(("Set-Cookie", cookie.render()))
 
         return cookies
