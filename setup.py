@@ -29,10 +29,13 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'inflection',
-        'pendulum>=2,<3',
-        'jinja2',
+        "inflection",
+        "pendulum>=2,<3",
+        "jinja2",
         "cleo>=0.8.1,<0.9",
+        "hupper>=1.10,<1.11"
+        "waitress>=1.4,<1.5"
+        "bcrypt>=3.2,<3.3"
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
