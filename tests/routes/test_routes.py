@@ -58,6 +58,21 @@ class TestRoutes(TestCase):
         route = router.find("/testing/group", "GET")
         self.assertTrue(route)
 
+    def test_can_make_route_group_nested(self):
+        router = RouteCapsule(
+            Route.group(
+                Route.get("/group", "TestController@show"),
+                Route.post("/login", "TestController@show"),
+                Route.group(
+                    Route.get('/api/user', "TestController@show")
+                ),
+                prefix="/testing",
+            )
+        )
+
+        route = router.find("/testing/api/user", "GET")
+        self.assertTrue(route)
+
     def test_group_naming(self):
         router = RouteCapsule(
             Route.group(

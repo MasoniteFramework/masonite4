@@ -121,16 +121,19 @@ class Route:
 
     @classmethod
     def group(self, *routes, **options):
-        for route in routes:
+        inner = []
+        for route in flatten(routes):
             if options.get("prefix"):
                 route.url = options.get("prefix") + route.url
                 route.compile_route_to_regex()
 
+            print(route.url)
             if options.get("name"):
                 route._name = options.get("name") + route._name
 
-            self.routes.append(route)
-        return self.routes
+            inner.append(route)
+        self.routes = inner
+        return inner
 
     @classmethod
     def compile(self, key, to=""):
