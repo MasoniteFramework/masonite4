@@ -77,7 +77,8 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
-                self.post_data.update(json.loads(bytes(request_body).decode("utf-8")))
+                if request_body:
+                    self.post_data.update(json.loads(bytes(request_body).decode("utf-8")))
 
     def get(self, name, default=None, clean=True, quote=True):
 
