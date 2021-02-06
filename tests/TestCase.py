@@ -7,6 +7,7 @@ from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.middleware.route.VerifyCsrfToken import VerifyCsrfToken
 from src.masonite.request import Request
+from wsgi import application
 
 import os
 import json
@@ -15,9 +16,7 @@ import io
 
 class TestCase(TestCase):
     def setUp(self):
-        self.application = Application(os.getcwd())
-        self.application.register_providers(Kernel, HttpKernel)
-        self.application.add_providers(RouteProvider)
+        self.application = application
 
         self.application.bind(
             "router",
