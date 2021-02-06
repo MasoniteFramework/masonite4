@@ -59,6 +59,11 @@ class Request:
         else:
             return self.cookie_jar.add(name, value)
 
+    def delete_cookie(self, name):
+        self.cookie_jar.delete(name)
+        print(self.cookie_jar.all())
+        return self
+
     def header(self, name, value=None):
         if value is None:
             return self.header_bag.get(name)
@@ -78,3 +83,14 @@ class Request:
             return True
 
         return False
+
+    def user(self):
+        return self._user
+
+    def set_user(self, user):
+        self._user = user
+        return self
+
+    def remove_user(self):
+        self._user = None
+        return self

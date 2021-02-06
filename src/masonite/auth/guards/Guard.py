@@ -1,5 +1,4 @@
 """A Guard Class Module."""
-from ...app import App
 from ...exceptions import DriverNotFound
 
 
@@ -7,13 +6,13 @@ class Guard:
 
     guards = {}
 
-    def __init__(self, app: App):
+    def __init__(self, application):
         """Guard Initializer
 
         Arguments:
             app {masonite.app.App} -- The Masonite container
         """
-        self.app = app
+        self.application = application
 
     def make(self, key):
         """Makes a guard that has been previously registered

@@ -9,7 +9,8 @@ class TestRoutes(TestCase):
 
     def test_can_add_routes(self):
         router = RouteCapsule(
-            Route.get("/home", "WelcomeController"), Route.post("/login", "WelcomeController")
+            Route.get("/home", "WelcomeController"),
+            Route.post("/login", "WelcomeController"),
         )
 
         self.assertEqual(len(router.routes), 2)
@@ -68,11 +69,8 @@ class TestRoutes(TestCase):
                 Route.get("/group", "WelcomeController@show"),
                 Route.post("/login", "WelcomeController@show"),
                 Route.group(
-                    Route.get('/api/user', "WelcomeController@show"),
-                    Route.group(
-                        Route.get('/api/test', None),
-                        prefix="/v1"
-                    )
+                    Route.get("/api/user", "WelcomeController@show"),
+                    Route.group(Route.get("/api/test", None), prefix="/v1"),
                 ),
                 prefix="/testing",
             )
@@ -85,7 +83,9 @@ class TestRoutes(TestCase):
 
     def test_can_make_route_group_deep_module_nested(self):
         router = RouteCapsule(
-            Route.get("/test/deep", "/tests.integrations.controllers.api.TestController@show")
+            Route.get(
+                "/test/deep", "/tests.integrations.controllers.api.TestController@show"
+            )
         )
 
         route = router.find("/test/deep", "GET")

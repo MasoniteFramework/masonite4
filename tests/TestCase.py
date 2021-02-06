@@ -6,6 +6,7 @@ from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.middleware.route.VerifyCsrfToken import VerifyCsrfToken
+from src.masonite.request import Request
 
 import os
 import json
@@ -21,9 +22,9 @@ class TestCase(TestCase):
         self.application.bind(
             "router",
             RouteCapsule(
-                Route.set_controller_module_location("tests.integrations.controllers").get(
-                    "/", "WelcomeController@show"
-                )
+                Route.set_controller_module_location(
+                    "tests.integrations.controllers"
+                ).get("/", "WelcomeController@show")
             ),
         )
 
@@ -51,6 +52,12 @@ class TestCase(TestCase):
     def patch(self, route, data=None):
         return self.fetch(route, data, method="PATCH")
 
+    def make_request(self, data={}):
+        request = Request(generate_wsgi(data))
+        request.app = self.application
+
+        self.application.bind("request", request)
+
     def fetch(self, route, data=None, method=None):
         if data is None:
             data = {}
@@ -71,6 +78,7 @@ class TestCase(TestCase):
             self.mock_start_response,
             exception_handling=False,
         )
+
         route = self.application.make("router").find(route, method)
         if route:
             return HttpTestResponse(self.application, request, response, route)

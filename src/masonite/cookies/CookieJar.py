@@ -1,6 +1,6 @@
 from .Cookie import Cookie
 
-# from ..helpers import cookie_expire_time
+from ..utils.helpers import cookie_expire_time
 
 
 class CookieJar:
@@ -36,7 +36,10 @@ class CookieJar:
             }
         )
         if name in self.cookies:
-            return self.cookies.pop(name)
+            self.cookies.pop(name)
+
+        if name in self.loaded_cookies:
+            self.loaded_cookies.pop(name)
 
     def load_cookie(self, key, value):
         self.loaded_cookies.update({key: Cookie(key, value)})

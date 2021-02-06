@@ -98,7 +98,7 @@ class HTTPRoute:
             else:
                 module = importlib.import_module("{0}".format(module_location))
 
-            print('find controller')
+            print("find controller")
             # Get the controller from the module
             self.controller_class = getattr(module, get_controller)
 
@@ -107,6 +107,7 @@ class HTTPRoute:
         except ImportError as e:
             import sys
             import traceback
+
             raise e
 
             _, _, exc_tb = sys.exc_info()

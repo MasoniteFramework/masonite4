@@ -2,23 +2,16 @@ import uuid
 
 import bcrypt
 
-from ...app import App
-from ...request import Request
-from ...drivers import AuthCookieDriver, AuthJwtDriver
-from ...helpers import config
-from ...helpers import password as bcrypt_password
-from .AuthenticationGuard import AuthenticationGuard
 
-
-class WebGuard(AuthenticationGuard):
-
-    drivers = {"cookie": AuthCookieDriver, "jwt": AuthJwtDriver}
-
-    def __init__(self, app: App, driver=None, auth_model=None):
-        self.app = app
+class WebGuard:
+    def __init__(self, application):
+        self.application = application
         self._once = False
-        self.auth_model = auth_model or config("auth.auth.guards.web.model")
-        self.driver = self.make(driver or config("auth.auth.guards.web.driver"))
+        self.model = None
+
+    def set_authentication_model(self, model):
+        self.model = model
+        return self
 
     def user(self):
         """Get the currently logged in user.
@@ -29,14 +22,17 @@ class WebGuard(AuthenticationGuard):
         Returns:
             object|bool -- Returns the current authenticated user object or False or None if there is none.
         """
-        try:
-            return self.driver.user(self.auth_model)
-        except Exception as exception:
-            raise exception
+        if self.app.make("Request").get_cookie("token") and model:
+            return (
+                model.where(
+                    "remember_token", self.app.make("Request").get_cookie("token")
+                ).first()
+                or False
+            )
 
-        return None
+        return False
 
-    def login(self, name, password):
+    def attempt(self, username, password):
         """Login the user based on the parameters provided.
 
         Arguments:
@@ -50,52 +46,13 @@ class WebGuard(AuthenticationGuard):
             object|bool -- Returns the current authenticated user object or False or None if there is none.
         """
 
-        if not isinstance(password, str):
-            raise TypeError(
-                "Cannot login with password '{}' of type: {}".format(
-                    password, type(password)
-                )
-            )
+        attempt = self.model.attempt(username, password)
 
-        auth_column = self.auth_model.get_authenticatable_column()
-
-        attempt = self.auth_model.attempt()
         if attempt:
-            self.driver.save(attempt)
+            self.application.make("request").cookie("token", attempt.remember_token)
+            return attempt
+
         return False
-
-        try:
-            # # Try to login multiple or statements if given an auth list
-            # if isinstance(auth_column, list):
-            #     model = self.auth_model.where(auth_column[0], name)
-
-            #     for authentication_column in auth_column[1:]:
-            #         model.or_where(authentication_column, name)
-
-            #     model = model.first()
-            # else:
-            #     model = self.auth_model.where(auth_column, name).first()
-
-            # MariaDB/MySQL can store the password as string
-            # while PostgreSQL can store it as bytes
-            # This is to prevent to double encode the password as bytes
-            # password_as_bytes = self._get_password_column(model)
-            # if not isinstance(password_as_bytes, bytes):
-            #     password_as_bytes = bytes(password_as_bytes or "", "utf-8")
-
-            # if model and bcrypt.checkpw(bytes(password, "utf-8"), password_as_bytes):
-            #     if not self._once:
-            #         remember_token = str(uuid.uuid4())
-            #         model.remember_token = remember_token
-            #         model.save()
-            #         self.driver.save(remember_token, model=model)
-            #     self.app.make("request").set_user(model)
-            #     return model
-
-        # except Exception as exception:
-        #     raise exception
-
-        # return False
 
     def logout(self):
         """Logout the current authenticated user.
@@ -103,8 +60,8 @@ class WebGuard(AuthenticationGuard):
         Returns:
             self
         """
-        self.driver.logout()
-        return self
+        self.application.make("request").remove_user()
+        return self.application.make("request").delete_cookie("token")
 
     def login_by_id(self, user_id):
         """Login a user by the user ID.
@@ -115,7 +72,7 @@ class WebGuard(AuthenticationGuard):
         Returns:
             object|False -- Returns the current authenticated user object or False or None if there is none.
         """
-        model = self.auth_model.find(user_id)
+        model = self.model.find(user_id)
 
         if model:
             if not self._once:
@@ -159,4 +116,4 @@ class WebGuard(AuthenticationGuard):
             user {dict} -- A dictionary of user data information.
         """
         user["password"] = bcrypt_password(user["password"])
-        return self.auth_model.create(**user)
+        return self.model.create(**user)
