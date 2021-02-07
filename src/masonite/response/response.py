@@ -193,7 +193,7 @@ class Response:
 
         return self.data()
 
-    def _get_url_from_route_name(self, name, params=None):
+    def _get_url_from_route_name(self, name, params={}):
         route = self.app.make("router").find_by_name(name)
         if not route:
             raise ValueError(f"Route with the name '{name}' not found.")
