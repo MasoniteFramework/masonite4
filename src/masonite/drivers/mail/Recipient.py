@@ -12,6 +12,7 @@ class Recipient:
                 headers.append(address)
                 continue
 
-            headers.append(f"<{address.strip()}>")
+            if address.strip():
+                headers.append(f"<{address.strip()}>")
 
         return ", ".join(headers)
