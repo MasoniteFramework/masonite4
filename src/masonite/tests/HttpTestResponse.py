@@ -20,6 +20,15 @@ class HttpTestResponse:
         assert content not in str(self.content)
         return self
 
+    def assertContainsInOrder(self, *content):
+        response_content = str(self.content)
+        index = 0
+        for content_string in content:
+            found_at_index = response_content.find(content_string, index)
+            assert found_at_index != -1
+            index = found_at_index + len(content_string)
+        return self
+
     def assertIsNamed(self, name):
         assert (
             self.route.get_name() == name
@@ -47,15 +56,44 @@ class HttpTestResponse:
     def assertOk(self):
         return self.assertIsStatus(200)
 
+    def assertCreated(self):
+        return self.assertIsStatus(201)
+
     def assertSuccessful(self):
         assert 200 <= self.response.get_status_code() < 300
         return self
 
+    def assertNoContent(self, status=204):
+        assert not str(self.response.content)
+        return self.assertIsStatus(status)
+
     def assertUnauthorized(self):
         return self.assertIsStatus(401)
 
+    def assertForbidden(self):
+        return self.assertIsStatus(403)
+
     def assertHasHeader(self, name, value=None):
-        assert self.response.hasHeader(name, value)
+        header_value = self.response.header(name)
+        assert header_value
+        if value:
+            assert value == header_value
 
     def assertHeaderMissing(self, name):
         assert not self.response.header(name)
+
+    def assertLocation(self, location):
+        return self.assertHasHeader("Location", location)
+
+    def assertRedirect(self, location=None):
+        # we could assert 301 or 302 code => what if user uses another status code in redirect()
+        # here we are sure
+        assert str(self.content) == "Redirecting ..."
+        if location:
+            self.assertLocation(location)
+        return self
+
+    def assertRedirectToRoute(self, name, params={}):
+        assert str(self.content) == "Redirecting ..."
+        location = self.response._get_url_from_route_name(name, params)
+        return self.assertLocation(location)
