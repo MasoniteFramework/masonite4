@@ -58,6 +58,12 @@ class Response:
 
         return self.header_bag.add(Header(name, value))
 
+    def hasHeader(self, name, value=None):
+        if value is None:
+            return self.header_bag.has(name)
+        else:
+            return self.header_bag.get(name) == value
+
     def get_headers(self):
         return self.header_bag.render()
 

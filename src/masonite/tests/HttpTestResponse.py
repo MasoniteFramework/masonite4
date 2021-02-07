@@ -37,8 +37,25 @@ class HttpTestResponse:
             ), f"Route name {self.route.get_name()} matches expected {name}"
         return self
 
+    def assertIsStatus(self, status):
+        assert self.response.is_status(status), f"Status is {self.response.get_status_code()}. Asserted {status}"
+        return self
+
     def assertNotFound(self):
         return self.assertIsStatus(404)
 
-    def assertIsStatus(self, status):
-        pass
+    def assertOk(self):
+        return self.assertIsStatus(200)
+
+    def assertSuccessful(self):
+        assert 200 <= self.response.get_status_code() < 300
+        return self
+
+    def assertUnauthorized(self):
+        return self.assertIsStatus(401)
+
+    def assertHasHeader(self, name, value=None):
+        assert self.response.hasHeader(name, value)
+
+    def assertHeaderMissing(self, name):
+        assert not self.response.header(name)

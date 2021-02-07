@@ -18,6 +18,9 @@ class HeaderBag:
     def get(self, name):
         return self.bag.get(self.convert_name(name), "")
 
+    def has(self, name):
+        return self.convert_name(name) in self.bag
+
     def render(self):
         response = []
         for name, header in self.bag.items():

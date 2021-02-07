@@ -15,6 +15,8 @@ class TestTesting(TestCase):
         self.get("/test").assertIsNamed("test")
         self.get("/test").assertIsNotNamed("welcome")
 
-    def test_named_route(self):
-        self.get("/test").assertIsNamed("test")
-        self.get("/test").assertIsNotNamed("welcome")
+    def test_nonexisting_route(self):
+        self.get("/test-non-existing-route").assertNotFound()
+
+    def test_route_status(self):
+        self.get("/test").assertIsStatus(200)
