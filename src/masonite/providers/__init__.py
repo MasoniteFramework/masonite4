@@ -5,3 +5,4 @@ from .WhitenoiseProvider import WhitenoiseProvider
 from .ExceptionProvider import ExceptionProvider
 from .AuthenticationProvider import AuthenticationProvider
 from .Provider import Provider
+from .MailProvider import MailProvider

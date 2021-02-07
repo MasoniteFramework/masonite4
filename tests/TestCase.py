@@ -7,6 +7,8 @@ from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.middleware.route.VerifyCsrfToken import VerifyCsrfToken
 from src.masonite.request import Request
+from src.masonite.environment import LoadEnvironment
+from unittest.mock import MagicMock
 
 import os
 import json
@@ -15,16 +17,20 @@ import io
 
 class TestCase(TestCase):
     def setUp(self):
-        self.application = Application(os.getcwd())
-        self.application.register_providers(Kernel, HttpKernel)
-        self.application.add_providers(RouteProvider)
+        LoadEnvironment("testing")
+        from wsgi import application
+
+        self.application = application
 
         self.application.bind(
             "router",
             RouteCapsule(
                 Route.set_controller_module_location(
                     "tests.integrations.controllers"
-                ).get("/", "WelcomeController@show")
+                ).get("/", "WelcomeController@show"),
+                Route.set_controller_module_location(
+                    "tests.integrations.controllers"
+                ).post("/", "WelcomeController@show"),
             ),
         )
 
@@ -86,3 +92,8 @@ class TestCase(TestCase):
 
     def mock_start_response(self, *args, **kwargs):
         pass
+
+    def fake(self, binding):
+        mock = MagicMock(self.application.make(binding))
+        self.application.bind(binding, mock)
+        return mock
