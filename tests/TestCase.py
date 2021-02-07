@@ -112,6 +112,6 @@ class TestCase(TestCase):
         # in test should be able to login whatever the user password is
         # also we should not assume that the user model email is email..
         self.make_request()
-        self.application.make("auth").guard("web").attempt(
-            user.email, user.password
+        self.application.make("auth").guard("web").login_by_id(
+            user.get_primary_key_value()
         )

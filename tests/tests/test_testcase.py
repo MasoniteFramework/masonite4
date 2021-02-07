@@ -1,5 +1,13 @@
 from tests import TestCase
+from masoniteorm.models import Model
 from src.masonite.routes import Route
+from src.masonite.auth import Authenticates
+from src.masonite.auth import Auth
+from src.masonite.auth.guards import WebGuard
+
+
+class User(Model, Authenticates):
+    pass
 
 
 class TestTesting(TestCase):
@@ -21,6 +29,10 @@ class TestTesting(TestCase):
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
         )
+        # maybe this should be registered directly in base test case
+        auth = Auth(self.application).set_authentication_model(User())
+        auth.set_guard("web", WebGuard(self.application))
+        self.application.bind("auth", auth)
 
     def test_assert_contains(self):
         self.get("/").assertContains("welcome")
@@ -121,3 +133,19 @@ class TestTesting(TestCase):
 
         with self.assertRaises(AssertionError):
             self.get("/view-context").assertViewMissing("users")
+
+    def test_assert_guest(self):
+        self.get("/test").assertGuest()
+
+    def test_assert_authenticated(self):
+        self.application.make("auth").guard("web").attempt(
+            "idmann509@gmail.com", "secret"
+        )
+        self.get("/test").assertAuthenticated()
+
+    def test_assert_authenticated_as(self):
+        self.application.make("auth").guard("web").attempt(
+            "idmann509@gmail.com", "secret"
+        )
+        user = User.find(1)
+        self.get("/test").assertAuthenticatedAs(user)

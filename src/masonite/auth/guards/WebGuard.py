@@ -22,10 +22,10 @@ class WebGuard:
         Returns:
             object|bool -- Returns the current authenticated user object or False or None if there is none.
         """
-        if self.app.make("Request").get_cookie("token") and model:
+        if self.application.make("request").cookie("token") and model:
             return (
                 model.where(
-                    "remember_token", self.app.make("Request").get_cookie("token")
+                    "remember_token", self.application.make("request").cookie("token")
                 ).first()
                 or False
             )

@@ -174,9 +174,15 @@ class HttpTestResponse:
         assert key not in self.response.original.dictionary
         return self
 
-
     def assertAuthenticated(self):
-        pass
+        assert self.application.make("auth").guard("web").user()
+        return self
+
+    def assertGuest(self):
+        assert not self.application.make("auth").guard("web").user()
+        return self
 
     def assertAuthenticatedAs(self, user):
-        pass
+        user = self.application.make("auth").guard("web").user()
+        assert user == user
+        return self
