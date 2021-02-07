@@ -245,4 +245,3 @@ class Responsable:
         raise NotImplementedError(
             "This class does not implement a 'get_response()' method"
         )
-
