@@ -1,6 +1,6 @@
 from src.masonite.controllers import Controller
 from src.masonite.views import View
-from src.masonite.mail import Mailable
+from src.masonite.mail import Mailable, Mail
 
 
 class Welcome(Mailable):
@@ -15,5 +15,5 @@ class Welcome(Mailable):
 
 
 class MailableController(Controller):
-    def view(self):
-        return Welcome()
+    def view(self, mail: Mail):
+        mail.mailable(Welcome()).send(driver="mailgun")

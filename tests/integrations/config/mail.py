@@ -10,7 +10,7 @@ DRIVERS = {
         "password": os.getenv("MAIL_PASSWORD"),
     },
     "mailgun": {
-        "domain": "mg.masonitecasts.com",
-        "secret": "key-041b279f01997633ffffaf40e064e0c3",
+        "domain": os.getenv("MAILGUN_DOMAIN"),
+        "secret": os.getenv("MAILGUN_SECRET"),
     },
 }
