@@ -30,8 +30,7 @@ class TestMailable(TestCase):
         self.assertEqual(mailable.get("reply_to"), "")
 
     def test_attach(self):
-        mailable = Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf")
-        self.application.make("mail").mailable(mailable)
+        self.assertTrue(len(Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf").build().get_options().get('attachments')) == 1)
 
     def test_recipient(self):
         to = Recipient("idmann509@gmail.com, joe@masoniteproject.com")
