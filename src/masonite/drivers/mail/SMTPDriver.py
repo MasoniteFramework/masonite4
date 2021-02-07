@@ -1,5 +1,6 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from .Recipient import Recipient
 
@@ -23,11 +24,18 @@ class SMTPDriver:
         if self.options.get("reply_to"):
             message["Reply-To"] = Recipient(self.options.get("reply_to")).header()
 
-        if self.options.get('html_content'):
-            message.attach(MIMEText(self.options.get('html_content'), "html"))
+        if self.options.get("html_content"):
+            message.attach(MIMEText(self.options.get("html_content"), "html"))
 
-        if self.options.get('text_content'):
-            message.attach(MIMEText(self.options.get('text_content'), "plain"))
+        if self.options.get("text_content"):
+            message.attach(MIMEText(self.options.get("text_content"), "plain"))
+
+        for attachment in self.options.get("attachments", []):
+            with open(attachment.path, "rb") as fil:
+                part = MIMEApplication(fil.read(), Name=attachment.alias)
+            # After the file is closed
+            part["Content-Disposition"] = f"attachment; filename={attachment.alias}"
+            message.attach(part)
 
         return message
 

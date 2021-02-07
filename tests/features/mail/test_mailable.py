@@ -29,12 +29,35 @@ class TestMailable(TestCase):
         self.assertEqual(mailable.get("html_content"), "<h1>Hello from Masonite!</h1>")
         self.assertEqual(mailable.get("reply_to"), "")
 
+    def test_attach(self):
+        mailable = Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf")
+        self.application.make("mail").mailable(mailable)
+
     def test_recipient(self):
         to = Recipient("idmann509@gmail.com, joe@masoniteproject.com")
         self.assertEqual(
             to.header(), "<idmann509@gmail.com>, <joe@masoniteproject.com>"
         )
         to = Recipient("Joseph Mancuso <idmann509@gmail.com>, joe@masoniteproject.com")
+        self.assertEqual(
+            to.header(),
+            "Joseph Mancuso <idmann509@gmail.com>, <joe@masoniteproject.com>",
+        )
+
+    def test_recipient(self):
+        to = Recipient("idmann509@gmail.com, joe@masoniteproject.com")
+        self.assertEqual(
+            to.header(), "<idmann509@gmail.com>, <joe@masoniteproject.com>"
+        )
+        to = Recipient("Joseph Mancuso <idmann509@gmail.com>, joe@masoniteproject.com")
+        self.assertEqual(
+            to.header(),
+            "Joseph Mancuso <idmann509@gmail.com>, <joe@masoniteproject.com>",
+        )
+
+        to = Recipient(
+            ["Joseph Mancuso <idmann509@gmail.com>", "joe@masoniteproject.com"]
+        )
         self.assertEqual(
             to.header(),
             "Joseph Mancuso <idmann509@gmail.com>, <joe@masoniteproject.com>",

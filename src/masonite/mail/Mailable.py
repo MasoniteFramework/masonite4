@@ -1,3 +1,6 @@
+from .MessageAttachment import MessageAttachment
+
+
 class Mailable:
     def __init__(self):
         self._to = ""
@@ -6,6 +9,7 @@ class Mailable:
         self._subject = ""
         self.text_content = ""
         self.html_content = ""
+        self.attachments = []
 
     def to(self, to):
         self._to = to
@@ -15,8 +19,9 @@ class Mailable:
         self._from = _from
         return self
 
-    # def attach(self, name, attachment):
-    #     pass
+    def attach(self, name, path):
+        self.attachments.append(MessageAttachment(name, path))
+        return self
 
     def reply_to(self, reply_to):
         self._reply_to = reply_to
@@ -46,4 +51,5 @@ class Mailable:
             "text_content": self.text_content,
             "html_content": self.html_content,
             "reply_to": self._reply_to,
+            "attachments": self.attachments,
         }
