@@ -73,7 +73,7 @@ class TestCase(TestCase):
         data.update({"__token": token})
         wsgi_request = generate_wsgi(
             {
-                "HTTP_COOKIE": f"SESSID=cookie; csrf_token={token}",
+                "HTTP_COOKIE": f"SESSID={token}; csrf_token={token}",
                 "CONTENT_LENGTH": len(str(json.dumps(data))),
                 "REQUEST_METHOD": method,
                 "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),

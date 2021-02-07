@@ -49,15 +49,19 @@ class Request:
         return self.input_bag.get(name, default=default, clean=clean, quote=quote)
 
     def cookie(self, name, value=None, encrypt=True):
-
-        if value and encrypt:
+        if encrypt and value:
             value = self.app.make("sign").sign(value)
-        if value is None:
+        elif encrypt and value is None:
+            cookie = self.cookie_jar.get(name)
+            if not cookie:
+                return
+            cookie = cookie.value
+            return self.app.make("sign").unsign(cookie)
+        elif value is None:
             if self.cookie_jar.exists(name):
                 return self.cookie_jar.get(name).value
-            return None
-        else:
-            return self.cookie_jar.add(name, value)
+            return
+        return self.cookie_jar.add(name, value)
 
     def delete_cookie(self, name):
         self.cookie_jar.delete(name)

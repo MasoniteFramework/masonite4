@@ -6,6 +6,7 @@ from src.masonite.providers import (
     WhitenoiseProvider,
     ExceptionProvider,
     MailProvider,
+    SessionProvider,
 )
 
 
@@ -16,4 +17,5 @@ PROVIDERS = [
     WhitenoiseProvider,
     ExceptionProvider,
     MailProvider,
+    SessionProvider,
 ]

@@ -11,6 +11,7 @@ class VerifyCsrfToken(Middleware):
     exempt = []
 
     def before(self, request, response):
+
         self.verify_token(request, self.get_token(request))
 
         token = self.create_token(request)
@@ -34,10 +35,11 @@ class VerifyCsrfToken(Middleware):
         return request.cookie("SESSID")
 
     def verify_token(self, request, token):
+        print("ttt", token)
         if request.is_not_safe() and not self.in_exempt():
             if request.cookie("csrf_token") and (
                 compare_digest(
-                    request.app.make("sign").unsign(request.cookie("csrf_token")),
+                    request.cookie("csrf_token"),
                     request.app.make("sign").unsign(token),
                 )
                 and compare_digest(

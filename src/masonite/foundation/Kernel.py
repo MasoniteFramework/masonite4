@@ -25,6 +25,7 @@ class Kernel:
 
     def set_framework_options(self):
         self.application.bind("config.mail", "tests.integrations.config.mail")
+        self.application.bind("config.session", "tests.integrations.config.session")
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
