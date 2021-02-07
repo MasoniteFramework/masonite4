@@ -39,3 +39,16 @@ class TestTesting(TestCase):
 
     def test_assert_forbidden(self):
         self.get("/test-forbidden").assertForbidden()
+
+    def test_assert_cookie(self):
+        self.with_cookies({"test": "value"}).get("/").assertCookie("test")
+
+    def test_assert_cookie_value(self):
+        self.with_cookies({"test": "value"}).get("/").assertCookie("test", "value")
+
+    def test_assert_cookie_missing(self):
+        self.get("/").assertCookieMissing("test")
+
+    def test_assert_plain_cookie(self):
+        # for now test cookies are not encrypted
+        self.with_cookies({"test": "value"}).get("/").assertPlainCookie("test")

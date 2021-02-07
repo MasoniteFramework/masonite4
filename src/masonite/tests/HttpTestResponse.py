@@ -7,7 +7,6 @@ class HttpTestResponse:
         self.content = None
         self.status = None
         self.get_response()
-        import pdb;pdb.set_trace()
 
     def get_response(self):
         self.content = self.response.get_response_content()
@@ -100,12 +99,12 @@ class HttpTestResponse:
     def assertCookie(self, name, value=None):
         assert self.request.cookie_jar.exists(name)
         if value is not None:
-            assert self.cookie_jar.get(name).value == value
+            assert self.request.cookie_jar.get(name).value == value
         return self
 
     def assertPlainCookie(self, name):
         assert self.request.cookie_jar.exists(name)
-        assert self.cookie_jar.get(name).secure
+        assert not self.request.cookie_jar.get(name).secure
         return self
 
     def assertCookieExpired(self, name):

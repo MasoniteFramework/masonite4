@@ -27,6 +27,7 @@ class TestCase(TestCase):
                 ).get("/", "WelcomeController@show")
             ),
         )
+        self._test_cookies = {}
 
     def addRoutes(self, *routes):
         self.application.make("router").add(*routes)
@@ -57,6 +58,7 @@ class TestCase(TestCase):
         request.app = self.application
 
         self.application.bind("request", request)
+        return request
 
     def fetch(self, route, data=None, method=None):
         if data is None:
@@ -78,7 +80,10 @@ class TestCase(TestCase):
             self.mock_start_response,
             exception_handling=False,
         )
-        import pdb;pdb.set_trace()
+        # add eventual test  (not encrypted to be able to assert value ?)
+        for name, value in self._test_cookies.items():
+            request.cookie(name, value, encrypt=False)
+
         route = self.application.make("router").find(route, method)
         if route:
             return HttpTestResponse(self.application, request, response, route)
@@ -86,3 +91,11 @@ class TestCase(TestCase):
 
     def mock_start_response(self, *args, **kwargs):
         pass
+
+    def with_cookies(self, cookies_dict):
+        # request = self.make_request()
+        # for name, value in cookies_dict.items():
+        #     request.cookie(name, value)
+        # return self
+        self._test_cookies = cookies_dict
+        return self
