@@ -3,6 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from .Recipient import Recipient
+import ssl
 
 
 class SMTPDriver:
@@ -33,7 +34,7 @@ class SMTPDriver:
         for attachment in self.options.get("attachments", []):
             with open(attachment.path, "rb") as fil:
                 part = MIMEApplication(fil.read(), Name=attachment.alias)
-            # After the file is closed
+
             part["Content-Disposition"] = f"attachment; filename={attachment.alias}"
             message.attach(part)
 
@@ -41,7 +42,22 @@ class SMTPDriver:
 
     def make_connection(self):
         options = self.options
-        smtp = smtplib.SMTP("{0}:{1}".format(options["host"], int(options["port"])))
+        if options.get('ssl'):
+            smtp = smtplib.SMTP_SSL(
+                "{0}:{1}".format(options["host"], options["port"])
+            )
+        else:
+            smtp = smtplib.SMTP("{0}:{1}".format(options["host"], int(options["port"])))
+
+        if options.get('tls'):
+            context = ssl.create_default_context()
+            context.check_hostname = False
+
+            # Check if correct response code for starttls is received from the server
+            if smtp.starttls(context=context)[0] != 220:
+                raise smtplib.SMTPNotSupportedError(
+                    "Server is using untrusted protocol."
+                )
 
         if options.get("username") and options.get("password"):
             smtp.login(options.get("username"), options.get("password"))
@@ -50,5 +66,4 @@ class SMTPDriver:
 
     def send(self):
         smtp = self.make_connection()
-
         smtp.send_message(self.get_mime_message())

@@ -21,7 +21,7 @@ class Mail:
         return self.drivers[name]
 
     def get_config_options(self):
-        return self.driver_config.get(self.driver, {})
+        return self.driver_config.get(self._driver, {})
 
     def mailable(self, mailable):
         options = mailable.set_application(self.application).build().get_options()
@@ -30,4 +30,4 @@ class Mail:
         return self
 
     def send(self):
-        return self.get_driver(self._driver).set_options(self.options)
+        return self.get_driver(self._driver).set_options(self.options).send()
