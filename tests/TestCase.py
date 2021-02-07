@@ -5,7 +5,6 @@ from src.masonite.routes import Route, RouteCapsule
 from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
-from src.masonite.middleware.route.VerifyCsrfToken import VerifyCsrfToken
 from src.masonite.request import Request
 
 import os
@@ -28,6 +27,7 @@ class TestCase(TestCase):
             ),
         )
         self._test_cookies = {}
+        self._test_headers = {}
 
     def addRoutes(self, *routes):
         self.application.make("router").add(*routes)
@@ -80,9 +80,12 @@ class TestCase(TestCase):
             self.mock_start_response,
             exception_handling=False,
         )
-        # add eventual test  (not encrypted to be able to assert value ?)
+        # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():
             request.cookie(name, value, encrypt=False)
+        # add eventual headers added inside the test (not encrypted to be able to assert value ?)
+        for name, value in self._test_headers.items():
+            request.header(name, value)
 
         route = self.application.make("router").find(route, method)
         if route:
@@ -98,4 +101,8 @@ class TestCase(TestCase):
         #     request.cookie(name, value)
         # return self
         self._test_cookies = cookies_dict
+        return self
+
+    def with_headers(self, headers_dict):
+        self._test_headers = headers_dict
         return self

@@ -52,3 +52,13 @@ class TestTesting(TestCase):
     def test_assert_plain_cookie(self):
         # for now test cookies are not encrypted
         self.with_cookies({"test": "value"}).get("/").assertPlainCookie("test")
+
+    def test_assert_has_header(self):
+        pass
+
+    def test_assert_header_missing(self):
+        self.get("/").assertHeaderMissing("X-Test")
+
+    def test_assert_request_with_headers(self):
+        request = self.with_headers({"X-TEST": "value"}).get("/").request
+        assert request.header("X-Test").value == "value"
