@@ -15,6 +15,15 @@ class Welcome(Mailable):
         )
 
 
+class ViewMailable(Mailable):
+    def build(self):
+        return (
+            self.to("idmann509@gmail.com")
+            .subject("Masonite 4")
+            .view("mailables.welcome", {})
+        )
+
+
 class TestMailable(TestCase):
     def setUp(self):
         super().setUp()
@@ -29,8 +38,23 @@ class TestMailable(TestCase):
         self.assertEqual(mailable.get("html_content"), "<h1>Hello from Masonite!</h1>")
         self.assertEqual(mailable.get("reply_to"), "")
 
+    def test_build_mailable_view(self):
+        mailable = (
+            ViewMailable().set_application(self.application).build().get_options()
+        )
+        self.assertEqual(mailable.get("html_content"), "<h1>Welcome Email</h1>")
+
     def test_attach(self):
-        self.assertTrue(len(Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf").build().get_options().get('attachments')) == 1)
+        self.assertTrue(
+            len(
+                Welcome()
+                .attach("invoice", "tests/integrations/storage/invoice.pdf")
+                .build()
+                .get_options()
+                .get("attachments")
+            )
+            == 1
+        )
 
     def test_recipient(self):
         to = Recipient("idmann509@gmail.com, joe@masoniteproject.com")

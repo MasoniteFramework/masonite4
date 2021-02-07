@@ -18,6 +18,6 @@ class Mail:
         return self.driver_config.get("smtp", {})
 
     def mailable(self, mailable):
-        options = mailable.build().get_options()
+        options = mailable.set_application(self.application).build().get_options()
         options.update(self.get_config_options())
         return self.driver("smtp").set_options(options).send()

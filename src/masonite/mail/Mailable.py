@@ -15,6 +15,10 @@ class Mailable:
         self._to = to
         return self
 
+    def set_application(self, application):
+        self.application = application
+        return self
+
     def from_(self, _from):
         self._from = _from
         return self
@@ -39,9 +43,10 @@ class Mailable:
         self.html_content = content
         return self
 
-    def view(self, content, data):
-        self.html_content = content
-        return self
+    def view(self, view, data):
+        return self.html(
+            self.application.make("view").render(view, data).rendered_template
+        )
 
     def get_options(self):
         return {
@@ -53,3 +58,6 @@ class Mailable:
             "reply_to": self._reply_to,
             "attachments": self.attachments,
         }
+
+    def build(self, *args, **kwargs):
+        return self
