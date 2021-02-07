@@ -1,9 +1,6 @@
-from ..foundation import response_handler
-from ..request import Request
-from ..response import Response
 from .Provider import Provider
 from ..mail import Mail
-from ..drivers.mail import SMTPDriver, MailgunDriver, TerminalDriver
+from ..drivers.mail import SMTPDriver, TerminalDriver, MailgunDriver
 from ..utils.structures import config, load
 
 
