@@ -43,6 +43,8 @@ class TestMailable(TestCase):
             ViewMailable().set_application(self.application).build().get_options()
         )
         self.assertEqual(mailable.get("html_content"), "<h1>Welcome Email</h1>")
+        mailable = ViewMailable().set_application(self.application).get_response()
+        self.assertEqual(mailable, "<h1>Welcome Email</h1>")
 
     def test_attach(self):
         self.assertTrue(

@@ -18,5 +18,6 @@ class Welcome(Mailable):
 
 class TestSMTPDriver(TestCase):
     def test_send_mailable(self):
-        if os.getenv("RUN_MAIL") == True:
-            self.application.make("mail").mailable(Welcome())
+        if os.getenv("RUN_MAIL") == "True":
+            self.application.make("mail").mailable(Welcome()).send()
+        

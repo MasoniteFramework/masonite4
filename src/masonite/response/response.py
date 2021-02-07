@@ -151,7 +151,7 @@ class Response:
             return self.json(view.serialize(), status=self.get_status_code())
         elif isinstance(view, int):
             view = str(view)
-        elif isinstance(view, Responsable):
+        elif hasattr(view, "get_response"):
             view = view.get_response()
         elif view is None:
             raise ResponseError(
