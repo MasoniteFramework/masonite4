@@ -61,7 +61,6 @@ class Request:
 
     def delete_cookie(self, name):
         self.cookie_jar.delete(name)
-        print(self.cookie_jar.all())
         return self
 
     def header(self, name, value=None):
