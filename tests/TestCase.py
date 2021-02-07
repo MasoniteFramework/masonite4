@@ -28,8 +28,8 @@ class TestCase(TestCase):
             ),
         )
 
-    def addRoutes(self, routes):
-        self.application.make("router").add(routes)
+    def addRoutes(self, *routes):
+        self.application.make("router").add(*routes)
         return self
 
     def withCsrf(self):

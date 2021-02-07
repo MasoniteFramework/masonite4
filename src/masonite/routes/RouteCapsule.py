@@ -25,4 +25,4 @@ class RouteCapsule:
         return self
 
     def add(self, *routes):
-        self.routes.append(*routes)
+        self.routes.extend(routes)
