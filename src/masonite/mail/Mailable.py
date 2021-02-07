@@ -50,10 +50,10 @@ class Mailable:
 
     def get_response(self):
         self.build()
-        if self.get_options().get('html_content'):
-            return self.get_options().get('html_content')
-        if self.get_options().get('text_content'):
-            return self.get_options().get('text_content')
+        if self.get_options().get("html_content"):
+            return self.get_options().get("html_content")
+        if self.get_options().get("text_content"):
+            return self.get_options().get("text_content")
 
     def get_options(self):
         return {
