@@ -54,7 +54,10 @@ class Response:
             for name, value in name.items():
                 self.header_bag.add(Header(name, value))
         elif value is None:
-            return self.header_bag.get(name)
+            header = self.header_bag.get(name)
+            if isinstance(header, str):
+                return header
+            return header.value
 
         return self.header_bag.add(Header(name, value))
 
@@ -207,69 +210,23 @@ class Response:
         """
         return self.converted_data()
 
-
-class Responsable:
-    def get_response(self):
-        raise NotImplementedError(
-            "This class does not implement a 'get_response()' method"
-        )
-
-
-class Download(Responsable):
-    """Download class to help show files in the browser or force
-        a download for the client browser.
-
-    Arguments:
-        location {string} -- The path you want to download.
-
-    Keyword Arguments:
-        force {bool} -- Whether you want the client's browser to force the file download (default: {False})
-        name {str} -- The name you want the file to be called when downloaded (default: {'profile.jpg'})
-    """
-
-    def __init__(self, location, force=False, name="1"):
-        self.location = location
-        self._force = force
-        self.name = name
-        self.container = None
-
-    def force(self):
-        """Sets the force option.
-
-        Returns:
-            self
-        """
-        self._force = True
-        return self
-
-    def get_response(self):
-        """Handles the way the response should be handled by the server.
-
-        Returns:
-            bytes - Returns bytes required for the server to handle the download.
-        """
-        if not self.container:
-            from wsgi import container
-
-            self.container = container
-
-        response = self.container.make(Response)
-
-        with open(self.location, "rb") as filelike:
-            data = filelike.read()
-
-        if self._force:
-            response.header("Content-Type", "application/octet-stream")
-            response.header(
+    def download(self, name, location, force=False):
+        if force:
+            self.header("Content-Type", "application/octet-stream")
+            self.header(
                 "Content-Disposition",
-                'attachment; filename="{}{}"'.format(
-                    self.name, self.extension(self.location)
-                ),
+                'attachment; filename="{}{}"'.format(name, self.extension(location)),
             )
         else:
-            response.header("Content-Type", self.mimetype(self.location))
+            self.header("Content-Type", self.mimetype(location))
 
-        return data
+        with open(location, "rb") as filelike:
+            data = filelike.read()
+
+        return self.view(data)
+
+    def extension(self, path):
+        return Path(path).suffix
 
     def mimetype(self, path):
         """Gets the mimetime of a path
@@ -281,6 +238,3 @@ class Download(Responsable):
             string -- The mimetype for use in headers
         """
         return mimetypes.guess_type(path)[0]
-
-    def extension(self, path):
-        return Path(path).suffix
