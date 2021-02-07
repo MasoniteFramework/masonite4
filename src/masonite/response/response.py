@@ -238,10 +238,3 @@ class Response:
             string -- The mimetype for use in headers
         """
         return mimetypes.guess_type(path)[0]
-
-
-class Responsable:
-    def get_response(self):
-        raise NotImplementedError(
-            "This class does not implement a 'get_response()' method"
-        )
