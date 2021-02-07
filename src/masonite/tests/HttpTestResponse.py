@@ -103,6 +103,11 @@ class HttpTestResponse:
             assert self.cookie_jar.get(name).value == value
         return self
 
+    def assertPlainCookie(self, name):
+        assert self.request.cookie_jar.exists(name)
+        assert self.cookie_jar.get(name).secure
+        return self
+
     def assertCookieExpired(self, name):
         self.assertCookie(name)
         assert self.request.cookie_jar.is_expired(name)

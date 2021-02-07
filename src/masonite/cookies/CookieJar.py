@@ -1,3 +1,4 @@
+import pendulum
 from .Cookie import Cookie
 
 from ..utils.helpers import cookie_expire_time
@@ -29,8 +30,7 @@ class CookieJar:
 
     def is_expired(self, name):
         cookie = self.get(name)
-        # TODO: compare cookie.expires to now
-        return
+        return cookie.expires < pendulum.now()
 
     def delete(self, name):
         self.deleted_cookies.update(
