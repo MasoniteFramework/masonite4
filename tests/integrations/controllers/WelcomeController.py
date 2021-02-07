@@ -1,5 +1,6 @@
 from src.masonite.controllers import Controller
 from src.masonite.views import View
+from src.masonite.response.response import Response
 
 
 class WelcomeController(Controller):
@@ -26,3 +27,17 @@ class WelcomeController(Controller):
 
     def empty(self, view: View):
         return view("", status=204)
+
+    def redirect_url(self, response: Response):
+        return response.redirect("/")
+
+    def redirect_route(self, response: Response):
+        return response.redirect(name="test")
+
+    def redirect_route_params(self, response: Response):
+        return response.redirect(name="test_params", params={"id": 1})
+
+    def response_with_headers(self, response: Response):
+        response.header('TEST', "value")
+        response.header('TEST2', "value2")
+        return

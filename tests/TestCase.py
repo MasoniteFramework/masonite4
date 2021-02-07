@@ -96,6 +96,7 @@ class TestCase(TestCase):
         pass
 
     def with_cookies(self, cookies_dict):
+        # can't do below because request has not been generated at this step
         # request = self.make_request()
         # for name, value in cookies_dict.items():
         #     request.cookie(name, value)

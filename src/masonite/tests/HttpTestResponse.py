@@ -119,3 +119,17 @@ class HttpTestResponse:
         assert not self.request.cookie_jar.exists(name)
         return self
 
+    def assertSessionHas(self, key, value=None):
+        # how to get session ?
+        session = None
+        session_value = session.get(key)
+        assert session_value
+        if value is not None:
+            assert session_value == value
+        return self
+
+    def assertSessionMissing(self, key):
+        # how to get session ?
+        session = None
+        assert not session.get(key)
+        return self

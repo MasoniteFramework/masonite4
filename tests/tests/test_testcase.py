@@ -12,6 +12,11 @@ class TestTesting(TestCase):
             Route.get("/test-unauthorized", "WelcomeController@unauthorized").name("unauthorized"),
             Route.get("/test-forbidden", "WelcomeController@forbidden").name("forbidden"),
             Route.get("/test-empty", "WelcomeController@empty").name("empty"),
+            Route.get("/test-response-header", "WelcomeController@response_with_headers"),
+            Route.get("/test-redirect-1", "WelcomeController@redirect_url"),
+            Route.get("/test-redirect-2", "WelcomeController@redirect_route"),
+            Route.get("/test-redirect-3", "WelcomeController@redirect_route_with_params"),
+            Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
         )
 
     def test_assert_contains(self):
@@ -34,11 +39,14 @@ class TestTesting(TestCase):
     def test_assert_created(self):
         self.get("/test-creation").assertCreated()
 
-    def test_assert_created(self):
+    def test_assert_unauthorized(self):
         self.get("/test-unauthorized").assertUnauthorized()
 
     def test_assert_forbidden(self):
         self.get("/test-forbidden").assertForbidden()
+
+    def test_assert_no_content(self):
+        self.get("/test-empty").assertNoContent()
 
     def test_assert_cookie(self):
         self.with_cookies({"test": "value"}).get("/").assertCookie("test")
@@ -54,7 +62,8 @@ class TestTesting(TestCase):
         self.with_cookies({"test": "value"}).get("/").assertPlainCookie("test")
 
     def test_assert_has_header(self):
-        pass
+        self.get("/test-response-header").assertHasHeader("TEST")
+        self.get("/test-response-header").assertHasHeader("TEST", "value")
 
     def test_assert_header_missing(self):
         self.get("/").assertHeaderMissing("X-Test")
@@ -62,3 +71,13 @@ class TestTesting(TestCase):
     def test_assert_request_with_headers(self):
         request = self.with_headers({"X-TEST": "value"}).get("/").request
         assert request.header("X-Test").value == "value"
+
+    def test_assert_redirect_to_url(self):
+        self.get("/test-redirect-1").assertRedirect("/")
+
+    def test_assert_redirect_to_route(self):
+        self.get("/test-redirect-2").assertRedirect(name="test")
+        self.get("/test-redirect-3").assertRedirect(name="test", params={"id": 1})
+
+    def test_assert_session_has(self):
+        self.get("/").assertSessionHas("testkey")
