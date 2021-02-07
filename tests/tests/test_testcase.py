@@ -52,17 +52,17 @@ class TestTesting(TestCase):
         self.get("/test-empty").assertNoContent()
 
     def test_assert_cookie(self):
-        self.with_cookies({"test": "value"}).get("/").assertCookie("test")
+        self.withCookies({"test": "value"}).get("/").assertCookie("test")
 
     def test_assert_cookie_value(self):
-        self.with_cookies({"test": "value"}).get("/").assertCookie("test", "value")
+        self.withCookies({"test": "value"}).get("/").assertCookie("test", "value")
 
     def test_assert_cookie_missing(self):
         self.get("/").assertCookieMissing("test")
 
     def test_assert_plain_cookie(self):
         # for now test cookies are not encrypted
-        self.with_cookies({"test": "value"}).get("/").assertPlainCookie("test")
+        self.withCookies({"test": "value"}).get("/").assertPlainCookie("test")
 
     def test_assert_has_header(self):
         self.get("/test-response-header").assertHasHeader("TEST")
@@ -72,7 +72,7 @@ class TestTesting(TestCase):
         self.get("/").assertHeaderMissing("X-Test")
 
     def test_assert_request_with_headers(self):
-        request = self.with_headers({"X-TEST": "value"}).get("/").request
+        request = self.withHeaders({"X-TEST": "value"}).get("/").request
         assert request.header("X-Test").value == "value"
 
     def test_assert_redirect_to_url(self):

@@ -173,3 +173,10 @@ class HttpTestResponse:
         self._ensure_response_has_view()
         assert key not in self.response.original.dictionary
         return self
+
+
+    def assertAuthenticated(self):
+        pass
+
+    def assertAuthenticatedAs(self, user):
+        pass

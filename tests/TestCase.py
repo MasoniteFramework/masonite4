@@ -95,7 +95,7 @@ class TestCase(TestCase):
     def mock_start_response(self, *args, **kwargs):
         pass
 
-    def with_cookies(self, cookies_dict):
+    def withCookies(self, cookies_dict):
         # can't do below because request has not been generated at this step
         # request = self.make_request()
         # for name, value in cookies_dict.items():
@@ -104,6 +104,14 @@ class TestCase(TestCase):
         self._test_cookies = cookies_dict
         return self
 
-    def with_headers(self, headers_dict):
+    def withHeaders(self, headers_dict):
         self._test_headers = headers_dict
         return self
+
+    def actingAs(self, user):
+        # in test should be able to login whatever the user password is
+        # also we should not assume that the user model email is email..
+        self.make_request()
+        self.application.make("auth").guard("web").attempt(
+            user.email, user.password
+        )
