@@ -1,3 +1,6 @@
+from src.masonite.views import View
+
+
 class HttpTestResponse:
     def __init__(self, application, request, response, route):
         self.application = application
@@ -132,4 +135,41 @@ class HttpTestResponse:
         # how to get session ?
         session = None
         assert not session.get(key)
+        return self
+
+    def _ensure_response_has_view(self):
+        """Ensure that the response has a view as its original content."""
+        if not (self.response.original and isinstance(self.response.original, View)):
+            raise ValueError("The response is not a view")
+
+    def assertViewIs(self, name):
+        """Assert that request renders the given view name."""
+        self._ensure_response_has_view()
+        assert self.response.original.template == name
+        return self
+
+    def assertViewHas(self, key, value=None):
+        """Assert that view context contains a given data key (and eventually associated value)."""
+        self._ensure_response_has_view()
+        assert key in self.response.original.dictionary
+        if value:
+            assert self.response.original.dictionary[key] == value
+        return self
+
+    def assertViewHasAll(self, keys):
+        """Assert that view context contains exactly the data keys (or the complete data dict)."""
+        self._ensure_response_has_view()
+        if isinstance(keys, list):
+            assert set(keys) == set(self.response.original.dictionary.keys()) - set(self.response.original._shared.keys())
+        else:
+            view_data = self.response.original.dictionary
+            for key in self.response.original._shared:
+                del view_data[key]
+            assert keys == view_data
+        return self
+
+    def assertViewMissing(self, key):
+        """Assert that given data key is not in the view context."""
+        self._ensure_response_has_view()
+        assert key not in self.response.original.dictionary
         return self

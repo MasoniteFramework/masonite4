@@ -41,3 +41,14 @@ class WelcomeController(Controller):
         response.header('TEST', "value")
         response.header('TEST2', "value2")
         return
+
+    def view_with_context(self, view: View):
+        return view.render("welcome", {"count": 1, "users": ["John", "Joe"]})
+
+    def json(self, response: Response):
+        return response.json({
+            "key": "value",
+            "other_key": {
+                "nested": 1
+            }
+        })

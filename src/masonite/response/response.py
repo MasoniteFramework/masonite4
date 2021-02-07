@@ -22,6 +22,7 @@ class Response:
         self._status = None
         self.statuses = response_statuses()
         self.header_bag = HeaderBag()
+        self.original = None
 
     def json(self, payload, status=200):
         """Gets the response ready for a JSON response.
@@ -137,7 +138,7 @@ class Response:
         Returns:
             string|dict|list -- Returns the data to be returned.
         """
-
+        self.original = view
         if isinstance(view, tuple):
             view, status = view
             self.status(status)
