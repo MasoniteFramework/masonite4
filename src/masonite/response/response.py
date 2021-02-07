@@ -54,7 +54,10 @@ class Response:
             for name, value in name.items():
                 self.header_bag.add(Header(name, value))
         elif value is None:
-            return self.header_bag.get(name)
+            header = self.header_bag.get(name)
+            if isinstance(header, str):
+                return header
+            return header.value
 
         return self.header_bag.add(Header(name, value))
 
@@ -207,6 +210,35 @@ class Response:
         """
         return self.converted_data()
 
+    def download(self, name, location, force=False):
+        if force:
+            self.header("Content-Type", "application/octet-stream")
+            self.header(
+                "Content-Disposition",
+                'attachment; filename="{}{}"'.format(name, self.extension(location)),
+            )
+        else:
+            self.header("Content-Type", self.mimetype(location))
+
+        with open(location, "rb") as filelike:
+            data = filelike.read()
+
+        return self.view(data)
+
+    def extension(self, path):
+        return Path(path).suffix
+
+    def mimetype(self, path):
+        """Gets the mimetime of a path
+
+        Arguments:
+            path {string} -- The path of the file to download.
+
+        Returns:
+            string -- The mimetype for use in headers
+        """
+        return mimetypes.guess_type(path)[0]
+
 
 class Responsable:
     def get_response(self):
@@ -270,17 +302,3 @@ class Download(Responsable):
             response.header("Content-Type", self.mimetype(self.location))
 
         return data
-
-    def mimetype(self, path):
-        """Gets the mimetime of a path
-
-        Arguments:
-            path {string} -- The path of the file to download.
-
-        Returns:
-            string -- The mimetype for use in headers
-        """
-        return mimetypes.guess_type(path)[0]
-
-    def extension(self, path):
-        return Path(path).suffix
