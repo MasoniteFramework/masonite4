@@ -11,3 +11,18 @@ class WelcomeController(Controller):
 
     def view(self, view: View):
         return view.render("welcome")
+
+    def create(self, view: View):
+        return view("welcome", status=201)
+
+    def not_found(self):
+        return "not found", 404
+
+    def unauthorized(self, view: View):
+        return view("unauthorized", status=401)
+
+    def forbidden(self, view: View):
+        return view("forbidden", status=403)
+
+    def empty(self, view: View):
+        return view("", status=204)

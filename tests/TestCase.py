@@ -78,7 +78,7 @@ class TestCase(TestCase):
             self.mock_start_response,
             exception_handling=False,
         )
-
+        import pdb;pdb.set_trace()
         route = self.application.make("router").find(route, method)
         if route:
             return HttpTestResponse(self.application, request, response, route)

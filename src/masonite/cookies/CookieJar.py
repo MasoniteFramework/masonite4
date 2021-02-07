@@ -27,6 +27,11 @@ class CookieJar:
     def exists(self, name):
         return name in self.cookies or name in self.loaded_cookies
 
+    def is_expired(self, name):
+        cookie = self.get(name)
+        # TODO: compare cookie.expires to now
+        return
+
     def delete(self, name):
         self.deleted_cookies.update(
             {

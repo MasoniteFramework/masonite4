@@ -7,6 +7,7 @@ class HttpTestResponse:
         self.content = None
         self.status = None
         self.get_response()
+        import pdb;pdb.set_trace()
 
     def get_response(self):
         self.content = self.response.get_response_content()
@@ -85,15 +86,32 @@ class HttpTestResponse:
     def assertLocation(self, location):
         return self.assertHasHeader("Location", location)
 
-    def assertRedirect(self, location=None):
+    def assertRedirect(self, url=None, name=None, params={}):
         # we could assert 301 or 302 code => what if user uses another status code in redirect()
         # here we are sure
         assert str(self.content) == "Redirecting ..."
-        if location:
-            self.assertLocation(location)
+        if url:
+            self.assertLocation(url)
+        elif name:
+            url = self.response._get_url_from_route_name(name, params)
+            self.assertLocation(url)
         return self
 
-    def assertRedirectToRoute(self, name, params={}):
-        assert str(self.content) == "Redirecting ..."
-        location = self.response._get_url_from_route_name(name, params)
-        return self.assertLocation(location)
+    def assertCookie(self, name, value=None):
+        assert self.request.cookie_jar.exists(name)
+        if value is not None:
+            assert self.cookie_jar.get(name).value == value
+        return self
+
+    def assertCookieExpired(self, name):
+        self.assertCookie(name)
+        assert self.request.cookie_jar.is_expired(name)
+        return self
+
+    def assertCookieNotExpired(self, name):
+        return not self.assertCookieExpired(name)
+
+    def assertCookieMissing(self, name):
+        assert not self.request.cookie_jar.exists(name)
+        return self
+
