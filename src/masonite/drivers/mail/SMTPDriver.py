@@ -25,6 +25,12 @@ class SMTPDriver:
         if self.options.get("reply_to"):
             message["Reply-To"] = Recipient(self.options.get("reply_to")).header()
 
+        if self.options.get("cc"):
+            message["Cc"] = Recipient(self.options.get("cc")).header()
+
+        if self.options.get("bcc"):
+            message["Bcc"] = Recipient(self.options.get("bcc")).header()
+
         if self.options.get("html_content"):
             message.attach(MIMEText(self.options.get("html_content"), "html"))
 
@@ -42,14 +48,12 @@ class SMTPDriver:
 
     def make_connection(self):
         options = self.options
-        if options.get('ssl'):
-            smtp = smtplib.SMTP_SSL(
-                "{0}:{1}".format(options["host"], options["port"])
-            )
+        if options.get("ssl"):
+            smtp = smtplib.SMTP_SSL("{0}:{1}".format(options["host"], options["port"]))
         else:
             smtp = smtplib.SMTP("{0}:{1}".format(options["host"], int(options["port"])))
 
-        if options.get('tls'):
+        if options.get("tls"):
             context = ssl.create_default_context()
             context.check_hostname = False
 

@@ -4,6 +4,8 @@ from .MessageAttachment import MessageAttachment
 class Mailable:
     def __init__(self):
         self._to = ""
+        self._cc = ""
+        self._bcc = ""
         self._from = ""
         self._reply_to = ""
         self._subject = ""
@@ -13,6 +15,14 @@ class Mailable:
 
     def to(self, to):
         self._to = to
+        return self
+
+    def cc(self, cc):
+        self._cc = cc
+        return self
+
+    def bcc(self, bcc):
+        self._bcc = bcc
         return self
 
     def set_application(self, application):
@@ -58,6 +68,8 @@ class Mailable:
     def get_options(self):
         return {
             "to": self._to,
+            "cc": self._cc,
+            "bcc": self._bcc,
             "from": self._from,
             "subject": self._subject,
             "text_content": self.text_content,

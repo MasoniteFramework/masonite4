@@ -3,7 +3,7 @@ from ..request import Request
 from ..response import Response
 from .Provider import Provider
 from ..mail import Mail
-from ..drivers.mail import SMTPDriver
+from ..drivers.mail import SMTPDriver, MailgunDriver
 from ..utils.structures import config, load
 
 
@@ -16,6 +16,7 @@ class MailProvider(Provider):
             load(self.application.make("config.mail")).DRIVERS
         )
         mail.add_driver("smtp", SMTPDriver(self.application))
+        mail.add_driver("mailgun", MailgunDriver(self.application))
         self.application.bind("mail", mail)
 
     def boot(self):
