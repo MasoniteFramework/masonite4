@@ -127,7 +127,6 @@ class Route:
                 route.url = options.get("prefix") + route.url
                 route.compile_route_to_regex()
 
-            print(route.url)
             if options.get("name"):
                 route._name = options.get("name") + route._name
 

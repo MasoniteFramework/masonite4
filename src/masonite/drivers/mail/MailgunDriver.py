@@ -13,7 +13,6 @@ class MailgunDriver:
         return self
 
     def get_mime_message(self):
-        print(self.options)
         data = {
             "from": self.options.get("from"),
             "to": Recipient(self.options.get("to")).header(),
