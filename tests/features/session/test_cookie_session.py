@@ -27,3 +27,11 @@ class TestCookieSession(TestCase):
         session.delete("key")
 
         self.assertFalse(session.get("key"))
+
+    def test_can_get_errors(self):
+        self.make_request()
+        session = self.application.make("session").driver("cookie")
+        session.flash("errors", {"email": ["Your email is not available"]})
+        self.assertEqual(session.get_error_messages(), ['Your email is not available'])
+
+
