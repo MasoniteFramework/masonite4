@@ -7,3 +7,4 @@ from .AuthenticationProvider import AuthenticationProvider
 from .Provider import Provider
 from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider
+from .HelpersProvider import HelpersProvider
