@@ -3,22 +3,18 @@
 import json
 from email import message
 
-from ...drivers import BaseDriver
-from ...helpers import config
-from ...request import Request
 
-
-class SessionCookieDriver(BaseDriver):
+class CookieDriver:
     """Cookie Session Driver."""
 
-    def __init__(self, request: Request):
+    def __init__(self, application):
         """Cookie Session Constructor.
 
         Arguments:
             Environ {dict} -- The WSGI environment
             Request {masonite.request.Request} -- The Request class.
         """
-        self.request = request
+        self.application = application
 
     def get(self, key):
         """Get a value from the session.
@@ -29,15 +25,22 @@ class SessionCookieDriver(BaseDriver):
         Returns:
             string|None - Returns None if a value does not exist.
         """
-        cookie = self.request.get_cookie("s_{0}".format(key))
+        request = self.get_request()
+        cookie = request.cookie("s_{0}".format(key))
         if cookie:
             return self._get_serialization_value(cookie)
 
-        cookie = self.request.get_cookie("f_{0}".format(key))
+        cookie = request.cookie("f_{0}".format(key))
         if cookie:
             return self._get_serialization_value(cookie)
 
         return None
+
+    def _get_serialization_value(self, value):
+        try:
+            return json.loads(value)
+        except ValueError:
+            return value
 
     def set(self, key, value):
         """Set a vlue in the session.
@@ -49,7 +52,9 @@ class SessionCookieDriver(BaseDriver):
         if isinstance(value, dict):
             value = json.dumps(value)
 
-        self.request.cookie("s_{0}".format(key), value)
+        request = self.get_request()
+
+        request.cookie("s_{0}".format(key), value)
 
     def has(self, key):
         """Check if a key exists in the session.
@@ -83,11 +88,16 @@ class SessionCookieDriver(BaseDriver):
         """
         self.__collect_data()
 
-        if self.request.get_cookie("s_{}".format(key)):
-            self.request.delete_cookie("s_{}".format(key))
+        request = self.get_request()
+
+        if request.cookie("s_{}".format(key)):
+            request.delete_cookie("s_{}".format(key))
             return True
 
         return False
+
+    def get_request(self):
+        return self.application.make("request")
 
     def __collect_data(self, flash_only=False):
         """Collect data from session and flash data.
@@ -96,7 +106,8 @@ class SessionCookieDriver(BaseDriver):
             dict
         """
         cookies = {}
-        all_cookies = self.request.get_cookies().to_dict()
+        request = self.get_request()
+        all_cookies = request.cookie_jar.to_dict()
         for key, value in all_cookies.items():
             if not (key.startswith("f_") or key.startswith("s_")):
                 continue
@@ -121,7 +132,8 @@ class SessionCookieDriver(BaseDriver):
         if isinstance(value, (dict, list)):
             value = json.dumps(value)
 
-        self.request.cookie(
+        request = self.get_request()
+        request.cookie(
             "f_{0}".format(key),
             value,
         )
@@ -159,19 +171,14 @@ class SessionCookieDriver(BaseDriver):
             flash_only {bool} -- If only flash data should be deleted. (default: {False})
         """
         cookies = self.__collect_data()
+        request = self.get_request()
         for cookie in cookies:
             if flash_only:
-                self.request.delete_cookie("f_{0}".format(cookie))
+                request.delete_cookie("f_{0}".format(cookie))
                 continue
 
-            self.request.delete_cookie("s_{0}".format(cookie))
+            request.delete_cookie("s_{0}".format(cookie))
 
     def helper(self):
         """Use to create builtin helper function."""
         return self
-
-    def _get_serialization_value(self, value):
-        try:
-            return json.loads(value)
-        except ValueError:
-            return value
