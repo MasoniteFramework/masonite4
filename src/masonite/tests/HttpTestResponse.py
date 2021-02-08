@@ -123,8 +123,8 @@ class HttpTestResponse:
         return self
 
     def assertSessionHas(self, key, value=None):
-        # how to get session ?
-        session = None
+        # what driver should we use here in tests ?
+        session = self.application.make("session").driver("cookie")
         session_value = session.get(key)
         assert session_value
         if value is not None:
@@ -132,8 +132,8 @@ class HttpTestResponse:
         return self
 
     def assertSessionMissing(self, key):
-        # how to get session ?
-        session = None
+        # what driver should we use here in tests ?
+        session = self.application.make("session").driver("cookie")
         assert not session.get(key)
         return self
 
