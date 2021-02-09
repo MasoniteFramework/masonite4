@@ -16,4 +16,4 @@ class SessionProvider(Provider):
         self.application.bind("session", session)
 
     def boot(self):
-        self.application.make('request').session = self.application.make('session')
+        self.application.make("request").session = self.application.make("session")

@@ -1,3 +1,4 @@
+from .ExceptionHandler import ExceptionHandler
 from .exceptions import (
     InvalidRouteCompileException,
     RouteMiddlewareNotFound,

@@ -32,6 +32,4 @@ class TestCookieSession(TestCase):
         self.make_request()
         session = self.application.make("session").driver("cookie")
         session.flash("errors", {"email": ["Your email is not available"]})
-        self.assertEqual(session.get_error_messages(), ['Your email is not available'])
-
-
+        self.assertEqual(session.get_error_messages(), ["Your email is not available"])
