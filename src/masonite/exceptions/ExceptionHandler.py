@@ -1,5 +1,6 @@
 from exceptionite.errors import Handler, StackOverflowIntegration, SolutionsIntegration
 
+
 class ExceptionHandler:
     def __init__(self, application, driver_config=None):
         self.application = application
@@ -24,7 +25,6 @@ class ExceptionHandler:
             return self.driver_config[self.driver_config.get("default")]
 
         return self.driver_config.get(driver, {})
-
 
     def handle(self, exception):
         response = self.application.make("response")
