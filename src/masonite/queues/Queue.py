@@ -1,4 +1,4 @@
-class Mail:
+class Queue:
     def __init__(self, application, driver_config=None):
         self.application = application
         self.drivers = {}
@@ -23,10 +23,7 @@ class Mail:
 
         return self.driver_config.get(driver, {})
 
-    def mailable(self, mailable):
-        self.options = mailable.set_application(self.application).build().get_options()
-        return self
-
-    def send(self, driver=None):
-        self.options.update(self.get_config_options(driver))
-        return self.get_driver(driver).set_options(self.options).send()
+    def push(self, *jobs, **options):
+        driver = self.get_driver(options.get("driver"))
+        driver.set_options(self.get_config_options(options.get("driver")))
+        driver.push(*jobs)
