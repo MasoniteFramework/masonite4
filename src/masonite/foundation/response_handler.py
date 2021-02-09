@@ -26,7 +26,7 @@ def response_handler(environ, start_response):
         for provider in application.get_providers():
             application.resolve(provider.boot)
     except Exception as e:
-        application.make("ExceptionHandler").load_exception(e)
+        application.make("exception_handler").handle(e)
 
     """We Are Ready For Launch
     If we have a solid response and not redirecting then we need to return
@@ -79,7 +79,7 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
     except Exception as e:
         if not exception_handling:
             raise e
-        application.make("ExceptionHandler").load_exception(e)
+        application.make("exception_handler").handle(e)
 
     """We Are Ready For Launch
     If we have a solid response and not redirecting then we need to return
