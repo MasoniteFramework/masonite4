@@ -11,12 +11,7 @@ class AsyncDriver:
         self.options = options
         return self
 
-    def push(
-        self,
-        *jobs,
-        args=(),
-        kwargs={},
-    ):
+    def push(self, *jobs):
         """Push objects onto the async stack.
 
         Arguments:
@@ -34,7 +29,7 @@ class AsyncDriver:
         processor = self._get_processor(mode=mode, max_workers=workers)
         is_blocking = options.get("blocking", False)
 
-        ran = []
+        ran = {}
         for obj in jobs:
             obj = self.application.resolve(obj) if inspect.isclass(obj) else obj
             try:
@@ -42,11 +37,12 @@ class AsyncDriver:
             except AttributeError:
                 # Could be wanting to call only a method asyncronously
                 future = processor.submit(obj, *args, **kwargs)
-
-            ran.append(future)
+            ran.update({future: obj})
 
         if is_blocking:
-            for job in as_completed(ran):
+            for job in as_completed(ran.keys()):
+                if job.exception():
+                    ran[job].failed(job.exception())
                 print(f"Job Ran: {job}")
 
     def consume(self, **options):

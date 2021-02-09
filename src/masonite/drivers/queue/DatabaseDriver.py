@@ -6,8 +6,12 @@ class DatabaseDriver:
         self.options = options
         return self
 
-    def push(self):
-        pass
+    def push(self, *jobs):
+        builder = (
+            self.application.make("builder")
+            .on(self.options.get("connection"))
+            .table(self.options.get("table"))
+        )
 
     def consume(self, **options):
         pass

@@ -9,3 +9,6 @@ class Queueable:
 
     def handle(self):
         pass
+
+    def failed(self, e):
+        pass

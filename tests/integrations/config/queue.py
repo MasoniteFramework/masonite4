@@ -1,7 +1,8 @@
 DRIVERS = {
     "default": "async",
     "database": {
-        #
+        "connection": "sqlite",
+        "table": "jobs",
     },
     "redis": {
         #
@@ -9,5 +10,5 @@ DRIVERS = {
     "amqp": {
         #
     },
-    "async": {"blocking": False},
+    "async": {"blocking": True},
 }
