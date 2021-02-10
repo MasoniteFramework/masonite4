@@ -2,6 +2,7 @@ import pickle
 import pendulum
 import inspect
 from ...utils.helpers import HasColoredCommands
+import time
 
 
 class DatabaseDriver(HasColoredCommands):
@@ -46,62 +47,63 @@ class DatabaseDriver(HasColoredCommands):
             .table(self.options.get("table"))
         )
 
-        # print(builder)
-        jobs = (
-            builder.where_null("ran_at")
-            .where_null("reserved_at")
-            .where("queue", self.options.get("queue", "default"))
-            .where(
-                lambda q: q.where_null("available_at").or_where(
-                    "available_at", "<=", pendulum.now().to_datetime_string()
+        while True:
+            time.sleep(2)
+            jobs = (
+                builder.where_null("ran_at")
+                .where_null("reserved_at")
+                .where("queue", self.options.get("queue", "default"))
+                .where(
+                    lambda q: q.where_null("available_at").or_where(
+                        "available_at", "<=", pendulum.now().to_datetime_string()
+                    )
                 )
+                .limit(10)
+                .order_by("id")
+                .get()
             )
-            .limit(10)
-            .order_by("id")
-            .get()
-        )
 
-        # builder.where_in("id", [x['id'] for x in jobs]).update(
-        #     {"reserved_at": pendulum.now().to_datetime_string()}
-        # )
+            builder.where_in("id", [x['id'] for x in jobs]).update(
+                {"reserved_at": pendulum.now().to_datetime_string()}
+            )
 
-        for job in jobs:
-            # builder.where("id", job["id"]).update(
-            #     {
-            #         "ran_at": pendulum.now().to_datetime_string(),
-            #     }
-            # )
-            payload = job["payload"]
-            unserialized = pickle.loads(job["payload"])
-            obj = unserialized["obj"]
-            args = unserialized["args"]
-            callback = unserialized["callback"]
+            for job in jobs:
+                builder.where("id", job["id"]).update(
+                    {
+                        "ran_at": pendulum.now().to_datetime_string(),
+                    }
+                )
+                payload = job["payload"]
+                unserialized = pickle.loads(job["payload"])
+                obj = unserialized["obj"]
+                args = unserialized["args"]
+                callback = unserialized["callback"]
 
-            try:
                 try:
-                    if inspect.isclass(obj):
-                        obj = container.resolve(obj)
+                    try:
+                        if inspect.isclass(obj):
+                            obj = container.resolve(obj)
 
-                    getattr(obj, callback)(*args)
+                        getattr(obj, callback)(*args)
 
-                except AttributeError:
-                    obj(*args)
+                    except AttributeError:
+                        obj(*args)
 
-                self.success(
-                    f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Successfully Processed"
-                )
-                return 2 / 0
-                builder.where("id", job["id"]).delete()
-            except Exception as e:  # skipcq
-                # raise e
-                self.danger(
-                    f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Failed"
-                )
+                    self.success(
+                        f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Successfully Processed"
+                    )
+                    builder.where("id", job["id"]).delete()
+                except Exception as e:  # skipcq
+                    # raise e
+                    self.danger(
+                        f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Failed"
+                    )
+                    # builder.where("id", job["id"]).delete()
 
-                if hasattr(obj, "failed"):
-                    getattr(obj, "failed")(unserialized, str(e))
+                    if hasattr(obj, "failed"):
+                        getattr(obj, "failed")(unserialized, str(e))
 
-                self.add_to_failed_queue_table(builder, payload, str(e))
+                    self.add_to_failed_queue_table(builder, payload, str(e))
 
     def add_to_failed_queue_table(self, builder, payload, exception):
         builder.table("failed_jobs").create(
