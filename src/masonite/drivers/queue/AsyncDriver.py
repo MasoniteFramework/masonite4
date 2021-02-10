@@ -11,7 +11,7 @@ class AsyncDriver:
         self.options = options
         return self
 
-    def push(self, *jobs):
+    def push(self, *jobs, args=(), **kwargs):
         """Push objects onto the async stack.
 
         Arguments:

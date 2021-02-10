@@ -4,11 +4,10 @@ import os
 import time
 
 
-class SayHello(Queueable):
-    def handle(self):
-        print("hello there")
+from tests.integrations.app.SayHi import SayHello
 
 
 class TestAsyncDriver(TestCase):
     def test_async_push(self):
-        self.application.make("queue").push(SayHello())
+        # pass
+        self.application.make("queue").push(SayHello(), driver="database")

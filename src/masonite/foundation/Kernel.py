@@ -1,6 +1,12 @@
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
-from ..commands import TinkerCommand, CommandCapsule, KeyCommand, ServeCommand
+from ..commands import (
+    TinkerCommand,
+    CommandCapsule,
+    KeyCommand,
+    ServeCommand,
+    QueueWorkCommand,
+)
 from ..storage import StorageCapsule
 from ..auth import Sign
 import os
@@ -40,11 +46,14 @@ class Kernel:
     def register_database(self):
         from masoniteorm.query import QueryBuilder
 
-        self.application.bind("builder", QueryBuilder(
-            connection_details=load(
-                self.application.make('config.database')
-            ).DATABASES
-        ))
+        self.application.bind(
+            "builder",
+            QueryBuilder(
+                connection_details=load(
+                    self.application.make("config.database")
+                ).DATABASES
+            ),
+        )
 
     def register_storage(self):
         storage = StorageCapsule(self.application.base_path)
@@ -74,6 +83,9 @@ class Kernel:
         self.application.bind(
             "commands",
             CommandCapsule(CommandApplication("Masonite Version:", "4.0")).add(
-                TinkerCommand(), KeyCommand(), ServeCommand()
+                TinkerCommand(),
+                KeyCommand(),
+                ServeCommand(),
+                QueueWorkCommand(self.application),
             ),
         )

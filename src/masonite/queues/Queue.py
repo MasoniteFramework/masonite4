@@ -27,3 +27,8 @@ class Queue:
         driver = self.get_driver(options.get("driver"))
         driver.set_options(self.get_config_options(options.get("driver")))
         driver.push(*jobs)
+
+    def consume(self, options):
+        driver = self.get_driver(options.get("driver"))
+        options.update(self.get_config_options(options.get("driver")))
+        return driver.set_options(options).consume()

@@ -10,5 +10,8 @@ class Queueable:
     def handle(self):
         pass
 
-    def failed(self, e):
+    def failed(self, obj, e):
         pass
+
+    def __repr__(self):
+        return self.__class__.__name__
