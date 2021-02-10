@@ -48,7 +48,8 @@ class DatabaseDriver(HasColoredCommands):
         )
 
         while True:
-            time.sleep(2)
+            time.sleep(1)
+            builder = builder.new().table(self.options.get("table"))
             jobs = (
                 builder.where_null("ran_at")
                 .where_null("reserved_at")
@@ -63,12 +64,12 @@ class DatabaseDriver(HasColoredCommands):
                 .get()
             )
 
-            builder.where_in("id", [x['id'] for x in jobs]).update(
+            builder.where_in("id", [x["id"] for x in jobs]).update(
                 {"reserved_at": pendulum.now().to_datetime_string()}
             )
 
             for job in jobs:
-                builder.where("id", job["id"]).update(
+                builder.where("id", job["id"]).table(self.options.get("table")).update(
                     {
                         "ran_at": pendulum.now().to_datetime_string(),
                     }
@@ -94,11 +95,11 @@ class DatabaseDriver(HasColoredCommands):
                     )
                     builder.where("id", job["id"]).delete()
                 except Exception as e:  # skipcq
-                    # raise e
+                    raise e
                     self.danger(
                         f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Failed"
                     )
-                    # builder.where("id", job["id"]).delete()
+                    builder.where("id", job["id"]).delete()
 
                     if hasattr(obj, "failed"):
                         getattr(obj, "failed")(unserialized, str(e))

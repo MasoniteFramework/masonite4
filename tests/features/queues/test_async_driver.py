@@ -10,4 +10,4 @@ from tests.integrations.app.SayHi import SayHello
 class TestAsyncDriver(TestCase):
     def test_async_push(self):
         # pass
-        self.application.make("queue").push(SayHello(), driver="database")
+        self.application.make("queue").push(SayHello(), driver="async")
