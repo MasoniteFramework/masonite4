@@ -1,6 +1,7 @@
 from src.masonite.controllers import Controller
 from src.masonite.views import View
 from src.masonite.response.response import Response
+from src.masonite.request.request import Request
 
 
 class WelcomeController(Controller):
@@ -48,7 +49,17 @@ class WelcomeController(Controller):
     def json(self, response: Response):
         return response.json({
             "key": "value",
+            "key2": "value2",
             "other_key": {
-                "nested": 1
+                "nested": 1,
+                "other": 2,
+                "nested_again": {
+                    "a": 1,
+                    "b": 2
+                }
             }
         })
+
+    def session(self, request: Request):
+        request.session.flash("key", "value")
+        return "session"

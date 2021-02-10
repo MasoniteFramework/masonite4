@@ -1,5 +1,7 @@
+import json
 from src.masonite.views import View
 from src.masonite.controllers import Controller
+from src.masonite.utils.structures import Dot
 
 
 class HttpTestResponse:
@@ -213,7 +215,6 @@ class HttpTestResponse:
         return self
 
     def assertRouteHasParameter(self, key, value=None):
-        import pdb;pdb.set_trace()
         assert key in self.route.url_list, "Route does not contain parameter {key}."
         if value is not None:
             # TODO
@@ -226,30 +227,46 @@ class HttpTestResponse:
             pass
         return self
 
+    def _ensure_response_is_json(self):
+        """Parse response back from JSON into a dict, if an error happens the response was not
+        a JSON string."""
+        return json.loads(self.response.content)
+
     def assertJson(self, data):
         """Assert that response is JSON and contains this data. The assertion will
         pass even if it is not an exact match."""
+        response_data = self._ensure_response_is_json()
         # TODO
         return self
 
     def assertJsonPath(self, path, value=None):
         """Assert that response is JSON and contains the given path, with eventually the given
         value if provided. The path is a dotted path."""
+        response_data = self._ensure_response_is_json()
+        data_at_path = Dot().dot(path, response_data)
+        assert data_at_path == value
         return self
 
     def assertJsonExact(self, data):
         """Assert that response is JSON and is exactly the given data."""
-        # TODO
+        response_data = self._ensure_response_is_json()
+        assert response_data == data
         return self
 
     def assertJsonCount(self, count, key=None):
         """Assert that JSON response is JSON and has the given count of keys at root level
         or at the given key."""
-        # TODO
+        response_data = self._ensure_response_is_json()
+        if key is not None:
+            response_data = response_data.get(key, {})
+
+        response_count = len(response_data.keys())
+        assert response_count == count, "JSON response count is {response_count}. Asserted {count}."
         return self
 
     def assertJsonMissing(self, data):
         """Assert that JSON response does not include the given data."""
+        response_data = self._ensure_response_is_json()
         # TODO
         return self
 

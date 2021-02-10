@@ -29,6 +29,7 @@ class TestTesting(TestCase):
             Route.get("/test-redirect-3", "WelcomeController@redirect_route_with_params"),
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
+            Route.get("/test-session", "WelcomeController@session").name("session"),
         )
         # maybe this should be registered directly in base test case
         auth = Auth(self.application).set_authentication_model(User())
@@ -96,7 +97,11 @@ class TestTesting(TestCase):
         self.get("/test-redirect-3").assertRedirect(name="test", params={"id": 1})
 
     def test_assert_session_has(self):
-        self.get("/").assertSessionHas("testkey")
+        self.get("/test-session").assertSessionHas("key")
+        self.get("/test-session").assertSessionHas("key", "value")
+
+    def test_assert_session_missing(self):
+        self.get("/").assertSessionMissing("some_test_key")
 
     def test_assert_view_is(self):
         self.get("/view").assertViewIs("view")
@@ -169,4 +174,28 @@ class TestTesting(TestCase):
     def test_assert_has_http_middleware(self):
         # TODO: add one for testing purposes
         # self.get("/test").assertHasHttpMiddleware()
+        pass
+
+    def test_assert_json(self):
+        self.get("/test-json").assertJson()
+
+    def test_assert_json_path(self):
+        self.get("/test-json").assertJsonPath("key2", "value2")
+        self.get("/test-json").assertJsonPath("other_key.nested", 1)
+        self.get("/test-json").assertJsonPath("other_key.nested_again.b", 2)
+        self.get("/test-json").assertJsonPath("other_key.nested_again", {
+            "a": 1,
+            "b": 2
+        })
+
+    def test_assert_json_count(self):
+        self.get("/test-json").assertJsonCount(3)
+        self.get("/test-json").assertJsonCount(2, key="nested_again")
+
+    def test_assert_json_exact(self):
+        # TODO
+        pass
+
+    def test_assert_json_missing(self):
+        # TODO
         pass
