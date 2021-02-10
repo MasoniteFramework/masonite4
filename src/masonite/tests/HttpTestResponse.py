@@ -1,4 +1,5 @@
 from src.masonite.views import View
+from src.masonite.controllers import Controller
 
 
 class HttpTestResponse:
@@ -122,19 +123,20 @@ class HttpTestResponse:
         assert not self.request.cookie_jar.exists(name)
         return self
 
-    def assertSessionHas(self, key, value=None):
-        # what driver should we use here in tests ?
-        session = self.application.make("session").driver("cookie")
+    def assertSessionHas(self, key, value=None, driver="cookie"):
+        """Assert that session contains the given key with the corresponding value if given.
+        The session driver can be specified if necessary."""
+        session = self.request.session.driver(driver)
         session_value = session.get(key)
         assert session_value
         if value is not None:
             assert session_value == value
         return self
 
-    def assertSessionMissing(self, key):
-        # what driver should we use here in tests ?
-        session = self.application.make("session").driver("cookie")
-        assert not session.get(key)
+    def assertSessionMissing(self, key, driver="cookie"):
+        """Assert that session does not contain the given key. The session driver can be specified
+        if necessary."""
+        assert not self.request.session.driver(driver).get(key)
         return self
 
     def _ensure_response_has_view(self):
@@ -186,3 +188,68 @@ class HttpTestResponse:
         user = self.application.make("auth").guard("web").user()
         assert user == user
         return self
+
+    def assertHasHttpMiddleware(self, middleware):
+        """Assert that the request/response cycle has the given middleware. The HTTP middleware
+        class should be given."""
+        assert middleware in self.application.make("middleware").http_middleware
+        return self
+
+    def assertHasRouteMiddleware(self, middleware):
+        """Assert that the route has the given middleware. The registration key of the middleware
+        should be used."""
+        assert middleware in self.application.make("middleware").route_middleware
+        return self
+
+    def assertHasController(self, controller):
+        """Assert that route used the given controller. The controller can be a class or
+        a string. If it's a string it should be formatted as follow: ControllerName@method"""
+        if isinstance(controller, str) and "@" in controller:
+            assert self.route.controller == controller
+        elif issubclass(controller, Controller):
+            assert self.route.controller_class == controller
+        else:
+            raise ValueError("controller must be a string like YourController@index or a Controller class")
+        return self
+
+    def assertRouteHasParameter(self, key, value=None):
+        import pdb;pdb.set_trace()
+        assert key in self.route.url_list, "Route does not contain parameter {key}."
+        if value is not None:
+            # TODO
+            # @josephmancuso not sure how to check if the route parameter has the given value
+            # 1. play with the compiled regex but not sure how to do it
+            # 2. see below, correct ? after testing it it's not correct, there are several issues with
+            # this. forgot all this
+            # real_url = self.route.url.replace(f"@{key}", str(value))
+            # assert self.route.matches(real_url)
+            pass
+        return self
+
+    def assertJson(self, data):
+        """Assert that response is JSON and contains this data. The assertion will
+        pass even if it is not an exact match."""
+        # TODO
+        return self
+
+    def assertJsonPath(self, path, value=None):
+        """Assert that response is JSON and contains the given path, with eventually the given
+        value if provided. The path is a dotted path."""
+        return self
+
+    def assertJsonExact(self, data):
+        """Assert that response is JSON and is exactly the given data."""
+        # TODO
+        return self
+
+    def assertJsonCount(self, count, key=None):
+        """Assert that JSON response is JSON and has the given count of keys at root level
+        or at the given key."""
+        # TODO
+        return self
+
+    def assertJsonMissing(self, data):
+        """Assert that JSON response does not include the given data."""
+        # TODO
+        return self
+

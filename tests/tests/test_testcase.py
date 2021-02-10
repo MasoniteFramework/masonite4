@@ -1,4 +1,5 @@
 from tests import TestCase
+from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
 from src.masonite.routes import Route
 from src.masonite.auth import Authenticates
@@ -149,3 +150,23 @@ class TestTesting(TestCase):
         )
         user = User.find(1)
         self.get("/test").assertAuthenticatedAs(user)
+
+    def test_assert_has_controller(self):
+        self.get("/test").assertHasController("WelcomeController@show")
+        self.get("/test").assertHasController(WelcomeController)
+
+    def test_assert_route_has_parameter(self):
+        self.get("/test/3").assertRouteHasParameter("id")
+        with self.assertRaises(AssertionError):
+            self.get("/test/3").assertRouteHasParameter("key")
+        # self.get("/test/3").assertRouteHasParameter("id", 3)
+        # with self.assertRaises(AssertionError):
+        #     self.get("/test/3").assertRouteHasParameter("id", 4)
+
+    def test_assert_has_route_middleware(self):
+        self.get("/test").assertHasRouteMiddleware("web")
+
+    def test_assert_has_http_middleware(self):
+        # TODO: add one for testing purposes
+        # self.get("/test").assertHasHttpMiddleware()
+        pass
