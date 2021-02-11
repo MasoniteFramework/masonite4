@@ -8,7 +8,7 @@ import datetime
 
 class QueueFailedCommand(Command):
     """
-    Generate a new key.
+    Creates a failed jobs table
 
     queue:failed
         {--d|--directory=database/migrations : Specifies the database connection if using database driver}

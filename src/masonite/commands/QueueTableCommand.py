@@ -8,7 +8,7 @@ import datetime
 
 class QueueTableCommand(Command):
     """
-    Generate a new key.
+    Creates the jobs table
 
     queue:table
         {--d|--directory=database/migrations : Specifies the database connection if using database driver}

@@ -4,7 +4,7 @@ from cleo import Command
 
 class QueueWorkCommand(Command):
     """
-    Generate a new key.
+    Creates a new queue worker to consume queue jobs
 
     queue:work
         {--c|--connection : Specifies the database connection if using database driver.}
