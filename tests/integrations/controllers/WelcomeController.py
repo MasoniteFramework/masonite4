@@ -15,19 +15,19 @@ class WelcomeController(Controller):
         return view.render("welcome")
 
     def create(self, view: View):
-        return view("welcome", status=201)
+        return view.render("welcome"), 201
 
     def not_found(self):
         return "not found", 404
 
     def unauthorized(self, view: View):
-        return view("unauthorized", status=401)
+        return view.render("unauthorized"), 403
 
     def forbidden(self, view: View):
-        return view("forbidden", status=403)
+        return view.render("forbidden"), 403
 
     def empty(self, view: View):
-        return view("", status=204)
+        return view.render(""), 204
 
     def redirect_url(self, response: Response):
         return response.redirect("/")

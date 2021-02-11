@@ -36,7 +36,10 @@ class TestCase(TestCase):
         self._test_headers = {}
 
     def addRoutes(self, *routes):
-        self.application.make("router").add(*routes)
+        self.application.bind(
+            "router",
+            RouteCapsule(*routes),
+        )
         return self
 
     def withCsrf(self):
@@ -76,6 +79,7 @@ class TestCase(TestCase):
                 "HTTP_COOKIE": f"SESSID={token}; csrf_token={token}",
                 "CONTENT_LENGTH": len(str(json.dumps(data))),
                 "REQUEST_METHOD": method,
+                "PATH_INFO": route,
                 "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
             }
         )
@@ -94,6 +98,7 @@ class TestCase(TestCase):
             request.header(name, value)
 
         route = self.application.make("router").find(route, method)
+        print('rrr', route._name)
         if route:
             return HttpTestResponse(self.application, request, response, route)
         raise Exception(f"NO route found for {route}")
