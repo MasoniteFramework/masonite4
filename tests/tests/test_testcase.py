@@ -15,6 +15,7 @@ class TestTesting(TestCase):
     def setUp(self):
         super().setUp()
         self.addRoutes(
+            Route.get("/", "WelcomeController@show").name("home"),
             Route.get("/test", "WelcomeController@show").name("test"),
             Route.get("/view", "WelcomeController@view").name("view"),
             Route.get("/view-context", "WelcomeController@view_with_context").name("view_with_context"),
@@ -104,7 +105,7 @@ class TestTesting(TestCase):
         self.get("/").assertSessionMissing("some_test_key")
 
     def test_assert_view_is(self):
-        self.get("/view").assertViewIs("view")
+        self.get("/view").assertViewIs("welcome")
 
     def test_assert_view_has(self):
         self.get("/view-context").assertViewHas("count")

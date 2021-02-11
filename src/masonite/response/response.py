@@ -186,16 +186,14 @@ class Response:
 
         if location:
             self.header_bag.add(Header("Location", location))
-            self.view("Redirecting ...")
+            return self.view("Redirecting ...")
         elif name:
             url = self._get_url_from_route_name(name, params)
             self.header_bag.add(Header("Location", url))
-            self.view("Redirecting ...")
+            return self.view("Redirecting ...")
         elif url:
             self.header_bag.add(Header("Location", url))
-            self.view("Redirecting ...")
-
-        return self.data()
+            return self.view("Redirecting ...")
 
     def _get_url_from_route_name(self, name, params={}):
         route = self.app.make("router").find_by_name(name)

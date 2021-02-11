@@ -21,7 +21,7 @@ class WelcomeController(Controller):
         return "not found", 404
 
     def unauthorized(self, view: View):
-        return view.render("unauthorized"), 403
+        return "unauthorized", 401
 
     def forbidden(self, view: View):
         return view.render("forbidden"), 403
@@ -30,6 +30,9 @@ class WelcomeController(Controller):
         return view.render(""), 204
 
     def redirect_url(self, response: Response):
+        return response.redirect("/")
+
+    def redirect_route_with_params(self, response: Response):
         return response.redirect("/")
 
     def redirect_route(self, response: Response):
@@ -63,3 +66,6 @@ class WelcomeController(Controller):
     def session(self, request: Request):
         request.session.flash("key", "value")
         return "session"
+
+    def with_params(self):
+        return ''

@@ -94,7 +94,7 @@ class HttpTestResponse:
     def assertRedirect(self, url=None, name=None, params={}):
         # we could assert 301 or 302 code => what if user uses another status code in redirect()
         # here we are sure
-        assert str(self.content) == "Redirecting ..."
+        assert self.content.decode('utf-8') == "Redirecting ..."
         if url:
             self.assertLocation(url)
         elif name:
