@@ -132,6 +132,7 @@ class DatabaseDriver(HasColoredCommands):
                     "payload": job["payload"],
                     "serialized": job["payload"],
                     "attempts": 0,
+                    "available_at": pendulum.now().to_datetime_string(),
                     "queue": job["queue"],
                 }
             )
@@ -147,6 +148,7 @@ class DatabaseDriver(HasColoredCommands):
                 "queue": self.options.get("queue", "default"),
                 "name": name,
                 "connection": self.options.get("connection"),
+                "created_at": pendulum.now().to_datetime_string(),
                 "exception": exception,
                 "payload": payload,
                 "failed_at": pendulum.now().to_datetime_string(),
