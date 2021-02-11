@@ -23,7 +23,7 @@ class QueueTableCommand(Command):
             os.path.join(
                 pathlib.Path(__file__).parent.absolute(),
                 "../",
-                f"stubs/queue/create_queue_jobs_table.py",
+                "stubs/queue/create_queue_jobs_table.py",
             )
         ) as fp:
             output = fp.read()

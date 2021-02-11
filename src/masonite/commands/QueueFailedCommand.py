@@ -21,7 +21,7 @@ class QueueFailedCommand(Command):
             os.path.join(
                 pathlib.Path(__file__).parent.absolute(),
                 "../",
-                f"stubs/queue/create_failed_jobs_table.py",
+                "stubs/queue/create_failed_jobs_table.py",
             )
         ) as fp:
             output = fp.read()
