@@ -30,11 +30,12 @@ class Queue:
 
     def consume(self, options):
         driver = self.get_driver(options.get("driver"))
+        config_options = self.get_config_options(options.get("driver"))
+        config_options.update(options)
         options.update(self.get_config_options(options.get("driver")))
-        return driver.set_options(options).consume()
+        return driver.set_options(config_options).consume()
 
     def retry(self, options):
         driver = self.get_driver(options.get("driver"))
-        config_options = self.get_config_options(options.get("driver"))
-        config_options.update(options)
+
         return driver.set_options(config_options).retry()

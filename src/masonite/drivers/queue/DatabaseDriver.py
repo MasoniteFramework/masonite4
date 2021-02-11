@@ -48,8 +48,10 @@ class DatabaseDriver(HasColoredCommands):
             .table(self.options.get("table"))
         )
 
+        print(self.options.get("attempts"))
+
         while True:
-            time.sleep(1)
+            time.sleep(int(self.options.get("poll", 1)))
             builder = builder.new().table(self.options.get("table"))
             jobs = (
                 builder.where("queue", self.options.get("queue", "default"))

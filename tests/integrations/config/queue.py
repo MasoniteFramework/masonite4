@@ -5,6 +5,7 @@ DRIVERS = {
         "table": "jobs",
         "failed_table": "failed_jobs",
         "attempts": 3,
+        "poll": 5
     },
     "redis": {
         #

@@ -9,9 +9,9 @@ class QueueWorkCommand(Command):
     queue:work
         {--c|--connection : Specifies the database connection if using database driver.}
         {--queue=default : The queue to listen to}
-        {--d|driver=None : Specify the driver you would like to connect to}
-        {--p|poll=0 : Specify the frequency a worker should poll}
-        {--failed : Run only the failed jobs}
+        {--d|driver=None : Specify the driver you would like to use}
+        {--p|poll=1 : Specify the frequency a worker should wait before fetching new jobs}
+        {--attempts=None : Specify the number of times a job should be retried before it fails}
     """
 
     def __init__(self, application):
@@ -19,14 +19,20 @@ class QueueWorkCommand(Command):
         self.app = application
 
     def handle(self):
+        options = {}
         driver = self.option("driver")
         if driver == "None":
             driver = None
 
-        print(
-            self.app.make("queue").consume(
-                {
-                    "driver": driver,
-                }
-            )
-        )
+        options.update({'driver': driver})
+        if self.option("poll") != "None":
+            options.update({'poll': self.option("poll")})
+
+        attempts = self.option("attempts")
+        if attempts == "None":
+            attempts = None
+        else:
+            options.update({'attempts': attempts})
+
+
+        return self.app.make("queue").consume(options)
