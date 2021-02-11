@@ -1,0 +1,2 @@
+from .MockMail import MockMail
+

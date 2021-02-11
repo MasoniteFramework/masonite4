@@ -33,6 +33,7 @@ class TestCase(TestCase):
                 ).post("/", "WelcomeController@show"),
             ),
         )
+        self.register_mocks()
 
     def addRoutes(self, routes):
         self.application.make("router").add(routes)
@@ -93,7 +94,33 @@ class TestCase(TestCase):
     def mock_start_response(self, *args, **kwargs):
         pass
 
-    def fake(self, binding):
-        mock = MagicMock(self.application.make(binding))
+    def register_mocks(self):
+        """Configure the default mock classes for all services which needs to be mocked.
+        The mocks can now be overriden.
+        A package could in its service provider call a method which could update one of the mock
+        class with the one installed.
+        """
+        # from src.masonite.tests.mocks import MockMail
+        # self.application.bind("mock.mail", MockMail)
+
+        # for test but should remove src.
+        self.application.bind("mock.mail", "src.masonite.tests.mocks.MockMail")
+
+        # self.application.bind("mock.queue", MockQueue)
+
+    def fake(self, binding, mock_class=None):
+        """Mock a service with its mocked implementation or with a given custom
+        one."""
+        import pydoc
+        if not mock_class:
+            mock_class_path = self.application.make(f"mock.{binding}")
+            mock_class = pydoc.locate(mock_class_path)
+        mock = mock_class(self.application)
         self.application.bind(binding, mock)
         return mock
+
+    def restore(self, binding):
+        """Restore the service previously mocked to the original one."""
+        # how to retrieve the original ?
+        original = self.application.make(binding)
+        self.application.bind(binding, original)
