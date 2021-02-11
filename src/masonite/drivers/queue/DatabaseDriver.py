@@ -104,13 +104,44 @@ class DatabaseDriver(HasColoredCommands):
                     if hasattr(obj, "failed"):
                         getattr(obj, "failed")(unserialized, str(e))
 
-                    self.add_to_failed_queue_table(builder, payload, str(e))
+                    self.add_to_failed_queue_table(
+                        builder, job["name"], payload, str(e)
+                    )
 
-    def add_to_failed_queue_table(self, builder, payload, exception):
-        builder.table("failed_jobs").create(
+    def retry(self):
+        builder = (
+            self.application.make("builder")
+            .on(self.options.get("connection"))
+            .table(self.options.get("failed_table", "failed_jobs"))
+        )
+
+        jobs = builder.get()
+
+        if len(jobs) == 0:
+            self.success("No failed jobs found.")
+            return
+
+        for job in jobs:
+            builder.table("jobs").create(
+                {
+                    "name": str(job["name"]),
+                    "payload": job["payload"],
+                    "serialized": job["payload"],
+                    "attempts": 0,
+                    "queue": job["queue"],
+                }
+            )
+        self.success(f"Added {len(jobs)} failed jobs back to the queue")
+        builder.table(self.options.get("failed_table", "failed_jobs")).where_in(
+            "id", [x["id"] for x in jobs]
+        ).delete()
+
+    def add_to_failed_queue_table(self, builder, name, payload, exception):
+        builder.table(self.options.get("failed_table", "failed_jobs")).create(
             {
                 "driver": "database",
                 "queue": self.options.get("queue", "default"),
+                "name": name,
                 "connection": self.options.get("connection"),
                 "exception": exception,
                 "payload": payload,

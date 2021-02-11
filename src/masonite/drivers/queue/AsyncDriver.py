@@ -48,6 +48,9 @@ class AsyncDriver:
     def consume(self, **options):
         pass
 
+    def retry(self, **options):
+        pass
+
     def _get_processor(self, mode, max_workers):
         """Set processor to use either threads or multiprocesses
 

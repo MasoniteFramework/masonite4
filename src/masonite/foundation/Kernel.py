@@ -6,6 +6,7 @@ from ..commands import (
     KeyCommand,
     ServeCommand,
     QueueWorkCommand,
+    QueueRetryCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -87,5 +88,6 @@ class Kernel:
                 KeyCommand(),
                 ServeCommand(),
                 QueueWorkCommand(self.application),
+                QueueRetryCommand(self.application),
             ),
         )
