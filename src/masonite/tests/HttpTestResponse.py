@@ -72,7 +72,7 @@ class HttpTestResponse:
         return self
 
     def assertNoContent(self, status=204):
-        assert not str(self.response.content)
+        assert not self.content.decode("utf-8")
         return self.assertIsStatus(status)
 
     def assertUnauthorized(self):
@@ -269,7 +269,7 @@ class HttpTestResponse:
         response_count = len(response_data.keys())
         assert (
             response_count == count
-        ), "JSON response count is {response_count}. Asserted {count}."
+        ), f"JSON response count is {response_count}. Asserted {count}."
         return self
 
     def assertJsonMissing(self, data):

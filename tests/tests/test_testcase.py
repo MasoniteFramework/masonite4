@@ -36,7 +36,7 @@ class TestTesting(TestCase):
             Route.get("/test-redirect-1", "WelcomeController@redirect_url"),
             Route.get("/test-redirect-2", "WelcomeController@redirect_route"),
             Route.get(
-                "/test-redirect-3", "WelcomeController@redirect_route_with_params"
+                "/test-redirect-3", "WelcomeController@redirect_route_params"
             ),
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
@@ -105,7 +105,7 @@ class TestTesting(TestCase):
 
     def test_assert_redirect_to_route(self):
         self.get("/test-redirect-2").assertRedirect(name="test")
-        self.get("/test-redirect-3").assertRedirect(name="test", params={"id": 1})
+        self.get("/test-redirect-3").assertRedirect(name="test_params", params={"id": 1})
 
     def test_assert_session_has(self):
         self.get("/test-session").assertSessionHas("key")
@@ -204,7 +204,7 @@ class TestTesting(TestCase):
 
     def test_assert_json_count(self):
         self.get("/test-json").assertJsonCount(3)
-        self.get("/test-json").assertJsonCount(2, key="nested_again")
+        self.get("/test-json").assertJsonCount(2, key="other_key")
 
     def test_assert_json_exact(self):
         # TODO

@@ -1,6 +1,7 @@
+import json
+import io
+
 from src.masonite.tests import TestCase
-from src.masonite.foundation import Application, Kernel, HttpKernel
-from src.masonite.providers import RouteProvider
 from src.masonite.routes import Route, RouteCapsule
 from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
@@ -8,10 +9,6 @@ from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
 from unittest.mock import MagicMock
-
-import os
-import json
-import io
 
 
 class TestCase(TestCase):
@@ -93,7 +90,7 @@ class TestCase(TestCase):
         # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():
             request.cookie(name, value, encrypt=False)
-        # add eventual headers added inside the test (not encrypted to be able to assert value ?)
+        # add eventual headers added inside the test
         for name, value in self._test_headers.items():
             request.header(name, value)
 
@@ -107,11 +104,6 @@ class TestCase(TestCase):
         pass
 
     def withCookies(self, cookies_dict):
-        # can't do below because request has not been generated at this step
-        # request = self.make_request()
-        # for name, value in cookies_dict.items():
-        #     request.cookie(name, value)
-        # return self
         self._test_cookies = cookies_dict
         return self
 
@@ -120,8 +112,6 @@ class TestCase(TestCase):
         return self
 
     def actingAs(self, user):
-        # in test should be able to login whatever the user password is
-        # also we should not assume that the user model email is email..
         self.make_request()
         self.application.make("auth").guard("web").login_by_id(
             user.get_primary_key_value()
