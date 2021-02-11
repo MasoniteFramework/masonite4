@@ -53,7 +53,9 @@ class HttpTestResponse:
         return self
 
     def assertIsStatus(self, status):
-        assert self.response.is_status(status), f"Status is {self.response.get_status_code()}. Asserted {status}"
+        assert self.response.is_status(
+            status
+        ), f"Status is {self.response.get_status_code()}. Asserted {status}"
         return self
 
     def assertNotFound(self):
@@ -94,7 +96,7 @@ class HttpTestResponse:
     def assertRedirect(self, url=None, name=None, params={}):
         # we could assert 301 or 302 code => what if user uses another status code in redirect()
         # here we are sure
-        assert self.content.decode('utf-8') == "Redirecting ..."
+        assert self.content.decode("utf-8") == "Redirecting ..."
         if url:
             self.assertLocation(url)
         elif name:
@@ -164,7 +166,9 @@ class HttpTestResponse:
         """Assert that view context contains exactly the data keys (or the complete data dict)."""
         self._ensure_response_has_view()
         if isinstance(keys, list):
-            assert set(keys) == set(self.response.original.dictionary.keys()) - set(self.response.original._shared.keys())
+            assert set(keys) == set(self.response.original.dictionary.keys()) - set(
+                self.response.original._shared.keys()
+            )
         else:
             view_data = self.response.original.dictionary
             for key in self.response.original._shared:
@@ -211,7 +215,9 @@ class HttpTestResponse:
         elif issubclass(controller, Controller):
             assert self.route.controller_class == controller
         else:
-            raise ValueError("controller must be a string like YourController@index or a Controller class")
+            raise ValueError(
+                "controller must be a string like YourController@index or a Controller class"
+            )
         return self
 
     def assertRouteHasParameter(self, key, value=None):
@@ -261,7 +267,9 @@ class HttpTestResponse:
             response_data = response_data.get(key, {})
 
         response_count = len(response_data.keys())
-        assert response_count == count, "JSON response count is {response_count}. Asserted {count}."
+        assert (
+            response_count == count
+        ), "JSON response count is {response_count}. Asserted {count}."
         return self
 
     def assertJsonMissing(self, data):
@@ -269,4 +277,3 @@ class HttpTestResponse:
         response_data = self._ensure_response_is_json()
         # TODO
         return self
-

@@ -18,16 +18,26 @@ class TestTesting(TestCase):
             Route.get("/", "WelcomeController@show").name("home"),
             Route.get("/test", "WelcomeController@show").name("test"),
             Route.get("/view", "WelcomeController@view").name("view"),
-            Route.get("/view-context", "WelcomeController@view_with_context").name("view_with_context"),
+            Route.get("/view-context", "WelcomeController@view_with_context").name(
+                "view_with_context"
+            ),
             Route.get("/test-404", "WelcomeController@not_found").name("not_found"),
             Route.get("/test-creation", "WelcomeController@create").name("create"),
-            Route.get("/test-unauthorized", "WelcomeController@unauthorized").name("unauthorized"),
-            Route.get("/test-forbidden", "WelcomeController@forbidden").name("forbidden"),
+            Route.get("/test-unauthorized", "WelcomeController@unauthorized").name(
+                "unauthorized"
+            ),
+            Route.get("/test-forbidden", "WelcomeController@forbidden").name(
+                "forbidden"
+            ),
             Route.get("/test-empty", "WelcomeController@empty").name("empty"),
-            Route.get("/test-response-header", "WelcomeController@response_with_headers"),
+            Route.get(
+                "/test-response-header", "WelcomeController@response_with_headers"
+            ),
             Route.get("/test-redirect-1", "WelcomeController@redirect_url"),
             Route.get("/test-redirect-2", "WelcomeController@redirect_route"),
-            Route.get("/test-redirect-3", "WelcomeController@redirect_route_with_params"),
+            Route.get(
+                "/test-redirect-3", "WelcomeController@redirect_route_with_params"
+            ),
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
             Route.get("/test-session", "WelcomeController@session").name("session"),
@@ -127,10 +137,14 @@ class TestTesting(TestCase):
 
     def test_assert_view_has_all(self):
         self.get("/view-context").assertViewHasAll(["users", "count"])
-        self.get("/view-context").assertViewHasAll({"count": 1, "users": ["John", "Joe"]})
+        self.get("/view-context").assertViewHasAll(
+            {"count": 1, "users": ["John", "Joe"]}
+        )
 
         with self.assertRaises(AssertionError):
-            self.get("/view-context").assertViewHasAll(["users", "count", "not in data"])
+            self.get("/view-context").assertViewHasAll(
+                ["users", "count", "not in data"]
+            )
 
         with self.assertRaises(AssertionError):
             self.get("/view-context").assertViewHasAll({"count": 1})
@@ -184,10 +198,9 @@ class TestTesting(TestCase):
         self.get("/test-json").assertJsonPath("key2", "value2")
         self.get("/test-json").assertJsonPath("other_key.nested", 1)
         self.get("/test-json").assertJsonPath("other_key.nested_again.b", 2)
-        self.get("/test-json").assertJsonPath("other_key.nested_again", {
-            "a": 1,
-            "b": 2
-        })
+        self.get("/test-json").assertJsonPath(
+            "other_key.nested_again", {"a": 1, "b": 2}
+        )
 
     def test_assert_json_count(self):
         self.get("/test-json").assertJsonCount(3)

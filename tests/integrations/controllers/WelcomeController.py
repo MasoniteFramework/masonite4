@@ -42,30 +42,29 @@ class WelcomeController(Controller):
         return response.redirect(name="test_params", params={"id": 1})
 
     def response_with_headers(self, response: Response):
-        response.header('TEST', "value")
-        response.header('TEST2', "value2")
+        response.header("TEST", "value")
+        response.header("TEST2", "value2")
         return
 
     def view_with_context(self, view: View):
         return view.render("welcome", {"count": 1, "users": ["John", "Joe"]})
 
     def json(self, response: Response):
-        return response.json({
-            "key": "value",
-            "key2": "value2",
-            "other_key": {
-                "nested": 1,
-                "other": 2,
-                "nested_again": {
-                    "a": 1,
-                    "b": 2
-                }
+        return response.json(
+            {
+                "key": "value",
+                "key2": "value2",
+                "other_key": {
+                    "nested": 1,
+                    "other": 2,
+                    "nested_again": {"a": 1, "b": 2},
+                },
             }
-        })
+        )
 
     def session(self, request: Request):
         request.session.flash("key", "value")
         return "session"
 
     def with_params(self):
-        return ''
+        return ""
