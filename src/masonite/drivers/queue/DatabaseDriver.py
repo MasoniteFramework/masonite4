@@ -35,6 +35,7 @@ class DatabaseDriver(HasColoredCommands):
                     "name": str(job),
                     "payload": payload,
                     "serialized": payload,
+                    "available_at": pendulum.now().to_datetime_string(),
                     "attempts": 0,
                     "queue": self.options.get("queue", "default"),
                 }
@@ -51,14 +52,8 @@ class DatabaseDriver(HasColoredCommands):
             time.sleep(1)
             builder = builder.new().table(self.options.get("table"))
             jobs = (
-                builder.where_null("ran_at")
-                .where_null("reserved_at")
-                .where("queue", self.options.get("queue", "default"))
-                .where(
-                    lambda q: q.where_null("available_at").or_where(
-                        "available_at", "<=", pendulum.now().to_datetime_string()
-                    )
-                )
+                builder.where("queue", self.options.get("queue", "default"))
+                .where("available_at", "<=", pendulum.now().to_datetime_string())
                 .limit(10)
                 .order_by("id")
                 .get()
@@ -93,20 +88,29 @@ class DatabaseDriver(HasColoredCommands):
                     self.success(
                         f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Successfully Processed"
                     )
+
                     builder.where("id", job["id"]).delete()
                 except Exception as e:  # skipcq
-                    raise e
                     self.danger(
                         f"[{job['id']}][{pendulum.now().to_datetime_string()}] Job Failed"
                     )
-                    builder.where("id", job["id"]).delete()
 
-                    if hasattr(obj, "failed"):
-                        getattr(obj, "failed")(unserialized, str(e))
+                    if job["attempts"] >= self.options.get("attempts", 1):
+                        builder.where("id", job["id"]).delete()
+                        if hasattr(obj, "failed"):
+                            getattr(obj, "failed")(unserialized, str(e))
 
-                    self.add_to_failed_queue_table(
-                        builder, job["name"], payload, str(e)
-                    )
+                        self.add_to_failed_queue_table(
+                            builder, job["name"], payload, str(e)
+                        )
+                    else:
+                        builder.where("id", job["id"]).table(
+                            self.options.get("table")
+                        ).update(
+                            {
+                                "attempts": job["attempts"] + 1,
+                            }
+                        )
 
     def retry(self):
         builder = (
