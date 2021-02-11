@@ -241,7 +241,7 @@ class HttpTestResponse:
     def assertJson(self, data):
         """Assert that response is JSON and contains this data. The assertion will
         pass even if it is not an exact match."""
-        response_data = self._ensure_response_is_json()
+        # response_data = self._ensure_response_is_json()
         # TODO
         return self
 
@@ -274,6 +274,6 @@ class HttpTestResponse:
 
     def assertJsonMissing(self, data):
         """Assert that JSON response does not include the given data."""
-        response_data = self._ensure_response_is_json()
+        # response_data = self._ensure_response_is_json()
         # TODO
         return self
