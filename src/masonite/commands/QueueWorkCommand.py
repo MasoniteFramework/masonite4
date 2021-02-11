@@ -24,15 +24,14 @@ class QueueWorkCommand(Command):
         if driver == "None":
             driver = None
 
-        options.update({'driver': driver})
+        options.update({"driver": driver})
         if self.option("poll") != "None":
-            options.update({'poll': self.option("poll")})
+            options.update({"poll": self.option("poll")})
 
         attempts = self.option("attempts")
         if attempts == "None":
             attempts = None
         else:
-            options.update({'attempts': attempts})
-
+            options.update({"attempts": attempts})
 
         return self.app.make("queue").consume(options)
