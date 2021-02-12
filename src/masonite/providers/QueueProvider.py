@@ -1,4 +1,4 @@
-from ..drivers.queue import DatabaseDriver, AsyncDriver
+from ..drivers.queue import DatabaseDriver, AsyncDriver, AMQPDriver
 from ..queues import Queue
 from ..utils.structures import load
 
@@ -14,6 +14,7 @@ class QueueProvider:
 
         queue.add_driver("database", DatabaseDriver(self.application))
         queue.add_driver("async", AsyncDriver(self.application))
+        queue.add_driver("amqp", AMQPDriver(self.application))
         self.application.bind("queue", queue)
 
     def boot(self):

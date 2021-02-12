@@ -11,7 +11,13 @@ DRIVERS = {
         #
     },
     "amqp": {
-        #
+        "username": "guest",
+        "password": "guest",
+        "port": "5672",
+        "vhost": "",
+        "host": "localhost",
+        "channel": "default",
+        "queue": "masonite4",
     },
     "async": {"blocking": True},
 }
