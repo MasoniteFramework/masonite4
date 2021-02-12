@@ -137,10 +137,41 @@ class HttpTestResponse:
             assert session_value == value
         return self
 
+    def assertSessionHasAll(self, dictionary, driver="cookie"):
+        """Assert that session contains the given data dictionary.
+        The session driver can be specified if necessary."""
+        session_data = self.request.session.driver(driver).all()
+        # TODO: fix this one
+        assert dictionary.items() <= session_data.items()
+        return self
+
     def assertSessionMissing(self, key, driver="cookie"):
         """Assert that session does not contain the given key. The session driver can be specified
         if necessary."""
         assert not self.request.session.driver(driver).get(key)
+        return self
+
+    def assertSessionHasErrors(self, keys=[], driver="cookie"):
+        """Assert that session contains errors for the given list of keys (meaning that each given key
+        exists in 'errors' dict in session.) If no keys are given this will assert that the
+        sessions has errors without checking specific keys."""
+        errors = self.request.session.driver(driver).get("errors")
+        assert errors
+        if keys:
+            for key in keys:
+                assert errors.get(key)
+        return self
+
+    def assertSessionHasNoErrors(self, keys=[], driver="cookie"):
+        """Assert that session does not have any errors (meaning that session does not contain an
+        'errors' key or 'errors' key is empty. If a list of keys is given, this will check
+        that there are no errors for each of those keys."""
+        errors = self.request.session.driver(driver).get("errors")
+        if not keys:
+            assert not errors
+        else:
+            for key in keys:
+                assert not errors.get(key)
         return self
 
     def _ensure_response_has_view(self):
@@ -162,7 +193,7 @@ class HttpTestResponse:
             assert self.response.original.dictionary[key] == value
         return self
 
-    def assertViewHasAll(self, keys):
+    def assertViewHasExact(self, keys):
         """Assert that view context contains exactly the data keys (or the complete data dict)."""
         self._ensure_response_has_view()
         if isinstance(keys, list):
@@ -236,13 +267,16 @@ class HttpTestResponse:
     def _ensure_response_is_json(self):
         """Parse response back from JSON into a dict, if an error happens the response was not
         a JSON string."""
-        return json.loads(self.response.content)
+        try:
+            return json.loads(self.response.content)
+        except ValueError:
+            raise ValueError("The response was not JSON serializable")
 
     def assertJson(self, data):
-        """Assert that response is JSON and contains this data. The assertion will
+        """Assert that response is JSON and contains the given data dictionary. The assertion will
         pass even if it is not an exact match."""
-        # response_data = self._ensure_response_is_json()
-        # TODO
+        response_data = self._ensure_response_is_json()
+        assert data.items() <= response_data.items()
         return self
 
     def assertJsonPath(self, path, value=None):
@@ -270,10 +304,4 @@ class HttpTestResponse:
         assert (
             response_count == count
         ), f"JSON response count is {response_count}. Asserted {count}."
-        return self
-
-    def assertJsonMissing(self, data):
-        """Assert that JSON response does not include the given data."""
-        # response_data = self._ensure_response_is_json()
-        # TODO
         return self

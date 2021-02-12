@@ -41,6 +41,8 @@ class TestTesting(TestCase):
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
             Route.get("/test-session", "WelcomeController@session").name("session"),
+            Route.get("/test-session-errors", "WelcomeController@session_with_errors").name("session"),
+            Route.get("/test-session-2", "WelcomeController@session2").name("session2"),
         )
         # maybe this should be registered directly in base test case
         auth = Auth(self.application).set_authentication_model(User())
@@ -111,6 +113,18 @@ class TestTesting(TestCase):
         self.get("/test-session").assertSessionHas("key")
         self.get("/test-session").assertSessionHas("key", "value")
 
+    def test_assert_session_has_all(self):
+        self.get("/test-session-2").assertSessionHasAll({"key2": "value2"})
+
+    def test_assert_session_has_errors(self):
+        self.get("/test-session-errors").assertSessionHasErrors()
+        self.get("/test-session-errors").assertSessionHasErrors(["email"])
+        self.get("/test-session-errors").assertSessionHasErrors(["email", "password"])
+
+    def test_assert_session_has_no_errors(self):
+        self.get("/test-session").assertSessionHasNoErrors()
+        self.get("/test-session-errors").assertSessionHasNoErrors(["name"])
+
     def test_assert_session_missing(self):
         self.get("/").assertSessionMissing("some_test_key")
 
@@ -135,19 +149,19 @@ class TestTesting(TestCase):
         with self.assertRaises(ValueError):
             self.get("/test").assertViewIs("test")
 
-    def test_assert_view_has_all(self):
-        self.get("/view-context").assertViewHasAll(["users", "count"])
-        self.get("/view-context").assertViewHasAll(
+    def test_assert_view_has_exact(self):
+        self.get("/view-context").assertViewHasExact(["users", "count"])
+        self.get("/view-context").assertViewHasExact(
             {"count": 1, "users": ["John", "Joe"]}
         )
 
         with self.assertRaises(AssertionError):
-            self.get("/view-context").assertViewHasAll(
+            self.get("/view-context").assertViewHasExact(
                 ["users", "count", "not in data"]
             )
 
         with self.assertRaises(AssertionError):
-            self.get("/view-context").assertViewHasAll({"count": 1})
+            self.get("/view-context").assertViewHasExact({"count": 1})
 
     def test_assert_view_missing(self):
         self.get("/view-context").assertViewMissing("not in data")
@@ -192,10 +206,16 @@ class TestTesting(TestCase):
         pass
 
     def test_assert_json(self):
-        self.get("/test-json").assertJson()
+        self.get("/test-json").assertJson({"key": "value"})
+        # works also in a nested path
+        self.get("/test-json").assertJson({"other_key": {"nested": 1, "nested_again": {"a": 1, "b": 2}}})
+
+    def test_json_assertions_fail_when_response_not_json(self):
+        with self.assertRaises(ValueError):
+            self.get("/view").assertJson({"key": "value"})
 
     def test_assert_json_path(self):
-        self.get("/test-json").assertJsonPath("key2", "value2")
+        self.get("/test-json").assertJsonPath("key2", [1, 2])
         self.get("/test-json").assertJsonPath("other_key.nested", 1)
         self.get("/test-json").assertJsonPath("other_key.nested_again.b", 2)
         self.get("/test-json").assertJsonPath(
@@ -207,9 +227,11 @@ class TestTesting(TestCase):
         self.get("/test-json").assertJsonCount(2, key="other_key")
 
     def test_assert_json_exact(self):
-        # TODO
-        pass
-
-    def test_assert_json_missing(self):
-        # TODO
-        pass
+        self.get("/test-json").assertJsonExact({
+            "key": "value",
+            "key2": [1,2],
+            "other_key": {
+                "nested": 1,
+                "nested_again": {"a": 1, "b": 2},
+            },
+        })

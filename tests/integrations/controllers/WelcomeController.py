@@ -50,7 +50,7 @@ class WelcomeController(Controller):
         return response.json(
             {
                 "key": "value",
-                "key2": "value2",
+                "key2": [1,2],
                 "other_key": {
                     "nested": 1,
                     "nested_again": {"a": 1, "b": 2},
@@ -63,6 +63,28 @@ class WelcomeController(Controller):
         # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", "value")
         return "session"
+
+    def session_with_errors(self, request: Request):
+        # @josephmancuso: this should work, but in tests session is not bind to request
+        # request.session.flash("key", "value")
+        request.app.make("session").driver("cookie").flash("key", "value")
+        request.app.make("session").driver("cookie").flash("errors", {
+            "email": "Email required",
+            "password": "Password too short",
+            "name": ""
+        })
+        return "session"
+
+    def session2(self, request: Request):
+        # @josephmancuso: this should work, but in tests session is not bind to request
+        # request.session.flash("key", "value")
+        request.app.make("session").driver("cookie").flash("key", {
+            "nested": 1,
+            "nested_again": {
+                "key2": "value2"
+            }
+        })
+        return "session2"
 
     def with_params(self):
         return ""
