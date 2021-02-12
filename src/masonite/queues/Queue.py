@@ -37,5 +37,7 @@ class Queue:
 
     def retry(self, options):
         driver = self.get_driver(options.get("driver"))
-
+        config_options = self.get_config_options(options.get("driver"))
+        config_options.update(options)
+        options.update(self.get_config_options(options.get("driver")))
         return driver.set_options(config_options).retry()

@@ -42,7 +42,7 @@ class AsyncDriver:
         if is_blocking:
             for job in as_completed(ran.keys()):
                 if job.exception():
-                    ran[job].failed(job.exception())
+                    ran[job].failed(ran[job], job.exception())
                 print(f"Job Ran: {job}")
 
     def consume(self, **options):

@@ -90,7 +90,7 @@ class AMQPDriver(HasColoredCommands):
 
     def consume(self):
         self.success(
-            '[*] Waiting to process jobs on the "{}" channel. To exit press CTRL+C'.format(
+            '[*] Waiting to process jobs on the "{}" queue. To exit press CTRL+C'.format(
                 self.options.get("queue")
             )
         )
@@ -108,48 +108,29 @@ class AMQPDriver(HasColoredCommands):
             self.publishing_channel.close()
             self.connection.close()
 
-    # def retry(self):
-    #     builder = (
-    #         self.application.make("builder")
-    #         .on(self.options.get("connection"))
-    #         .table(self.options.get("failed_table", "failed_jobs"))
-    #     )
+    def retry(self):
+        builder = (
+            self.application.make("builder")
+            .on(self.options.get("connection"))
+            .table(self.options.get("failed_table", "failed_jobs"))
+        )
 
-    #     jobs = builder.get()
+        jobs = builder.get()
 
-    #     if len(jobs) == 0:
-    #         self.success("No failed jobs found.")
-    #         return
+        if len(jobs) == 0:
+            self.success("No failed jobs found.")
+            return
 
-    #     for job in jobs:
-    #         builder.table("jobs").create(
-    #             {
-    #                 "name": str(job["name"]),
-    #                 "payload": job["payload"],
-    #                 "serialized": job["payload"],
-    #                 "attempts": 0,
-    #                 "available_at": pendulum.now().to_datetime_string(),
-    #                 "queue": job["queue"],
-    #             }
-    #         )
-    #     self.success(f"Added {len(jobs)} failed jobs back to the queue")
-    #     builder.table(self.options.get("failed_table", "failed_jobs")).where_in(
-    #         "id", [x["id"] for x in jobs]
-    #     ).delete()
+        for job in jobs:
+            try:
+                self.connect().publish(pickle.loads(job["payload"]))
+            except (self.get_connection_exceptions()):
+                self.connect().publish(pickle.loads(job["payload"]))
 
-    # def add_to_failed_queue_table(self, builder, name, payload, exception):
-    #     builder.table(self.options.get("failed_table", "failed_jobs")).create(
-    #         {
-    #             "driver": "database",
-    #             "queue": self.options.get("queue", "default"),
-    #             "name": name,
-    #             "connection": self.options.get("connection"),
-    #             "created_at": pendulum.now().to_datetime_string(),
-    #             "exception": exception,
-    #             "payload": payload,
-    #             "failed_at": pendulum.now().to_datetime_string(),
-    #         }
-    #     )
+        self.success(f"Added {len(jobs)} failed jobs back to the queue")
+        builder.table(self.options.get("failed_table", "failed_jobs")).where_in(
+            "id", [x["id"] for x in jobs]
+        ).delete()
 
     def work(self, ch, method, _, body):
 
@@ -172,19 +153,28 @@ class AMQPDriver(HasColoredCommands):
                 f"[{method.delivery_tag}][{pendulum.now().to_datetime_string()}] Job Successfully Processed"
             )
         except Exception as e:
-            self.danger("Job Failed: {}".format(str(e)))
+            self.danger(
+                f"[{method.delivery_tag}][{pendulum.now().to_datetime_string()}] Job Failed"
+            )
 
-            # if not obj.run_again_on_fail:
-            #     ch.basic_ack(delivery_tag=method.delivery_tag)
-            #     return
+            getattr(obj, "failed")(job, str(e))
 
-            # if ran < obj.run_times and isinstance(obj, Queueable):
-            #     time.sleep(1)
-            #     self.push(obj.__class__, args=args, callback=callback, ran=ran + 1)
-            # else:
-            #     if hasattr(obj, "failed"):
-            #         getattr(obj, "failed")(job, str(e))
-
-            # self.add_to_failed_queue_table(job, channel=self.queue)
+            self.add_to_failed_queue_table(
+                self.application.make("builder"), str(job["obj"]), body, str(e)
+            )
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    def add_to_failed_queue_table(self, builder, name, payload, exception):
+        builder.table(self.options.get("failed_table", "failed_jobs")).create(
+            {
+                "driver": "amqp",
+                "queue": self.options.get("queue", "default"),
+                "name": name,
+                "connection": self.options.get("connection"),
+                "created_at": pendulum.now().to_datetime_string(),
+                "exception": exception,
+                "payload": payload,
+                "failed_at": pendulum.now().to_datetime_string(),
+            }
+        )
