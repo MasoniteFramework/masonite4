@@ -13,16 +13,20 @@ class ScheduleRunCommand(Command):
         {--t|task=None : Name of task you want to run}
     """
 
+    def __init__(self, application):
+        super().__init__()
+        self.app = application
+
     def handle(self):
-        from wsgi import container as app
+        return self.run_tasks(self.app.collect(Task))
 
-        tasks = app.collect(Task)
-
-        for task_key, task_class in tasks.items():
+    def run_tasks(self, tasks):
+        app = self.app
+        for name, task_class in tasks.items():
             # Resolve the task with the container
             if self.option("task") != "None":
                 if (
-                    self.option("task") != task_key
+                    self.option("task") != name
                     and self.option("task") != task_class.name
                 ):
                     continue

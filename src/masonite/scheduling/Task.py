@@ -65,22 +65,12 @@ class Task:
         return self.daily().at(run_time)
 
     def handle(self):
-        """
-        Fires the task
-        """
+        """Fires the task"""
 
-        pass
-
-    def log(self):
-        """
-        Log into scheduler cache
-        """
         pass
 
     def should_run(self, date=None):
-        """
-        If the task should run
-        """
+        """If the task should run"""
 
         # set the date
         self._set_date()
@@ -98,28 +88,28 @@ class Task:
 
     def _verify_run(self):
         if self.run_every:
-            time = self.run_every.split(" ")
+            length, frequency = self.run_every.split(" ")
 
-            if time[1] in ("minute", "minutes"):
-                time = int(time[0])
+            if frequency in ("minute", "minutes"):
+                time = int(length)
                 if self._date.minute == 0 or self._date.minute % time == 0 or time == 1:
                     return True
 
-            elif time[1] in ("hour", "hours"):
-                time = int(time[0])
+            elif frequency in ("hour", "hours"):
+                time = int(length)
                 if self._date.hour % time == 0 and self._date.minute == 0:
                     return True
 
-            elif time[1] in ("day", "days"):
-                time = int(time[0])
+            elif frequency in ("day", "days"):
+                time = int(length)
                 if self._date.day_of_year % time == 0 and (
                     self._date.hour == 0
                     and self._date.minute == 0
                     or self._verify_run_at()
                 ):
                     return True
-            elif time[1] in ("month", "months"):
-                time = int(time[0])
+            elif frequency in ("month", "months"):
+                time = int(length)
                 if (
                     self._date.month % time == 0
                     and self._date.day == 1
@@ -146,16 +136,13 @@ class Task:
 
         return False
 
-    def _verify_run_every():
-        pass
-
     def _verify_run_at(self):
         if self._date.minute < 10:
-            minute = "0{}".format(self._date.minute)
+            minute = f"0{self._date.minute}"
         else:
             minute = self._date.minute
 
-        if "{0}:{1}".format(self._date.hour, minute) == self.run_at:
+        if f"{self._date.hour}:{minute}" == self.run_at:
             return True
 
         return False
