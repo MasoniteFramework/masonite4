@@ -18,24 +18,4 @@ class ScheduleRunCommand(Command):
         self.app = application
 
     def handle(self):
-        return self.run_tasks(self.app.collect(Task))
-
-    def run_tasks(self, tasks):
-        app = self.app
-        for name, task_class in tasks.items():
-            # Resolve the task with the container
-            if self.option("task") != "None":
-                if (
-                    self.option("task") != name
-                    and self.option("task") != task_class.name
-                ):
-                    continue
-
-            if inspect.isclass(task_class):
-                task = app.resolve(task_class)
-            else:
-                task = task_class
-
-            # If the class should run then run it
-            if task.should_run():
-                task.handle()
+        return self.app.make("scheduler").run()

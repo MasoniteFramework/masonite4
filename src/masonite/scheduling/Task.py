@@ -125,8 +125,7 @@ class Task:
             return self._verify_run_at()
 
         if self.run_every_minute:
-            if self._date.minute / 1 == 1:
-                return True
+            return True
         elif self.run_every_hour:
             if self._date.hour / 1 == 1:
                 return True

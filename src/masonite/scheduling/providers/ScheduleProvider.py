@@ -4,6 +4,7 @@ from ...providers import Provider
 from ..commands.CreateTaskCommand import CreateTaskCommand
 from ..commands.ScheduleRunCommand import ScheduleRunCommand
 from ..CommandTask import CommandTask
+from ..TaskHandler import TaskHandler
 
 
 class ScheduleProvider(Provider):
@@ -14,6 +15,8 @@ class ScheduleProvider(Provider):
         self.application.make("commands").add(
             CreateTaskCommand(), ScheduleRunCommand(self.application)
         )
+
+        self.application.bind("scheduler", TaskHandler(self.application))
 
     def boot(self):
         pass
