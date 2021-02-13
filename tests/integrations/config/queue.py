@@ -23,6 +23,6 @@ DRIVERS = {
         "blocking": True,
         "callback": "handle",
         "mode": "threading",
-        "workers": 1
+        "workers": 1,
     },
 }

@@ -20,7 +20,7 @@ class QueueWorkCommand(Command):
 
     def handle(self):
         options = {}
-        driver = None if driver == "None" else self.option("driver") 
+        driver = None if driver == "None" else self.option("driver")
 
         options.update({"driver": driver})
         if self.option("poll") != "None":

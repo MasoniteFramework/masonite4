@@ -130,9 +130,11 @@ class DatabaseDriver(HasColoredCommands):
         ).delete()
 
     def get_builder(self):
-        return self.application.make("builder")
-                .on(self.options.get("connection"))
-                .table(self.options.get("table"))
+        return (
+            self.application.make("builder")
+            .on(self.options.get("connection"))
+            .table(self.options.get("table"))
+        )
 
     def add_to_failed_queue_table(self, builder, name, payload, exception):
         builder.table(self.options.get("failed_table", "failed_jobs")).create(
