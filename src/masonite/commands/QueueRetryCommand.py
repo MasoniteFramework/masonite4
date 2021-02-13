@@ -17,9 +17,7 @@ class QueueRetryCommand(Command):
         self.app = application
 
     def handle(self):
-        driver = self.option("driver")
-        if driver == "None":
-            driver = None
+        driver = None if driver == "None" else self.option("driver") 
 
         return self.app.make("queue").retry(
             {
