@@ -11,7 +11,7 @@ class QueueFailedCommand(Command):
     Creates a failed jobs table
 
     queue:failed
-        {--d|--directory=database/migrations : Specifies the directory to create the migration in} 
+        {--d|--directory=database/migrations : Specifies the directory to create the migration in}
     """
 
     def handle(self):

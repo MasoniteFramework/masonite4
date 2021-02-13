@@ -23,7 +23,7 @@ class AsyncDriver:
         options = self.options
         callback = options.get("callback", "handle")
         mode = options.get("mode", "threading")
-        workers = options.get("workers", 1)
+        workers = options.get("workers", None)
 
         # Set processor to either use threads or processes
         processor = self._get_processor(mode=mode, max_workers=workers)
@@ -35,7 +35,7 @@ class AsyncDriver:
             try:
                 future = processor.submit(getattr(obj, callback), *args, **kwargs)
             except AttributeError:
-                # Could be wanting to call only a method asyncronously
+                # Could be wanting to call only a method asynchronously
                 future = processor.submit(obj, *args, **kwargs)
             ran.update({future: obj})
 
@@ -59,13 +59,10 @@ class AsyncDriver:
             max_workers {int} - number of threads/processes to use
         """
 
-        # Necessary for Python 3.4, can be removed in 3.5+
         if max_workers is None:
             # Use this number because ThreadPoolExecutor is often
             # used to overlap I/O instead of CPU work.
             max_workers = (os.cpu_count() or 1) * 5
-        if max_workers <= 0:
-            raise QueueException("max_workers must be greater than 0")
 
         # Determine Mode for Processing
         if mode == "threading":

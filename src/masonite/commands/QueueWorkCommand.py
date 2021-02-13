@@ -1,4 +1,4 @@
-"""New Key Command."""
+"""Queue Work Command."""
 from cleo import Command
 
 
@@ -10,7 +10,7 @@ class QueueWorkCommand(Command):
         {--c|--connection : Specifies the database connection if using database driver.}
         {--queue=default : The queue to listen to}
         {--d|driver=None : Specify the driver you would like to use}
-        {--p|poll=1 : Specify the frequency a worker should wait before fetching new jobs}
+        {--p|poll=1 : Specify the seconds a worker should wait before fetching new jobs}
         {--attempts=None : Specify the number of times a job should be retried before it fails}
     """
 
@@ -20,9 +20,7 @@ class QueueWorkCommand(Command):
 
     def handle(self):
         options = {}
-        driver = self.option("driver")
-        if driver == "None":
-            driver = None
+        driver = None if driver == "None" else self.option("driver") 
 
         options.update({"driver": driver})
         if self.option("poll") != "None":

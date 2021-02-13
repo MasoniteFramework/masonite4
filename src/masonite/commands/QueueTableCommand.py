@@ -11,13 +11,11 @@ class QueueTableCommand(Command):
     Creates the jobs table
 
     queue:table
-        {--d|--directory=database/migrations : Specifies the database connection if using database driver}
+        {--d|--directory=database/migrations : Specifies the directory to create the migration in}
     """
 
     def handle(self):
         now = datetime.datetime.today()
-
-        print(self.option("directory"))
 
         with open(
             os.path.join(

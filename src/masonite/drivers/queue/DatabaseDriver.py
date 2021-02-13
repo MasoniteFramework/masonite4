@@ -14,11 +14,7 @@ class DatabaseDriver(HasColoredCommands):
         return self
 
     def push(self, *jobs, args=(), **kwargs):
-        builder = (
-            self.application.make("builder")
-            .on(self.options.get("connection"))
-            .table(self.options.get("table"))
-        )
+        builder = self.get_builder()
 
         for job in jobs:
             payload = pickle.dumps(
@@ -34,7 +30,6 @@ class DatabaseDriver(HasColoredCommands):
                 {
                     "name": str(job),
                     "payload": payload,
-                    "serialized": payload,
                     "available_at": pendulum.now().to_datetime_string(),
                     "attempts": 0,
                     "queue": self.options.get("queue", "default"),
@@ -42,11 +37,7 @@ class DatabaseDriver(HasColoredCommands):
             )
 
     def consume(self):
-        builder = (
-            self.application.make("builder")
-            .on(self.options.get("connection"))
-            .table(self.options.get("table"))
-        )
+        builder = self.get_builder()
 
         print(self.options.get("attempts"))
 
@@ -115,11 +106,7 @@ class DatabaseDriver(HasColoredCommands):
                         )
 
     def retry(self):
-        builder = (
-            self.application.make("builder")
-            .on(self.options.get("connection"))
-            .table(self.options.get("failed_table", "failed_jobs"))
-        )
+        builder = self.get_builder()
 
         jobs = builder.get()
 
@@ -132,7 +119,6 @@ class DatabaseDriver(HasColoredCommands):
                 {
                     "name": str(job["name"]),
                     "payload": job["payload"],
-                    "serialized": job["payload"],
                     "attempts": 0,
                     "available_at": pendulum.now().to_datetime_string(),
                     "queue": job["queue"],
@@ -142,6 +128,11 @@ class DatabaseDriver(HasColoredCommands):
         builder.table(self.options.get("failed_table", "failed_jobs")).where_in(
             "id", [x["id"] for x in jobs]
         ).delete()
+
+    def get_builder(self):
+        return self.application.make("builder")
+                .on(self.options.get("connection"))
+                .table(self.options.get("table"))
 
     def add_to_failed_queue_table(self, builder, name, payload, exception):
         builder.table(self.options.get("failed_table", "failed_jobs")).create(

@@ -19,5 +19,10 @@ DRIVERS = {
         "channel": "default",
         "queue": "masonite4",
     },
-    "async": {"blocking": True},
+    "async": {
+        "blocking": True,
+        "callback": "handle",
+        "mode": "threading",
+        "workers": 1
+    },
 }
