@@ -11,7 +11,22 @@ class User(Model, Authenticates):
     pass
 
 
-class TestTesting(TestCase):
+class TestTestCase(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.setRoutes(
+            Route.get("/", "WelcomeController@show").name("home"),
+        )
+
+    def test_add_routes(self):
+        self.assertEqual(len(self.application.make("router").routes), 1)
+        self.addRoutes(
+            Route.get("/test", "WelcomeController@show").name("test"),
+        )
+        self.assertEqual(len(self.application.make("router").routes), 2)
+
+
+class TestTestingAssertions(TestCase):
     def setUp(self):
         super().setUp()
         self.setRoutes(
