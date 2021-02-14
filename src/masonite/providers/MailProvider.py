@@ -19,14 +19,3 @@ class MailProvider(Provider):
 
     def boot(self):
         pass
-
-
-    def register_mock(self, custom_mock_class):
-        if custom_mock_class:
-            mock = custom_mock_class(self.application)
-        else:
-            from src.masonite.tests.mocks import MockMail
-            mock = MockMail(self.application).set_configuration(
-                load(self.application.make("config.mail")).DRIVERS
-            )
-        self.application.bind("mail", mock)

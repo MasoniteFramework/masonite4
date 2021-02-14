@@ -28,5 +28,4 @@ class TestMocking(TestCase):
         assert isinstance(mocked_mail, CustomMockMail)
 
         self.restore("mail")
-        import pdb;pdb.set_trace()
         assert isinstance(self.application.make("mail"), Mail)

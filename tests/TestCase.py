@@ -34,6 +34,7 @@ class TestCase(TestCase):
             ),
         )
         self.register_mocks()
+        self.original_class_mocks = {}
 
     def addRoutes(self, routes):
         self.application.make("router").add(routes)
@@ -100,12 +101,8 @@ class TestCase(TestCase):
         A package could in its service provider call a method which could update one of the mock
         class with the one installed.
         """
-        # from src.masonite.tests.mocks import MockMail
-        # self.application.bind("mock.mail", MockMail)
-
         # for test but should remove src.
         self.application.bind("mock.mail", "src.masonite.tests.mocks.MockMail")
-
         # self.application.bind("mock.queue", MockQueue)
 
     def fake(self, binding, mock_class=None):
@@ -116,11 +113,13 @@ class TestCase(TestCase):
             mock_class_path = self.application.make(f"mock.{binding}")
             mock_class = pydoc.locate(mock_class_path)
         mock = mock_class(self.application)
+        # save original first
+        self.original_class_mocks.update({binding: self.application.make(binding)})
+        # mock by overriding with mocked version
         self.application.bind(binding, mock)
         return mock
 
     def restore(self, binding):
         """Restore the service previously mocked to the original one."""
-        # how to retrieve the original ?
-        original = self.application.make(binding)
+        original = self.original_class_mocks.get(binding)
         self.application.bind(binding, original)
