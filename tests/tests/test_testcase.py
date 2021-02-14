@@ -14,7 +14,7 @@ class User(Model, Authenticates):
 class TestTesting(TestCase):
     def setUp(self):
         super().setUp()
-        self.addRoutes(
+        self.setRoutes(
             Route.get("/", "WelcomeController@show").name("home"),
             Route.get("/test", "WelcomeController@show").name("test"),
             Route.get("/view", "WelcomeController@view").name("view"),

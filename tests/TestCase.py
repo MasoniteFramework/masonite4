@@ -32,11 +32,15 @@ class TestCase(TestCase):
         self._test_cookies = {}
         self._test_headers = {}
 
-    def addRoutes(self, *routes):
+    def setRoutes(self, *routes):
         self.application.bind(
             "router",
             RouteCapsule(*routes),
         )
+        return self
+
+    def addRoutes(self, *routes):
+        self.application.make("router").add(routes)
         return self
 
     def withCsrf(self):
