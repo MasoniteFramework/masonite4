@@ -1,14 +1,10 @@
 from src.masonite.tests import TestCase
-from src.masonite.foundation import Application, Kernel, HttpKernel
-from src.masonite.providers import RouteProvider
 from src.masonite.routes import Route, RouteCapsule
 from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
-from src.masonite.middleware.route.VerifyCsrfToken import VerifyCsrfToken
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
-from unittest.mock import MagicMock
 
 import os
 import json
@@ -103,7 +99,7 @@ class TestCase(TestCase):
         """
         # here we will configure all default available mocks
         self.application.bind("mock.mail", "src.masonite.tests.mocks.MockMail")
-        self.application.bind("mock.queue", "MockQueue")
+        self.application.bind("mock.queue", "src.masonite.tests.mocks.MockQueue")
 
     def fake(self, binding, mock_class=None):
         """Mock a service with its mocked implementation or with a given custom
@@ -113,6 +109,7 @@ class TestCase(TestCase):
             mock_class_path = self.application.make(f"mock.{binding}")
             mock_class = pydoc.locate(mock_class_path)
         mock = mock_class(self.application)
+
         # save original first
         self.original_class_mocks.update({binding: self.application.make(binding)})
         # mock by overriding with mocked version
