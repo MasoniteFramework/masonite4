@@ -59,14 +59,11 @@ class WelcomeController(Controller):
         )
 
     def session(self, request: Request):
-        # @josephmancuso: this should work, but in tests session is not bind to request
         # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", "value")
         return "session"
 
     def session_with_errors(self, request: Request):
-        # @josephmancuso: this should work, but in tests session is not bind to request
-        # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", "value")
         request.app.make("session").driver("cookie").flash("errors", {
             "email": "Email required",
@@ -76,8 +73,6 @@ class WelcomeController(Controller):
         return "session"
 
     def session2(self, request: Request):
-        # @josephmancuso: this should work, but in tests session is not bind to request
-        # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", {
             "nested": 1,
             "nested_again": {
