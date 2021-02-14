@@ -46,7 +46,6 @@ class WebGuard:
         """
 
         attempt = self.model.attempt(username, password)
-
         if attempt:
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt

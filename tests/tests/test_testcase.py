@@ -43,6 +43,7 @@ class TestTesting(TestCase):
             Route.get("/test-session", "WelcomeController@session").name("session"),
             Route.get("/test-session-errors", "WelcomeController@session_with_errors").name("session"),
             Route.get("/test-session-2", "WelcomeController@session2").name("session2"),
+            Route.get("/test-authenticates", "WelcomeController@auth").name("auth"),
         )
         # maybe this should be registered directly in base test case
         auth = Auth(self.application).set_authentication_model(User())
@@ -113,9 +114,6 @@ class TestTesting(TestCase):
         self.get("/test-session").assertSessionHas("key")
         self.get("/test-session").assertSessionHas("key", "value")
 
-    def test_assert_session_has_all(self):
-        self.get("/test-session-2").assertSessionHasAll({"key2": "value2"})
-
     def test_assert_session_has_errors(self):
         self.get("/test-session-errors").assertSessionHasErrors()
         self.get("/test-session-errors").assertSessionHasErrors(["email"])
@@ -173,10 +171,7 @@ class TestTesting(TestCase):
         self.get("/test").assertGuest()
 
     def test_assert_authenticated(self):
-        self.application.make("auth").guard("web").attempt(
-            "idmann509@gmail.com", "secret"
-        )
-        self.get("/test").assertAuthenticated()
+        self.get("/test-authenticates").assertAuthenticated()
 
     def test_assert_authenticated_as(self):
         self.application.make("auth").guard("web").attempt(

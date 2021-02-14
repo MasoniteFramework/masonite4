@@ -88,3 +88,10 @@ class WelcomeController(Controller):
 
     def with_params(self):
         return ""
+
+    def auth(self, request: Request):
+        request.app.make("auth").guard("web").attempt(
+
+            "idmann509@gmail.com", "secret"
+        )
+        return "logged in"

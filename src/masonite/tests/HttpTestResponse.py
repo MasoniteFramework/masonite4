@@ -137,14 +137,6 @@ class HttpTestResponse:
             assert session_value == value
         return self
 
-    def assertSessionHasAll(self, dictionary, driver="cookie"):
-        """Assert that session contains the given data dictionary.
-        The session driver can be specified if necessary."""
-        session_data = self.request.session.driver(driver).all()
-        # TODO: fix this one
-        assert dictionary.items() <= session_data.items()
-        return self
-
     def assertSessionMissing(self, key, driver="cookie"):
         """Assert that session does not contain the given key. The session driver can be specified
         if necessary."""
