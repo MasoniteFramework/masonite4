@@ -101,9 +101,9 @@ class TestCase(TestCase):
         A package could in its service provider call a method which could update one of the mock
         class with the one installed.
         """
-        # for test but should remove src.
+        # here we will configure all default available mocks
         self.application.bind("mock.mail", "src.masonite.tests.mocks.MockMail")
-        # self.application.bind("mock.queue", MockQueue)
+        self.application.bind("mock.queue", "MockQueue")
 
     def fake(self, binding, mock_class=None):
         """Mock a service with its mocked implementation or with a given custom
