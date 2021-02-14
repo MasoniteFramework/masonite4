@@ -38,7 +38,7 @@ class Task:
         return self
 
     def every_45_minutes(self):
-        self.run_every = "15 minutes"
+        self.run_every = "45 minutes"
         return self
 
     def hourly(self):
