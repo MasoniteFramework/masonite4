@@ -151,6 +151,8 @@ class TestScheduler:
         time = pendulum.now().on(2018, 1, 1).at(13, 0, 5)
         task._date = time
 
+        assert task.should_run(time) == True
+
         task = MockTask()
         task.every_minute()
 
