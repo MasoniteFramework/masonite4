@@ -75,10 +75,7 @@ class Task:
         # set the date
         self._set_date()
 
-        if self._verify_run():
-            return True
-
-        return False
+        return self._verify_run()
 
     def _set_date(self):
         if not self._date:

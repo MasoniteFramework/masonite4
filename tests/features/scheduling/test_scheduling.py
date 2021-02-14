@@ -127,7 +127,6 @@ class TestScheduler:
 
     def test_run_at(self):
         self.task.run_every = ""
-        self.task.run_at = None
         self.task.run_at = "13:00"
 
         time = pendulum.now().on(2018, 1, 1).at(13, 0, 5)
