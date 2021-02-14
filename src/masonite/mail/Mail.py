@@ -19,7 +19,7 @@ class Mail:
 
     def get_config_options(self, driver=None):
         if driver is None:
-            return self.driver_config[self.driver_config.get("default")]
+            return self.driver_config.get(self.driver_config.get("default"), {})
 
         return self.driver_config.get(driver, {})
 
