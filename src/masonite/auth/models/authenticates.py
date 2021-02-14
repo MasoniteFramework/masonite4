@@ -1,3 +1,4 @@
+"""Password Helper Module."""
 import bcrypt
 import uuid
 
