@@ -1,2 +1,1 @@
 from .MockMail import MockMail
-
