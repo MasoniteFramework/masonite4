@@ -95,7 +95,6 @@ class TestCase(TestCase):
             request.header(name, value)
 
         route = self.application.make("router").find(route, method)
-        print("rrr", route._name)
         if route:
             return HttpTestResponse(self.application, request, response, route)
         raise Exception(f"NO route found for {route}")
