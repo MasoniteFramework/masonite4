@@ -10,6 +10,8 @@ from src.masonite.providers import (
     QueueProvider,
 )
 
+from src.masonite.scheduling.providers import ScheduleProvider
+
 
 PROVIDERS = [
     FrameworkProvider,
@@ -20,4 +22,5 @@ PROVIDERS = [
     MailProvider,
     SessionProvider,
     QueueProvider,
+    ScheduleProvider,
 ]
