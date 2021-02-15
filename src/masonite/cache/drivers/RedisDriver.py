@@ -6,7 +6,7 @@ import json
 import glob
 
 
-class FileDriver:
+class RedisDriver:
     def __init__(self, application):
         self.application = application
 
@@ -16,35 +16,41 @@ class FileDriver:
             make_full_directory(options.get("location"))
         return self
 
+    def get_connection(self):
+        try:
+            import redis
+        except ImportError:
+            raise ModuleNotFoundError(
+                "Could not find the 'redis' library. Run 'pip install redis' to fix this."
+            )
+
+        return redis.StrictRedis(
+            host=self.options.get("host"),
+            port=self.options.get("port"),
+            password=self.options.get("password"),
+            decode_responses=True,
+        )
+
     def get(self, key, default=None, **options):
         if not self.has(key):
             return None
-
-        modified_at = self.get_modified_at(os.path.join(self._get_directory(), key))
-
-        with open(os.path.join(self._get_directory(), key), "r") as f:
-            value = f.read()
-
-            if modified_at.add(seconds=self.get_cache_expiration(value)).is_past():
-                self.forget(key)
-                return None
-
-            value = self.get_value(value)
-
-        return value
+        return self.get_value(
+            self.get_connection().get(f"{self.get_name()}_cache_{key}")
+        )
 
     def put(self, key, value, seconds=None, **options):
 
         time = self.get_expiration_time(seconds)
 
-        if isinstance(value, (dict,)):
+        if isinstance(value, (dict, list)):
             value = json.dumps(value)
 
-        with open(os.path.join(self._get_directory(), key), "w") as f:
-            f.write(f"{time}:{value}")
+        return self.get_connection().set(
+            f"{self.get_name()}_cache_{key}", value, ex=time
+        )
 
     def has(self, key):
-        return Path(os.path.join(self._get_directory(), key)).exists()
+        return self.get_connection().get(f"{self.get_name()}_cache_{key}")
 
     def increment(self, key, amount=1):
         return self.put(key, str(int(self.get(key)) + amount))
@@ -62,21 +68,16 @@ class FileDriver:
 
     def forget(self, key):
         try:
-            os.remove(os.path.join(self._get_directory(), key))
+            self.get_connection().delete(f"{self.get_name()}_cache_{key}")
             return True
         except FileNotFoundError:
             return False
 
     def flush(self):
-        files = glob.glob(f"{self._get_directory()}/*")
-        for f in files:
-            os.remove(f)
+        return self.get_connection().flushall()
 
-    def _get_directory(self):
-        return self.options.get("location")
-
-    def get_modified_at(self, filename):
-        return pendulum.from_timestamp(modified_date(filename))
+    def get_name(self):
+        return self.options.get("name")
 
     def get_expiration_time(self, seconds):
         if seconds is None:
@@ -85,13 +86,10 @@ class FileDriver:
         return seconds
 
     def get_value(self, value):
-        value = str(value.split(":", 1)[1])
+        value = str(value)
         if value.isdigit():
             return str(value)
         try:
             return json.loads(value)
         except json.decoder.JSONDecodeError:
             return value
-
-    def get_cache_expiration(self, value):
-        return int(value.split(":", 1)[0])
