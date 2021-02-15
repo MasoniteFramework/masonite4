@@ -39,6 +39,7 @@ class Kernel:
         self.application.bind("config.session", "tests.integrations.config.session")
         self.application.bind("config.queue", "tests.integrations.config.queue")
         self.application.bind("config.database", "tests.integrations.config.database")
+        self.application.bind("config.cache", "tests.integrations.config.cache")
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")

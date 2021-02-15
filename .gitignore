@@ -1,4 +1,6 @@
 **/*.pyc
 venv
 **/*.DS_Store
+.env.*
 .env
+storage/framework/cache
