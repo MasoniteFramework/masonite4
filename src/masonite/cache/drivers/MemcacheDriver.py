@@ -33,7 +33,7 @@ class MemcacheDriver:
 
     def get(self, key, default=None, **options):
         if not self.has(key):
-            return None
+            return default
 
         return self.get_value(
             self.get_connection().get(f"{self.get_name()}_cache_{key}")

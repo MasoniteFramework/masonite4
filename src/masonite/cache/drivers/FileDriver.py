@@ -34,7 +34,7 @@ class FileDriver:
 
             if modified_at.add(seconds=self.get_cache_expiration(value)).is_past():
                 self.forget(key)
-                return None
+                return default
 
             value = self.get_value(value)
 
