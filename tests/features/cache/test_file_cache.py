@@ -3,7 +3,7 @@ import os
 import time
 
 
-class TestMailable(TestCase):
+class TestFileCache(TestCase):
     def setUp(self):
         super().setUp()
         self.application.make("cache")

@@ -1,6 +1,6 @@
 from .Provider import Provider
 from ..cache import Cache
-from ..cache.drivers import FileDriver, RedisDriver
+from ..cache.drivers import FileDriver, RedisDriver, MemcacheDriver
 from ..utils.structures import load
 
 
@@ -14,6 +14,7 @@ class CacheProvider(Provider):
         )
         cache.add_driver("file", FileDriver(self.application))
         cache.add_driver("redis", RedisDriver(self.application))
+        cache.add_driver("memcache", MemcacheDriver(self.application))
         self.application.bind("cache", cache)
 
     def boot(self):

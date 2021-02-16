@@ -5,11 +5,11 @@ import pytest
 
 
 @pytest.mark.integrations
-class TestRedisCache(TestCase):
+class TestMemcacheCache(TestCase):
     def setUp(self):
         super().setUp()
         self.application.make("cache")
-        self.driver = self.application.make("cache").store("redis")
+        self.driver = self.application.make("cache").store("memcache")
 
     def test_can_add_file_driver(self):
         self.assertEqual(self.driver.add("add_key", "value"), "value")
