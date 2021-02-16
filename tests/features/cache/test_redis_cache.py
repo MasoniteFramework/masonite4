@@ -1,8 +1,10 @@
 from tests import TestCase
 import os
 import time
+import pytest
 
 
+@pytest.mark.integrations
 class TestMailable(TestCase):
     def setUp(self):
         super().setUp()
