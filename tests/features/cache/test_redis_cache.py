@@ -9,6 +9,9 @@ class TestMailable(TestCase):
         self.application.make("cache")
         self.driver = self.application.make("cache").store("redis")
 
+    def test_can_add_file_driver(self):
+        self.assertEqual(self.driver.add("add_key", "value"), "value")
+
     def test_can_get_driver(self):
         self.driver.put("key", "value")
         self.assertEqual(self.driver.get("key"), "value")

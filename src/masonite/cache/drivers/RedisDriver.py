@@ -31,6 +31,13 @@ class RedisDriver:
             decode_responses=True,
         )
 
+    def add(self, key, value):
+        if self.has(key):
+            return self.get(key)
+
+        self.put(key, value)
+        return value
+
     def get(self, key, default=None, **options):
         if not self.has(key):
             return None

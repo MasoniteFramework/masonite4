@@ -16,6 +16,13 @@ class FileDriver:
             make_full_directory(options.get("location"))
         return self
 
+    def add(self, key, value):
+        if self.has(key):
+            return self.get(key)
+
+        self.put(key, value)
+        return self.get(key)
+
     def get(self, key, default=None, **options):
         if not self.has(key):
             return None

@@ -14,6 +14,9 @@ class TestMailable(TestCase):
         self.assertEqual(self.driver.get("key"), "value")
         self.assertTrue(self.driver.has("key"), "value")
 
+    def test_can_add_file_driver(self):
+        self.assertEqual(self.driver.add("add_key", "value"), "value")
+
     def test_can_increment(self):
         self.driver.put("count", "1")
         self.assertEqual(self.driver.get("count"), "1")

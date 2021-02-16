@@ -34,27 +34,3 @@ class Cache:
         store_config = self.get_config_options(name)
         driver = self.get_driver(self.get_config_options(name).get("driver"))
         return driver.set_options(store_config)
-
-    def get(self, *args, **kwargs):
-        pass
-
-    def put(self, *args, **kwargs):
-        pass
-
-    def has(self, *args, **kwargs):
-        pass
-
-    def increment(self, *args, **kwargs):
-        pass
-
-    def decrement(self, *args, **kwargs):
-        pass
-
-    def remember(self, *args, **kwargs):
-        pass
-
-    def forget(self, *args, **kwargs):
-        pass
-
-    def flush(self, *args, **kwargs):
-        pass
