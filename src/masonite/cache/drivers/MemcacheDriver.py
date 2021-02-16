@@ -18,15 +18,13 @@ class MemcacheDriver:
                 "Could not find the 'pymemcache' library. Run 'pip install pymemcache' to fix this."
             )
 
-        if self.connection:
-            return self.connection
-
-        if self.options.get("port"):
-            self.connection = Client(
-                f"{self.options.get('host')}:{self.options.get('port')}"
-            )
-        else:
-            self.connection = Client(f"{self.options.get('host')}")
+        if not self.connection:
+            if str(self.options.get("port")) != "0":
+                self.connection = Client(
+                    f"{self.options.get('host')}:{self.options.get('port')}"
+                )
+            else:
+                self.connection = Client(f"{self.options.get('host')}")
 
         return self.connection
 

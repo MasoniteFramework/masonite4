@@ -4,6 +4,7 @@ import json
 class RedisDriver:
     def __init__(self, application):
         self.application = application
+        self.connection = None
 
     def set_options(self, options):
         self.options = options
@@ -17,12 +18,15 @@ class RedisDriver:
                 "Could not find the 'redis' library. Run 'pip install redis' to fix this."
             )
 
-        return redis.StrictRedis(
-            host=self.options.get("host"),
-            port=self.options.get("port"),
-            password=self.options.get("password"),
-            decode_responses=True,
-        )
+        if not self.connection:
+            self.connection = redis.StrictRedis(
+                host=self.options.get("host"),
+                port=self.options.get("port"),
+                password=self.options.get("password"),
+                decode_responses=True,
+            )
+
+        return self.connection
 
     def add(self, key, value):
         if self.has(key):
