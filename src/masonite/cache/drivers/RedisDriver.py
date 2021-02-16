@@ -1,9 +1,4 @@
-import os
-from ...utils.filesystem import make_full_directory, modified_date
-from pathlib import Path
-import pendulum
 import json
-import glob
 
 
 class RedisDriver:
@@ -12,8 +7,6 @@ class RedisDriver:
 
     def set_options(self, options):
         self.options = options
-        if options.get("location"):
-            make_full_directory(options.get("location"))
         return self
 
     def get_connection(self):
