@@ -4,11 +4,10 @@ import json
 class MemcacheDriver:
     def __init__(self, application):
         self.application = application
+        self.connection = None
 
     def set_options(self, options):
         self.options = options
-        if options.get("location"):
-            make_full_directory(options.get("location"))
         return self
 
     def get_connection(self):
@@ -19,10 +18,17 @@ class MemcacheDriver:
                 "Could not find the 'pymemcache' library. Run 'pip install pymemcache' to fix this."
             )
 
+        if self.connection:
+            return self.connection
+
         if self.options.get("port"):
-            return Client(f"{self.options.get('host')}:{self.options.get('port')}")
+            self.connection = Client(
+                f"{self.options.get('host')}:{self.options.get('port')}"
+            )
         else:
-            return Client(f"{self.options.get('host')}")
+            self.connection = Client(f"{self.options.get('host')}")
+
+        return self.connection
 
     def add(self, key, value):
         if self.has(key):
