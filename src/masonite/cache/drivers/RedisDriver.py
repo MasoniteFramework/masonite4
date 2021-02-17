@@ -71,11 +71,7 @@ class RedisDriver:
         callable(self)
 
     def forget(self, key):
-        try:
-            self.get_connection().delete(f"{self.get_name()}_cache_{key}")
-            return True
-        except FileNotFoundError:
-            return False
+        return self.get_connection().delete(f"{self.get_name()}_cache_{key}")
 
     def flush(self):
         return self.get_connection().flushall()
@@ -85,7 +81,7 @@ class RedisDriver:
 
     def get_expiration_time(self, seconds):
         if seconds is None:
-            seconds = 9999999
+            seconds = 31557600 * 10
 
         return seconds
 

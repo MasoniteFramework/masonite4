@@ -21,7 +21,7 @@ class FileDriver:
             return self.get(key)
 
         self.put(key, value)
-        return self.get(key)
+        return value
 
     def get(self, key, default=None, **options):
         if not self.has(key):
@@ -87,7 +87,7 @@ class FileDriver:
 
     def get_expiration_time(self, seconds):
         if seconds is None:
-            seconds = 9999999
+            seconds = 31557600 * 10
 
         return seconds
 

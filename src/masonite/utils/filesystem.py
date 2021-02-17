@@ -3,6 +3,7 @@ import platform
 
 
 def make_directory(directory):
+    """Create a directory at the given path for a file if it does not exist"""
     if not os.path.isfile(directory):
         if not os.path.exists(os.path.dirname(directory)):
             # Create the path to the model if it does not exist
@@ -14,6 +15,7 @@ def make_directory(directory):
 
 
 def make_full_directory(directory):
+    """Create all directories to the given path if they do not exist"""
     if not os.path.isfile(directory):
         if not os.path.exists(directory):
             # Create the path to the model if it does not exist
@@ -25,10 +27,8 @@ def make_full_directory(directory):
 
 
 def creation_date(path_to_file):
-    """
-    Try to get the date that a file was created, falling back to when it was
+    """Try to get the date that a file was created, falling back to when it was
     last modified if that isn't possible.
-    See http://stackoverflow.com/a/39501288/1709587 for explanation.
     """
     if platform.system() == "Windows":
         return os.path.getctime(path_to_file)
