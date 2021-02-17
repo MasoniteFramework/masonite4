@@ -22,6 +22,7 @@ class Response:
         self._status = None
         self.statuses = response_statuses()
         self.header_bag = HeaderBag()
+        self.original = None
 
     def json(self, payload, status=200):
         """Gets the response ready for a JSON response.
@@ -140,7 +141,7 @@ class Response:
         Returns:
             string|dict|list -- Returns the data to be returned.
         """
-
+        self.original = view
         if isinstance(view, tuple):
             view, status = view
             self.status(status)
@@ -170,37 +171,35 @@ class Response:
 
         return self.data()
 
-    def redirect(self, location=None, params=None, name=None, url=None, status=302):
+    def redirect(self, location=None, name=None, params={}, url=None, status=302):
         """Set the redirection on the server.
 
         Keyword Arguments:
             location {string} -- The URL to redirect to (default: {None})
             status {int} -- The Response status code. (default: {302})
+            params {dict} -- The route params (default: {})
 
         Returns:
             string -- Returns the data to be returned.
         """
         self.status(status)
-        if params is None:
-            params = {}
 
         if location:
             self.header_bag.add(Header("Location", location))
-            self.view("Redirecting ...")
+            return self.view("Redirecting ...")
         elif name:
-            route = self.app.make("router").find_by_name(name)
-            if not route:
-                raise ValueError(f"Route with the name '{name}' not found.")
-
-            self.header_bag.add(
-                Header("Location", compile_route_to_url(route.url, params))
-            )
-            self.view("Redirecting ...")
+            url = self._get_url_from_route_name(name, params)
+            self.header_bag.add(Header("Location", url))
+            return self.view("Redirecting ...")
         elif url:
             self.header_bag.add(Header("Location", url))
-            self.view("Redirecting ...")
+            return self.view("Redirecting ...")
 
-        return self.data()
+    def _get_url_from_route_name(self, name, params={}):
+        route = self.app.make("router").find_by_name(name)
+        if not route:
+            raise ValueError(f"Route with the name '{name}' not found.")
+        return compile_route_to_url(route.url, params)
 
     def to_bytes(self):
         """Converts the data to bytes so the WSGI server can handle it.

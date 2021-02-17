@@ -43,7 +43,7 @@ class CookieDriver:
             return value
 
     def set(self, key, value):
-        """Set a vlue in the session.
+        """Set a value in the session.
 
         Arguments:
             key {string} -- The key to set as the session key.
