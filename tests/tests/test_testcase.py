@@ -50,13 +50,13 @@ class TestTestingAssertions(TestCase):
             ),
             Route.get("/test-redirect-1", "WelcomeController@redirect_url"),
             Route.get("/test-redirect-2", "WelcomeController@redirect_route"),
-            Route.get(
-                "/test-redirect-3", "WelcomeController@redirect_route_params"
-            ),
+            Route.get("/test-redirect-3", "WelcomeController@redirect_route_params"),
             Route.get("/test/@id", "WelcomeController@with_params").name("test_params"),
             Route.get("/test-json", "WelcomeController@json").name("json"),
             Route.get("/test-session", "WelcomeController@session").name("session"),
-            Route.get("/test-session-errors", "WelcomeController@session_with_errors").name("session"),
+            Route.get(
+                "/test-session-errors", "WelcomeController@session_with_errors"
+            ).name("session"),
             Route.get("/test-session-2", "WelcomeController@session2").name("session2"),
             Route.get("/test-authenticates", "WelcomeController@auth").name("auth"),
         )
@@ -123,7 +123,9 @@ class TestTestingAssertions(TestCase):
 
     def test_assert_redirect_to_route(self):
         self.get("/test-redirect-2").assertRedirect(name="test")
-        self.get("/test-redirect-3").assertRedirect(name="test_params", params={"id": 1})
+        self.get("/test-redirect-3").assertRedirect(
+            name="test_params", params={"id": 1}
+        )
 
     def test_assert_session_has(self):
         self.get("/test-session").assertSessionHas("key")
@@ -218,7 +220,9 @@ class TestTestingAssertions(TestCase):
     def test_assert_json(self):
         self.get("/test-json").assertJson({"key": "value"})
         # works also in a nested path
-        self.get("/test-json").assertJson({"other_key": {"nested": 1, "nested_again": {"a": 1, "b": 2}}})
+        self.get("/test-json").assertJson(
+            {"other_key": {"nested": 1, "nested_again": {"a": 1, "b": 2}}}
+        )
 
     def test_json_assertions_fail_when_response_not_json(self):
         with self.assertRaises(ValueError):
@@ -237,11 +241,13 @@ class TestTestingAssertions(TestCase):
         self.get("/test-json").assertJsonCount(2, key="other_key")
 
     def test_assert_json_exact(self):
-        self.get("/test-json").assertJsonExact({
-            "key": "value",
-            "key2": [1,2],
-            "other_key": {
-                "nested": 1,
-                "nested_again": {"a": 1, "b": 2},
-            },
-        })
+        self.get("/test-json").assertJsonExact(
+            {
+                "key": "value",
+                "key2": [1, 2],
+                "other_key": {
+                    "nested": 1,
+                    "nested_again": {"a": 1, "b": 2},
+                },
+            }
+        )

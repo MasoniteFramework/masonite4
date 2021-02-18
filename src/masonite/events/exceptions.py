@@ -1,0 +1,2 @@
+class InvalidSubscriptionType(Exception):
+    pass

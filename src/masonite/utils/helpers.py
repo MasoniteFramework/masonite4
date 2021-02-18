@@ -532,6 +532,7 @@ def password(password_string):
         string -- The encrypted string.
     """
     import bcrypt
+
     return bytes(
         bcrypt.hashpw(bytes(password_string, "utf-8"), bcrypt.gensalt())
     ).decode("utf-8")
