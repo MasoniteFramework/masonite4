@@ -8,8 +8,14 @@ from tests import TestCase
 
 
 class UserAddedEvent(Event):
-    subscribe = []
+    def __init__(self):
+        pass
 
+    def handle(self):
+        pass
+
+
+class NewUserEvent(Event):
     def __init__(self):
         pass
 
@@ -18,13 +24,19 @@ class UserAddedEvent(Event):
 
 
 class SendEmailListener:
-    def handle(self, event):
+    def handle(self):
         pass
 
 
 class UpdateAdminListener:
+    def handle(self, user):
+        print("update", user)
+        pass
+
+
+class SendAlert:
     def handle(self, event):
-        print("update", event)
+        print("eee", event)
         pass
 
 
@@ -58,3 +70,7 @@ class TestEvent(TestCase):
         self.assertEqual(self.event.fire("masonite.command"), [])
         self.assertEqual(self.event.fire("view.rendered"), ["view.*"])
         self.assertEqual(self.event.fire("user.added", 1), ["user.added"])
+
+    def test_fire_event_class(self):
+        self.event.listen(NewUserEvent, [SendAlert])
+        self.event.fire(NewUserEvent(), [])

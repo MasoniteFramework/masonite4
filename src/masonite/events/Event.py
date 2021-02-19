@@ -1,6 +1,6 @@
 """ Event Module """
 
-from .exceptions import InvalidSubscriptionType
+import inspect
 
 
 class Event:
@@ -23,17 +23,23 @@ class Event:
 
         return self
 
-    def fire(self, event, payload=None):
+    def fire(self, event, *args, **kwargs):
         if isinstance(event, str):
             if event in self.events:
                 for listener in self.events.get(event):
-                    listener().handle(payload)
+                    listener().handle(*args, **kwargs)
             collected_events = self.collect_events(event)
             return collected_events
         else:
-            for event, listeners in self.events.items():
-                for listener in listeners:
-                    listener().handle(payload)
+            if inspect.isclass(event):
+                lookup = event
+                event = event()
+            else:
+                lookup = event.__class__
+            for listener in self.events.get(lookup, []):
+                listener().handle(event)
+
+            return [event]
 
     def collect_events(self, fired_event):
         collected_events = []
