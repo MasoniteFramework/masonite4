@@ -3,7 +3,6 @@ import time
 import pytest
 
 from src.masonite.events import Event
-from src.masonite.events.exceptions import InvalidSubscriptionType
 from tests import TestCase
 
 
