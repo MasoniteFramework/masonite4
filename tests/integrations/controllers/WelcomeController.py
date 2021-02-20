@@ -2,6 +2,7 @@ from src.masonite.controllers import Controller
 from src.masonite.views import View
 from src.masonite.response.response import Response
 from src.masonite.request.request import Request
+from src.masonite.filesystem import Storage
 
 
 class WelcomeController(Controller):
@@ -13,6 +14,9 @@ class WelcomeController(Controller):
 
     def view(self, view: View):
         return view.render("welcome")
+
+    def upload(self, request: Request, storage: Storage):
+        return storage.disk().store(request.input("profile"))
 
     def create(self):
         return "user created", 201

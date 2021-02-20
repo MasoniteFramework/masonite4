@@ -1,7 +1,7 @@
 from .Provider import Provider
 from ..mail import Mail
 from ..drivers.mail import SMTPDriver, TerminalDriver, MailgunDriver
-from ..utils.structures import config, load
+from ..utils.structures import load
 
 
 class MailProvider(Provider):

@@ -40,6 +40,9 @@ class Kernel:
         self.application.bind("config.queue", "tests.integrations.config.queue")
         self.application.bind("config.database", "tests.integrations.config.database")
         self.application.bind("config.cache", "tests.integrations.config.cache")
+        self.application.bind(
+            "config.filesystem", "tests.integrations.config.filesystem"
+        )
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
@@ -70,7 +73,7 @@ class Kernel:
                 "tests/integrations/storage/public": "/",
             }
         )
-        self.application.bind("storage", storage)
+        self.application.bind("storage_capsule", storage)
 
     def register_framework(self):
         self.application.set_response_handler(response_handler)

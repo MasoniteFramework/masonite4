@@ -16,7 +16,7 @@ class WhitenoiseProvider(Provider):
         )
 
         for location, alias in (
-            self.application.make("storage").get_storage_assets().items()
+            self.application.make("storage_capsule").get_storage_assets().items()
         ):
             response_handler.add_files(location, prefix=alias)
 
