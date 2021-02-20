@@ -54,11 +54,16 @@ class LocalDriver:
     def move(self, from_file_path, to_file_path):
         return move(self.get_path(from_file_path), self.get_path(to_file_path))
 
-    def prepend(self, file_path, text):
-        pass
+    def prepend(self, file_path, content):
+        value = self.get(file_path)
+        content = content + value
+        self.put(file_path, content)
+        return content
 
-    def append(self, file_path, text):
-        pass
+    def append(self, file_path, content):
+        with open(self.get_path(file_path), "a") as f:
+            f.write(content)
+        return content
 
     def delete(self, file_path):
         return os.remove(self.get_path(file_path))
@@ -67,7 +72,6 @@ class LocalDriver:
         pass
 
     def store(self, file, name=None):
-        print("upload")
         if name:
             name = f"{name}{file.extension()}"
         full_path = self.get_path(name or file.hash_path_name())

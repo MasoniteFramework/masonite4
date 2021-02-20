@@ -31,5 +31,8 @@ class TestLocalStorage(TestCase):
         self.assertEqual(self.driver.get("delete.log"), None)
 
     def test_can_store(self):
-        # pass
         self.driver.store(File(b"hello.log", "hello-world"))
+
+    def test_can_append_file(self):
+        self.driver.append("world.log", "hello")
+        self.driver.prepend("world.log", "world")
