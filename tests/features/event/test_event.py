@@ -59,9 +59,9 @@ class TestEvent(TestCase):
         self.event.listen(UserAddedEvent, [SendEmailListener])
 
     def test_events_registered(self):
-        self.assertEqual(len(self.event.get_events().get(UserAddedEvent)), 1)
-        self.event.listen(UserAddedEvent, [AdminNotificationListener])
         self.assertEqual(len(self.event.get_events().get(UserAddedEvent)), 2)
+        self.event.listen(UserAddedEvent, [AdminNotificationListener])
+        self.assertEqual(len(self.event.get_events().get(UserAddedEvent)), 3)
 
     def test_fire_event_class(self):
         self.event.fire(UserAddedEvent)
