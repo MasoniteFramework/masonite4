@@ -9,3 +9,4 @@ from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider
 from .QueueProvider import QueueProvider
 from .CacheProvider import CacheProvider
+from ..events.providers import EventProvider

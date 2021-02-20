@@ -50,7 +50,7 @@ class WelcomeController(Controller):
         return response.json(
             {
                 "key": "value",
-                "key2": [1,2],
+                "key2": [1, 2],
                 "other_key": {
                     "nested": 1,
                     "nested_again": {"a": 1, "b": 2},
@@ -65,28 +65,21 @@ class WelcomeController(Controller):
 
     def session_with_errors(self, request: Request):
         request.app.make("session").driver("cookie").flash("key", "value")
-        request.app.make("session").driver("cookie").flash("errors", {
-            "email": "Email required",
-            "password": "Password too short",
-            "name": ""
-        })
+        request.app.make("session").driver("cookie").flash(
+            "errors",
+            {"email": "Email required", "password": "Password too short", "name": ""},
+        )
         return "session"
 
     def session2(self, request: Request):
-        request.app.make("session").driver("cookie").flash("key", {
-            "nested": 1,
-            "nested_again": {
-                "key2": "value2"
-            }
-        })
+        request.app.make("session").driver("cookie").flash(
+            "key", {"nested": 1, "nested_again": {"key2": "value2"}}
+        )
         return "session2"
 
     def with_params(self):
         return ""
 
     def auth(self, request: Request):
-        request.app.make("auth").guard("web").attempt(
-
-            "idmann509@gmail.com", "secret"
-        )
+        request.app.make("auth").guard("web").attempt("idmann509@gmail.com", "secret")
         return "logged in"
