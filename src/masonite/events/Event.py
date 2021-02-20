@@ -16,6 +16,10 @@ class Event:
         return self.events
 
     def listen(self, event, listeners):
+
+        if not isinstance(listeners, list):
+            listeners = [listeners]
+
         if event in self.events:
             self.events[event] += listeners
         else:
