@@ -25,8 +25,6 @@ class QueueTableCommand(Command):
             )
         ) as fp:
             output = fp.read()
-            # output = output.replace("__MIGRATION_NAME__", camelize(name))
-            # output = output.replace("__TABLE_NAME__", table)
 
         file_name = f"{now.strftime('%Y_%m_%d_%H%M%S')}_create_queue_jobs_table.py"
 

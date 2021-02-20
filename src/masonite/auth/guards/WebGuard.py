@@ -1,6 +1,6 @@
 import uuid
 
-import bcrypt
+from ...utils.helpers import password
 
 
 class WebGuard:
@@ -22,13 +22,9 @@ class WebGuard:
         Returns:
             object|bool -- Returns the current authenticated user object or False or None if there is none.
         """
-        if self.app.make("Request").get_cookie("token") and model:
-            return (
-                model.where(
-                    "remember_token", self.app.make("Request").get_cookie("token")
-                ).first()
-                or False
-            )
+        token = self.application.make("request").cookie("token")
+        if token and self.model:
+            return self.model.where("remember_token", token).first() or False
 
         return False
 
@@ -47,7 +43,6 @@ class WebGuard:
         """
 
         attempt = self.model.attempt(username, password)
-
         if attempt:
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt
@@ -115,5 +110,5 @@ class WebGuard:
         Arguments:
             user {dict} -- A dictionary of user data information.
         """
-        user["password"] = bcrypt_password(user["password"])
+        user["password"] = password(user["password"])
         return self.model.create(**user)
