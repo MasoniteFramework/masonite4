@@ -44,6 +44,14 @@ class AdminNotificationListener:
         pass
 
 
+class Subscriber:
+    def handle(self, event):
+        pass
+
+    def subscribe(self, event):
+        event.listen("masonite.event_handled", [self.__class__])
+
+
 class TestEvent(TestCase):
     def setUp(self):
         super().setUp()
@@ -73,3 +81,7 @@ class TestEvent(TestCase):
     def test_fire_event_class(self):
         self.event.listen(NewUserEvent, [SendAlert])
         self.event.fire(NewUserEvent(), [])
+
+    def test_can_subscribe(self):
+        self.event.subscribe(Subscriber())
+        self.event.fire("masonite.event_handled", ["masonite.event_handled"])

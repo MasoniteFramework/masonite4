@@ -72,28 +72,10 @@ class Event:
 
         return collected_events
 
-    # def subscribe(self, *listeners):
-    #     """Subscribe a specific listener object to the events system
-    #     Raises:
-    #         InvalidSubscriptionType -- raises when the subscribe attribute on the listener object is not a class.
-    #     """
-
-    #     for listener in listeners:
-    #         if not isinstance(listener.subscribe, list):
-    #             raise InvalidSubscriptionType(
-    #                 "'subscribe' attribute on {0} class must be a list".format(
-    #                     listener.__name__
-    #                 )
-    #             )
-    #         for action in listener.subscribe:
-    #             self.listen(action, [listener])
-
-    # def argument(self, argument):
-    #     """Takes the argument and eventually stores the argument on the event class
-    #     Arguments:
-    #         argument {string|obj|list|dict} -- Any data type that can be a class attribute
-    #     Returns:
-    #         dict
-    #     """
-
-    #     return self._arguments[argument]
+    def subscribe(self, *listeners):
+        """Subscribe a specific listener object to the events system
+        Raises:
+            InvalidSubscriptionType -- raises when the subscribe attribute on the listener object is not a class.
+        """
+        for listener in listeners:
+            listener.subscribe(self)
