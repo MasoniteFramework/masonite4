@@ -37,9 +37,6 @@ class LocalDriver:
     def missing(self, file_path):
         return not self.exists(file_path)
 
-    def download(self, file_path):
-        pass
-
     def stream(self, file_path):
         with open(self.get_path(file_path), "r") as f:
             content = f

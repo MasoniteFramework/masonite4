@@ -9,10 +9,9 @@ DISKS = {
         #
     },
     "s3": {
-        # "driver": "s3",
-        # "host": "127.0.0.1",
-        # "port": "6379",
-        # "password": "",
-        # "name": "masonite4",
+        "driver": "s3",
+        "client": os.getenv("AWS_CLIENT"),
+        "secret": os.getenv("AWS_SECRET"),
+        "bucket": os.getenv("AWS_BUCKET"),
     },
 }
