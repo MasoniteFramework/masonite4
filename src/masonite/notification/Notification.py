@@ -28,7 +28,7 @@ class Notification(ABC):
         return self._fail_silently
 
     @classmethod
-    def notification_type(cls):
+    def type(cls):
         """Get notification type defined with class name."""
         return cls.__name__
 
