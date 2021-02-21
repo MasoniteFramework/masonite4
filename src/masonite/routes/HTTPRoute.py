@@ -141,9 +141,6 @@ class HTTPRoute:
                 # *self.request.url_params.values() TODO
             )
 
-            if hasattr(response, "rendered_template"):
-                response = response.rendered_template
-
             return response
 
     def middleware(self, *args):

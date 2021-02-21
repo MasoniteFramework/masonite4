@@ -1,3 +1,4 @@
+"""Password Helper Module."""
 import bcrypt
 import uuid
 
@@ -16,7 +17,6 @@ class Authenticates:
         record_password = getattr(record, self.get_password_column())
         if not isinstance(record_password, bytes):
             record_password = bytes(record_password or "", "utf-8")
-
         if bcrypt.checkpw(bytes(password, "utf-8"), record_password):
             record.set_remember_token().save()
             return record
@@ -29,7 +29,7 @@ class Authenticates:
 
     def set_remember_token(self, token=None):
         """Attempts to login using a username and password"""
-        self.remember_token = str(token) or str(uuid.uuid4())
+        self.remember_token = str(token) if token else str(uuid.uuid4())
         return self
 
     def get_password_column(self):

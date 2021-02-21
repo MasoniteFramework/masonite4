@@ -42,6 +42,8 @@ class Kernel:
         self.application.bind(
             "config.notification", "tests.integrations.config.notification"
         )
+        self.application.bind("config.location", "tests/integrations/config")
+        self.application.bind("config.cache", "tests.integrations.config.cache")
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
@@ -60,6 +62,10 @@ class Kernel:
                 ).DATABASES
             ),
         )
+        self.application.bind(
+            "migrations.location", "tests/integrations/databases/migrations"
+        )
+        self.application.bind("seeds.location", "tests/integrations/databases/seeds")
 
     def register_storage(self):
         storage = StorageCapsule(self.application.base_path)
