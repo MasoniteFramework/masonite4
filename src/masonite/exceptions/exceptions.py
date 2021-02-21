@@ -104,3 +104,7 @@ class ProjectProviderHttpError(Exception):
 
 class ProjectTargetNotEmpty(Exception):
     pass
+
+
+class NotificationException(Exception):
+    pass

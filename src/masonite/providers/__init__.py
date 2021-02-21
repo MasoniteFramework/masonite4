@@ -8,3 +8,4 @@ from .Provider import Provider
 from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider
 from .QueueProvider import QueueProvider
+from .NotificationProvider import NotificationProvider
