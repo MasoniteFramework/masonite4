@@ -2,6 +2,7 @@ from .Provider import Provider
 from ..utils.structures import load
 from ..drivers.notification import (
     MailDriver,
+    VonageDriver,
     # BroadcastDriver,
     # DatabaseDriver,
     # SlackDriver,
@@ -21,10 +22,10 @@ class NotificationProvider(Provider):
             load(self.application.make("config.notification")).DRIVERS
         )
         notification_manager.add_driver("mail", MailDriver(self.application))
-        # notification_manager.add_driver("broadcast", BroadcastDriver(self.application))
+        notification_manager.add_driver("vonage", VonageDriver(self.application))
         # notification_manager.add_driver("database", DatabaseDriver(self.application))
         # notification_manager.add_driver("slack", SlackDriver(self.application))
-        # notification_manager.add_driver("vonage", VonageDriver(self.application))
+        # notification_manager.add_driver("broadcast", BroadcastDriver(self.application))
         # TODO: to rewrite
         # self.app.bind("NotificationCommand", NotificationCommand())
         self.application.bind("notification", notification_manager)

@@ -2,7 +2,7 @@
 import uuid
 from masoniteorm.models import Model
 
-
+from ..utils.collections import Collection
 from ..drivers.notification.BaseDriver import BaseDriver
 from ..exceptions.exceptions import NotificationException, DriverNotFound
 from ..queues import ShouldQueue
@@ -37,7 +37,7 @@ class NotificationManager(object):
         self, notifiables, notification, channels=[], dry=False, fail_silently=False
     ):
         """Send the given notification to the given notifiables immediately."""
-        notifiables = self.prepare_notifiables(notifiables)
+        notifiables = self._format_notifiables(notifiables)
         for notifiable in notifiables:
             # get channels for this notification
             # allow override of channels list at send
@@ -46,7 +46,7 @@ class NotificationManager(object):
             if not _channels:
                 raise NotificationException(
                     "No channels have been defined in via() method of {0} class.".format(
-                        notification.notification_type()
+                        notification.type()
                     )
                 )
             for channel in _channels:
@@ -100,16 +100,11 @@ class NotificationManager(object):
 
         # TODO (later): dispatch send event
 
-    def prepare_notifiables(self, notifiables):
-        from .AnonymousNotifiable import AnonymousNotifiable
-
-        if isinstance(notifiables, Model) or isinstance(
-            notifiables, AnonymousNotifiable
-        ):
-            return [notifiables]
-        else:
-            # could be a list or a Collection
+    def _format_notifiables(self, notifiables):
+        if isinstance(notifiables, list) or isinstance(notifiables, Collection):
             return notifiables
+        else:
+            return [notifiables]
 
     def prepare_channels(self, channels):
         """Check channels list to get a list of channels string name which
@@ -145,7 +140,7 @@ class NotificationManager(object):
         return _channels
 
     def route(self, channel, route):
-        """Send a notification to an anonymous notifiable."""
+        """Specify how to send a notification to an anonymous notifiable."""
         from .AnonymousNotifiable import AnonymousNotifiable
 
         return AnonymousNotifiable().route(channel, route)

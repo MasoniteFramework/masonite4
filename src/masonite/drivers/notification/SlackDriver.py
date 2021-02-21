@@ -1,7 +1,6 @@
 """Slack driver Class"""
 import requests
 from masonite.app import App
-from masonite.drivers import BaseDriver
 from masonite.helpers import config
 from masonite.managers.QueueManager import Queue
 
@@ -11,25 +10,22 @@ from ..exceptions import (
     SlackInvalidWorkspace,
     SlackChannelArchived,
     SlackInvalidWebhook,
-    SlackAPIError
+    SlackAPIError,
 )
-from ..NotificationContract import NotificationContract
+from .BaseDriver import BaseDriver
 
 
-class SlackDriver(BaseDriver, NotificationContract):
+class SlackDriver(BaseDriver):
 
     app = None
     WEBHOOK_MODE = 1
     API_MODE = 2
     sending_mode = WEBHOOK_MODE
 
-    def __init__(self, app: App):
-        """Slack Driver Constructor.
-
-        Arguments:
-            app {masonite.app.App} -- The Masonite container object.
-        """
-        self.app = app
+    def __init__(self, application):
+        self.application = application
+        self.options = {}
+        # TODO
         self._debug = False
         self._token = config("notifications.slack.token", None)
 
@@ -203,13 +199,15 @@ class SlackDriver(BaseDriver, NotificationContract):
         Returns:
             self
         """
-        response = self._call_slack_api('https://slack.com/api/conversations.list', {
-            'token': token
-        })
-        for channel in response['channels']:
-            if channel['name'] == name.split('#')[1]:
-                return channel['id']
+        response = self._call_slack_api(
+            "https://slack.com/api/conversations.list", {"token": token}
+        )
+        for channel in response["channels"]:
+            if channel["name"] == name.split("#")[1]:
+                return channel["id"]
 
         raise SlackChannelNotFound(
-            "The user or channel being addressed either do not exist or is invalid: {}".format(name)
+            "The user or channel being addressed either do not exist or is invalid: {}".format(
+                name
+            )
         )

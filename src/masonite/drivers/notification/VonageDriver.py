@@ -1,33 +1,38 @@
 """Vonage driver Class."""
-from masonite.drivers import BaseDriver
-from masonite.app import App
-from masonite.helpers import config
-from masonite import Queue
-
-from ..NotificationContract import NotificationContract
-from ..exceptions import VonageInvalidMessage, VonageAPIError
-from ..components import VonageComponent
+from ...exceptions import NotificationException
+from .BaseDriver import BaseDriver
 
 
-class VonageDriver(BaseDriver, NotificationContract):
-    def __init__(self, app: App):
-        """Vonage Driver Constructor.
+class VonageDriver(BaseDriver):
+    def __init__(self, application):
+        self.app = application
+        self.options = {}
+        self._client = self.get_client()
 
-        Arguments:
-            app {masonite.app.App} -- The Masonite container object.
-        """
-        self.app = app
+    def set_options(self, options):
+        self.options = options
+        return self
+
+    def build(self, notifiable, notification):
+        """Prepare SMS and list of recipients."""
+        data = self.get_data("vonage", notifiable, notification)
+        recipients = self.get_recipients("vonage", notifiable, notification)
+        from vonage.sms import Sms
+
+        sms = Sms(self._client)
+        return data, recipients, sms
+
+    def get_client(self):
         import vonage
 
-        self._client = vonage.Client(
-            key=config("notifications.vonage.key"),
-            secret=config("notifications.vonage.secret"),
+        client = vonage.Client(
+            key=self.options.get("key"), secret=self.options.get("secret")
         )
-        self._sms_from = config("notifications.vonage.sms_from", None)
+        return client
 
     def send(self, notifiable, notification):
         """Used to send the SMS."""
-        data, recipients, sms = self._prepare_sms(notifiable, notification)
+        data, recipients, sms = self.build(notifiable, notification)
         responses = []
         for recipient in recipients:
             payload = self.build_payload(data, recipient)
@@ -41,16 +46,7 @@ class VonageDriver(BaseDriver, NotificationContract):
         data, recipients, sms = self._prepare_sms(notifiable, notification)
         for recipient in recipients:
             payload = self.build_payload(data, recipient)
-            self.app.make(Queue).push(sms.send_message, args=(payload,))
-
-    def _prepare_sms(self, notifiable, notification):
-        """Prepare SMS and list of recipients."""
-        data = self.get_data("vonage", notifiable, notification)
-        recipients = self.get_recipients(notifiable, notification)
-        from vonage.sms import Sms
-
-        sms = Sms(self._client)
-        return data, recipients, sms
+            self.application.make("queue").push(sms.send_message, args=(payload,))
 
     def get_recipients(self, notifiable, notification):
         """Get recipients which can be defined through notifiable route method.
@@ -76,7 +72,7 @@ class VonageDriver(BaseDriver, NotificationContract):
 
         # define send_from from config if not set
         if not data._from:
-            data = data.send_from(self._sms_from)
+            data = data.send_from(self.options.get("sms_from"))
         payload = {**data.as_dict(), "to": recipient}
         self._validate_payload(payload)
         return payload
@@ -85,9 +81,9 @@ class VonageDriver(BaseDriver, NotificationContract):
         """Validate SMS payload before sending by checking that from et to
         are correctly set."""
         if not payload.get("from", None):
-            raise VonageInvalidMessage("from must be specified.")
+            raise NotificationException("from must be specified.")
         if not payload.get("to", None):
-            raise VonageInvalidMessage("to must be specified.")
+            raise NotificationException("to must be specified.")
 
     def _handle_errors(self, response):
         """Handle errors of Vonage API. Raises VonageAPIError if request does
@@ -105,8 +101,8 @@ class VonageDriver(BaseDriver, NotificationContract):
         for message in response.get("messages", []):
             status = message["status"]
             if status != "0":
-                raise VonageAPIError(
-                    "Code [{0}]: {1}. Please refer to API documentation for more details.".format(
+                raise NotificationException(
+                    "Vonage Code [{0}]: {1}. Please refer to API documentation for more details.".format(
                         status, message["error-text"]
                     )
                 )

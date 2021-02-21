@@ -11,4 +11,5 @@ from .exceptions import (
     ViewException,
     InvalidSecretKey,
     InvalidCSRFToken,
+    NotificationException,
 )

@@ -2,18 +2,16 @@
 from masonite.app import App
 from masonite import Queue
 from masonite.helpers import config
-from masonite.drivers import BaseDriver
 
-from ..NotificationContract import NotificationContract
 from ..exceptions import BroadcastOnNotImplemented
+from .BaseDriver import BaseDriver
 
 
-class BroadcastDriver(BaseDriver, NotificationContract):
-    _driver = None
-
-    def __init__(self, app: App):
-        """Broadcast Driver Constructor."""
-        self.app = app
+class BroadcastDriver(BaseDriver):
+    def __init__(self, application):
+        self.application = application
+        self.options = {}
+        # TODO
         self._driver = None
 
     def driver(self, driver):
@@ -30,13 +28,17 @@ class BroadcastDriver(BaseDriver, NotificationContract):
 
     def send(self, notifiable, notification):
         """Used to broadcast a notification."""
-        channels, data, driver = self._prepare_message_to_broadcast(notifiable, notification)
+        channels, data, driver = self._prepare_message_to_broadcast(
+            notifiable, notification
+        )
         for channel in channels:
             driver.channel(channel, data)
 
     def queue(self, notifiable, notification):
         """Used to queue the notification to be broadcasted."""
-        channels, data, driver = self._prepare_message_to_broadcast(notifiable, notification)
+        channels, data, driver = self._prepare_message_to_broadcast(
+            notifiable, notification
+        )
         for channel in channels:
             self.app.make(Queue).push(driver.channel, args=(channel, data))
 

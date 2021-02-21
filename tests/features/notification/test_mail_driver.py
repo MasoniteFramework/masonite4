@@ -48,3 +48,12 @@ class TestMailDriver(TestCase):
     def test_send_to_notifiable(self):
         user = User.find(1)
         user.notify(WelcomeUserNotification())
+
+    def test_send_and_override_driver(self):
+        # TODO: but I don't really know how to proceed as driver can't be defined anymore
+        # in the Mailable
+        # Some API solutions:
+        # self.notification.route("mail", "test@mail.com").send(WelcomeNotification()).driver("log")
+        # self.notification.route("mail", "test@mail.com").send(WelcomeNotification(), driver="log")
+        # self.notification.route("mail", "test@mail.com", driver="log").send(WelcomeNotification())
+        pass

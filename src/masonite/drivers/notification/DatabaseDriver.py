@@ -2,16 +2,15 @@
 import json
 from masonite.app import App
 from masonite import Queue
-from masonite.drivers import BaseDriver
 
-from ..NotificationContract import NotificationContract
 from ..models import DatabaseNotification
+from .BaseDriver import BaseDriver
 
 
-class DatabaseDriver(BaseDriver, NotificationContract):
-    def __init__(self, app: App):
-        """Database Driver Constructor."""
-        self.app = app
+class DatabaseDriver(BaseDriver):
+    def __init__(self, application):
+        self.application = application
+        self.options = {}
 
     def send(self, notifiable, notification):
         """Used to send the email and run the logic for sending emails."""
@@ -32,7 +31,7 @@ class DatabaseDriver(BaseDriver, NotificationContract):
         """Build an array payload for the DatabaseNotification Model."""
         return {
             "id": str(notification.id),
-            "type": notification.notification_type(),
+            "type": notification.type(),
             "notifiable_id": notifiable.id,
             "notifiable_type": notifiable.get_table_name(),
             "data": self.serialize_data(
