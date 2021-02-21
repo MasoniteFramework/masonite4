@@ -1,13 +1,14 @@
 """Vonage driver Class."""
-from ...exceptions import NotificationException
-from .BaseDriver import BaseDriver
+from ....exceptions import NotificationException
+from ..BaseDriver import BaseDriver
+from .Sms import Sms
 
 
 class VonageDriver(BaseDriver):
     def __init__(self, application):
         self.app = application
         self.options = {}
-        self._client = self.get_client()
+        self._client = self.get_sms_client()
 
     def set_options(self, options):
         self.options = options
@@ -17,26 +18,24 @@ class VonageDriver(BaseDriver):
         """Prepare SMS and list of recipients."""
         data = self.get_data("vonage", notifiable, notification)
         recipients = self.get_recipients("vonage", notifiable, notification)
-        from vonage.sms import Sms
+        return data, recipients
 
-        sms = Sms(self._client)
-        return data, recipients, sms
-
-    def get_client(self):
+    def get_sms_client(self):
         import vonage
+        from vonage.sms import Sms
 
         client = vonage.Client(
             key=self.options.get("key"), secret=self.options.get("secret")
         )
-        return client
+        return Sms(client)
 
     def send(self, notifiable, notification):
         """Used to send the SMS."""
-        data, recipients, sms = self.build(notifiable, notification)
+        data, recipients = self.build(notifiable, notification)
         responses = []
         for recipient in recipients:
             payload = self.build_payload(data, recipient)
-            response = sms.send_message(payload)
+            response = self._client.send_message(payload)
             self._handle_errors(response)
             responses.append(response)
         return responses
@@ -68,7 +67,7 @@ class VonageDriver(BaseDriver):
         """Build SMS payload sent to Vonage API."""
 
         if isinstance(data, str):
-            data = VonageComponent(data)
+            data = Sms(data)
 
         # define send_from from config if not set
         if not data._from:
