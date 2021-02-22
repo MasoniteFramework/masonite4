@@ -11,8 +11,7 @@ class UploadedFile:
         pass
 
     def extension(self):
-        _, file_extension = os.path.splitext(self.filename)
-        return file_extension
+        return os.path.splitext(self.filename)[1]
 
     def name(self):
         return self.filename

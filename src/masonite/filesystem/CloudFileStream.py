@@ -7,8 +7,7 @@ class CloudFileStream:
         self._name = name
 
     def extension(self):
-        _, file_extension = os.path.splitext(self.name())
-        return file_extension
+        return os.path.splitext(self.name())[1]
 
     def stream(self):
         return self.stream

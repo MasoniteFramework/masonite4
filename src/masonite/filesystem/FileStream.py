@@ -9,8 +9,7 @@ class FileStream:
         return self.stream.name
 
     def extension(self):
-        _, file_extension = os.path.splitext(self.path())
-        return file_extension
+        return os.path.splitext(self.path())[1]
 
     def name(self):
         return os.path.basename(self.path())
