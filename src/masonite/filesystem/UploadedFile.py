@@ -7,9 +7,6 @@ class UploadedFile:
         self.filename = filename
         self.content = content
 
-    def path(self):
-        pass
-
     def extension(self):
         return os.path.splitext(self.filename)[1]
 
