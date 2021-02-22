@@ -10,6 +10,7 @@ def _normalize_path(path):
 
 def _build_path(location_key, relative_path, absolute):
     from wsgi import application
+
     relative_dir = join(_normalize_path(application.make(location_key)), relative_path)
     return abspath(relative_dir) if absolute else relative_dir
 
