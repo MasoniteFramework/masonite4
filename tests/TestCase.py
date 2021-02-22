@@ -9,7 +9,6 @@ from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
 from unittest.mock import MagicMock
-from src.masonite.tests.mocks import MockMail
 
 
 class TestCase(TestCase):
