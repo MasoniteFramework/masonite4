@@ -3,3 +3,4 @@ black
 cryptography
 masonite-orm
 python-dotenv
+waitress

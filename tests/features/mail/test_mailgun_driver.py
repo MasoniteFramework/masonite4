@@ -1,6 +1,7 @@
 from tests import TestCase
 from src.masonite.mail import Mailable
 import os
+import pytest
 
 
 class Welcome(Mailable):
@@ -14,10 +15,9 @@ class Welcome(Mailable):
         )
 
 
+@pytest.mark.integrations
 class TestMailgunDriver(TestCase):
     def test_send_mailable(self):
-        if os.getenv("RUN_MAIL") == "True":
-            # self.application.make("mail").driver("mailgun").mailable(Welcome()).send()
-            self.application.make("mail").mailable(
-                Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf")
-            )
+        self.application.make("mail").mailable(
+            Welcome().attach("invoice", "tests/integrations/storage/invoice.pdf")
+        )
