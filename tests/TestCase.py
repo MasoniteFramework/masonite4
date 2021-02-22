@@ -133,8 +133,12 @@ class TestCase(TestCase):
             user.get_primary_key_value()
         )
 
-    def fake(self, binding):
-        mock = MagicMock(self.application.make(binding))
+    def fake(self, binding, custom_mock=None):
+        if custom_mock:
+            self.application.bind(f"mock.{binding}", custom_mock(self.application))
+
+        mock = self.application.make(f"mock.{binding}")
+        self.original_class_mocks.update({binding: self.application.make(binding)})
         self.application.bind(binding, mock)
         return mock
 

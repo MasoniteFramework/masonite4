@@ -1,6 +1,5 @@
 from tests import TestCase
-from src.masonite.tests.mocks import MockMail
-from src.masonite.mail import Mail
+from src.masonite.mail import Mail, MockMail
 
 
 class CustomMockMail:
