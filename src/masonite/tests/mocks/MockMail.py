@@ -57,20 +57,20 @@ class MockMail(Mail):
 
     def seeEmailReplyTo(self):
         assert assertion == self.options.get(
-            "from"
-        ), f"Assertion of from address {self.options.get('from')} does not match expected {assertion}"
+            "reply_to"
+        ), f"Assertion of reply-to {self.options.get('reply_to')} does not match expected {assertion}"
         return self
 
     def seeEmailSubjectContains(self):
-        assert assertion == self.options.get(
-            "from"
-        ), f"Assertion of from address {self.options.get('from')} does not match expected {assertion}"
+        assert assertion in self.options.get(
+            "subject"
+        ), f"Assertion of subject {self.options.get('subject')} does not contain expected {assertion}"
         return self
 
     def seeEmailSubjectDoesNotContain(self):
-        assert assertion == self.options.get(
-            "from"
-        ), f"Assertion of from address {self.options.get('from')} does not match expected {assertion}"
+        assert assertion not in self.options.get(
+            "subject"
+        ), f"Assertion of subject {self.options.get('subject')} does contain expected {assertion}"
         return self
 
     def seeEmailSubjectEquals(self):
