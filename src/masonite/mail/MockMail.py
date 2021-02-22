@@ -2,8 +2,9 @@ from src.masonite.mail import Mail
 
 
 class MockMail(Mail):
-
-    count = 0
+    def __init__(self, application, *args, **kwargs):
+        super().__init__(application, *args, **kwargs)
+        self.count = 0
 
     def send(self, driver=None):
         self.count += 1

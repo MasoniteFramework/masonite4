@@ -31,4 +31,5 @@ class TestSMTPDriver(TestCase):
     def test_mock_mail_sending(self):
         self.fake("mail")
         welcome_email = self.application.make("mail").mailable(Welcome())
+        print(welcome_email.count)
         (welcome_email.seeEmailWasNotSent().send().seeEmailWasSent())

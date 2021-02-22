@@ -17,12 +17,3 @@ class TestMocking(TestCase):
         self.restore("mail")
 
         assert isinstance(self.application.make("mail"), Mail)
-
-    def test_fake_with_custom_mock(self):
-        mocked_mail = self.fake("mail", CustomMockMail)
-
-        assert isinstance(self.application.make("mail"), CustomMockMail)
-        assert isinstance(mocked_mail, CustomMockMail)
-
-        self.restore("mail")
-        assert isinstance(self.application.make("mail"), Mail)

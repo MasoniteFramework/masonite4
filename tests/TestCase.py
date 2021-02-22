@@ -107,15 +107,16 @@ class TestCase(TestCase):
     def mock_start_response(self, *args, **kwargs):
         pass
 
-    def fake(self, binding, mock_class=None):
+    def fake(self, binding):
         """Mock a service with its mocked implementation or with a given custom
         one."""
-        mock = mock_class(self.application)
 
         # save original first
-        self.original_class_mocks.update({binding: self.application.make(binding)})
+        self.original_class_mocks.update(
+            {binding: self.application.make(binding, self.application)}
+        )
         # mock by overriding with mocked version
-        mock = MagicMock(self.application.make(binding))
+        mock = self.application.make(f"mock.{binding}", self.application)
         self.application.bind(binding, mock)
         return mock
 
@@ -132,15 +133,6 @@ class TestCase(TestCase):
         self.application.make("auth").guard("web").login_by_id(
             user.get_primary_key_value()
         )
-
-    def fake(self, binding, custom_mock=None):
-        if custom_mock:
-            self.application.bind(f"mock.{binding}", custom_mock(self.application))
-
-        mock = self.application.make(f"mock.{binding}")
-        self.original_class_mocks.update({binding: self.application.make(binding)})
-        self.application.bind(binding, mock)
-        return mock
 
     def restore(self, binding):
         """Restore the service previously mocked to the original one."""
