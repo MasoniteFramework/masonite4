@@ -4,13 +4,11 @@ from src.masonite.mail import Mail
 
 
 class CustomMockMail:
-
     def __init__(self, application):
         self.application = application
 
 
 class TestMocking(TestCase):
-
     def test_fake_service(self):
         mocked_mail = self.fake("mail")
 

@@ -105,6 +105,7 @@ class TestCase(TestCase):
         """Mock a service with its mocked implementation or with a given custom
         one."""
         import pydoc
+
         if not mock_class:
             mock_class_path = self.application.make(f"mock.{binding}")
             mock_class = pydoc.locate(mock_class_path)
