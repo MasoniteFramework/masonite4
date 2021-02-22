@@ -1,6 +1,6 @@
 import os
 from shutil import copyfile, move
-from ..CloudFileStream import CloudFileStream
+from ..FileStream import FileStream
 
 
 class AmazonS3Driver:
@@ -72,7 +72,7 @@ class AmazonS3Driver:
         return not self.exists(file_path)
 
     def stream(self, file_path):
-        return CloudFileStream(
+        return FileStream(
             self.get_connection()
             .resource("s3")
             .Bucket(self.get_bucket())
