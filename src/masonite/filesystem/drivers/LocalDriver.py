@@ -42,9 +42,6 @@ class LocalDriver:
             content = f
         return FileStream(content)
 
-    def url(self, file_path):
-        pass
-
     def copy(self, from_file_path, to_file_path):
         return copyfile(from_file_path, to_file_path)
 

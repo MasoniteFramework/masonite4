@@ -83,9 +83,6 @@ class AmazonS3Driver:
             file_path,
         )
 
-    def url(self, file_path):
-        pass
-
     def copy(self, from_file_path, to_file_path):
         copy_source = {"Bucket": self.get_bucket(), "Key": from_file_path}
         self.get_connection().resource("s3").meta.client.copy(
