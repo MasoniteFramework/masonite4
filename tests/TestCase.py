@@ -110,16 +110,14 @@ class TestCase(TestCase):
     def fake(self, binding, mock_class=None):
         """Mock a service with its mocked implementation or with a given custom
         one."""
-        import pydoc
-
-        if not mock_class:
-            mock_class_path = self.application.make(f"mock.{binding}")
-            mock_class = pydoc.locate(mock_class_path)
         mock = mock_class(self.application)
 
         # save original first
         self.original_class_mocks.update({binding: self.application.make(binding)})
         # mock by overriding with mocked version
+        mock = MagicMock(self.application.make(binding))
+        self.application.bind(binding, mock)
+        return mock
 
     def withCookies(self, cookies_dict):
         self._test_cookies = cookies_dict
