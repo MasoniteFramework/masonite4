@@ -2,6 +2,7 @@ from .Provider import Provider
 from ..mail import Mail
 from ..drivers.mail import SMTPDriver, TerminalDriver, MailgunDriver
 from ..utils.structures import config, load
+from ..mail import MockMail
 
 
 class MailProvider(Provider):
@@ -16,6 +17,7 @@ class MailProvider(Provider):
         mail.add_driver("mailgun", MailgunDriver(self.application))
         mail.add_driver("terminal", TerminalDriver(self.application))
         self.application.bind("mail", mail)
+        self.application.bind("mock.mail", MockMail(self.application))
 
     def boot(self):
         pass

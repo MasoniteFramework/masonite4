@@ -9,6 +9,7 @@ from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
 from unittest.mock import MagicMock
+from src.masonite.tests.mocks import MockMail
 
 
 class TestCase(TestCase):
@@ -29,7 +30,6 @@ class TestCase(TestCase):
                 ).post("/", "WelcomeController@show"),
             ),
         )
-        self.register_mocks()
         self.original_class_mocks = {}
         self._test_cookies = {}
         self._test_headers = {}
@@ -107,16 +107,6 @@ class TestCase(TestCase):
 
     def mock_start_response(self, *args, **kwargs):
         pass
-
-    def register_mocks(self):
-        """Configure the default mock classes for all services which needs to be mocked.
-        The mocks can now be overriden.
-        A package could in its service provider call a method which could update one of the mock
-        class with the one installed.
-        """
-        # here we will configure all default available mocks
-        self.application.bind("mock.mail", "src.masonite.tests.mocks.MockMail")
-        self.application.bind("mock.queue", "src.masonite.tests.mocks.MockQueue")
 
     def fake(self, binding, mock_class=None):
         """Mock a service with its mocked implementation or with a given custom

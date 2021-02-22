@@ -59,7 +59,9 @@ class Kernel:
                 ).DATABASES
             ),
         )
-        self.application.bind("migrations.location", "tests/integrations/databases/migrations")
+        self.application.bind(
+            "migrations.location", "tests/integrations/databases/migrations"
+        )
         self.application.bind("seeds.location", "tests/integrations/databases/seeds")
 
     def register_storage(self):
