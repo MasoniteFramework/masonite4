@@ -1,3 +1,6 @@
+import json
+import io
+
 from src.masonite.tests import TestCase
 from src.masonite.routes import Route, RouteCapsule
 from src.masonite.tests import HttpTestResponse
@@ -5,10 +8,7 @@ from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
-
-import os
-import json
-import io
+from unittest.mock import MagicMock
 
 
 class TestCase(TestCase):
@@ -31,8 +31,17 @@ class TestCase(TestCase):
         )
         self.register_mocks()
         self.original_class_mocks = {}
+        self._test_cookies = {}
+        self._test_headers = {}
 
-    def addRoutes(self, routes):
+    def setRoutes(self, *routes):
+        self.application.bind(
+            "router",
+            RouteCapsule(*routes),
+        )
+        return self
+
+    def addRoutes(self, *routes):
         self.application.make("router").add(routes)
         return self
 
@@ -61,6 +70,7 @@ class TestCase(TestCase):
         request.app = self.application
 
         self.application.bind("request", request)
+        return request
 
     def fetch(self, route, data=None, method=None):
         if data is None:
@@ -72,6 +82,7 @@ class TestCase(TestCase):
                 "HTTP_COOKIE": f"SESSID={token}; csrf_token={token}",
                 "CONTENT_LENGTH": len(str(json.dumps(data))),
                 "REQUEST_METHOD": method,
+                "PATH_INFO": route,
                 "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
             }
         )
@@ -82,6 +93,12 @@ class TestCase(TestCase):
             self.mock_start_response,
             exception_handling=False,
         )
+        # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
+        for name, value in self._test_cookies.items():
+            request.cookie(name, value, encrypt=False)
+        # add eventual headers added inside the test
+        for name, value in self._test_headers.items():
+            request.header(name, value)
 
         route = self.application.make("router").find(route, method)
         if route:
@@ -114,6 +131,23 @@ class TestCase(TestCase):
         # save original first
         self.original_class_mocks.update({binding: self.application.make(binding)})
         # mock by overriding with mocked version
+
+    def withCookies(self, cookies_dict):
+        self._test_cookies = cookies_dict
+        return self
+
+    def withHeaders(self, headers_dict):
+        self._test_headers = headers_dict
+        return self
+
+    def actingAs(self, user):
+        self.make_request()
+        self.application.make("auth").guard("web").login_by_id(
+            user.get_primary_key_value()
+        )
+
+    def fake(self, binding):
+        mock = MagicMock(self.application.make(binding))
         self.application.bind(binding, mock)
         return mock
 

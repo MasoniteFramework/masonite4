@@ -1,5 +1,5 @@
 from ..cookies import CookieJar
-from ..headers import HeaderBag
+from ..headers import HeaderBag, Header
 from ..input import InputBag
 
 
@@ -71,7 +71,7 @@ class Request:
         if value is None:
             return self.header_bag.get(name)
         else:
-            return self.header_bag.add(name, value)
+            return self.header_bag.add(Header(name, value))
 
     def all(self):
         return self.input_bag.all()
