@@ -18,6 +18,9 @@ class HelpersProvider(Provider):
                 "auth": request.user,
                 "route": self.application.make("router").route,
                 "cookie": request.cookie,
-                # "url": lambda name, params={}: request.route(name, params, full=True),
+                "url": lambda name, params={}: (
+                    self.application.make("base_url")
+                    + self.application.make("router").route(name, params)
+                ),
             }
         )
