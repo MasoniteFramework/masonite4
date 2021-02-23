@@ -81,6 +81,8 @@ class Kernel:
         self.application.bind("storage_capsule", storage)
 
     def register_framework(self):
+        from config.database import DB
+
         self.application.set_response_handler(response_handler)
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
@@ -91,6 +93,7 @@ class Kernel:
             "sign", Sign("-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
         )
         self.application.bind("base_url", "http://localhost:8000")
+        self.application.bind("resolver", DB)
 
     def register_commands(self):
         self.application.bind(

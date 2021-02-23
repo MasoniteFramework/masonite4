@@ -32,6 +32,12 @@ class TestCase(TestCase):
         self.original_class_mocks = {}
         self._test_cookies = {}
         self._test_headers = {}
+        if hasattr(self, "startTestRun"):
+            self.startTestRun()
+
+    def tearDown(self):
+        if hasattr(self, "stopTestRun"):
+            self.stopTestRun()
 
     def setRoutes(self, *routes):
         self.application.bind(
