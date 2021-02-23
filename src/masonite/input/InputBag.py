@@ -5,6 +5,7 @@ import json
 import cgi
 import re
 from ..utils.structures import Dot
+from ..filesystem import UploadedFile
 
 
 class InputBag:
@@ -69,7 +70,25 @@ class InputBag:
                 )
 
                 for name in fields:
-                    self.post_data.update({name: Input(name, fields.getvalue(name))})
+                    value = fields.getvalue(name)
+                    if isinstance(value, bytes):
+                        self.post_data.update(
+                            {
+                                name: UploadedFile(
+                                    fields[name].filename, fields.getvalue(name)
+                                )
+                            }
+                        )
+                    else:
+                        self.post_data.update(
+                            {name: Input(name, fields.getvalue(name))}
+                        )
+
+                    print(
+                        "nn",
+                        name,
+                        type(fields.getvalue(name)),
+                    )
             else:
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))

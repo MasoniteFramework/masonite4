@@ -4,3 +4,4 @@ venv
 .env.*
 .env
 storage/framework/cache
+storage/framework/filesystem
