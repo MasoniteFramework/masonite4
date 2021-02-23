@@ -1,4 +1,5 @@
 from ..utils.helpers import flatten
+from ..exceptions import RouteNotFoundException
 
 
 class RouteCapsule:
@@ -19,6 +20,12 @@ class RouteCapsule:
         for route in self.routes:
             if route.match_name(name):
                 return route
+
+    def route(self, name, parameters={}):
+        route = self.find_by_name(name)
+        if route:
+            return route.to_url(parameters)
+        raise RouteNotFoundException(f"Could not find route with the name '{name}'")
 
     def set_controller_module_location(self, location):
         self.controller_module_location = location
