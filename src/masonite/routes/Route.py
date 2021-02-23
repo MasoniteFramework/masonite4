@@ -143,8 +143,3 @@ class Route:
     def set_controller_module_location(self, controller_location):
         self.controller_module_location = controller_location
         return self
-
-    @classmethod
-    def route(self, name, params):
-        self.controller_module_location = controller_location
-        return self
