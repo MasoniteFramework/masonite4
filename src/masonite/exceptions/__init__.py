@@ -9,6 +9,7 @@ from .exceptions import (
     InvalidHTTPStatusCode,
     RequiredContainerBindingNotFound,
     ViewException,
+    RouteNotFoundException,
     InvalidSecretKey,
     InvalidCSRFToken,
 )

@@ -4,7 +4,7 @@ from src.masonite.routes import Route, RouteCapsule
 
 class TestRoutes(TestCase):
     def setUp(self):
-        # Route.set_controller_module_location("tests.integrations.controllers")
+        Route.set_controller_module_location("tests.integrations.controllers")
         pass
 
     def test_can_add_routes(self):
@@ -34,6 +34,19 @@ class TestRoutes(TestCase):
 
         route = router.find("/home/1", "GET")
         self.assertTrue(route)
+
+    def test_can_compile_url_from_route_name(self):
+        router = RouteCapsule(
+            Route.get("/home/@id", "WelcomeController").name("home"),
+            Route.get("/dashboard/@id/@user", "WelcomeController").name("dashboard"),
+        )
+
+        url = router.route("home", {"id": 1})
+        self.assertEqual(url, "/home/1")
+        url = router.route("dashboard", {"user": 2, "id": 1})
+        self.assertEqual(url, "/dashboard/1/2")
+        url = router.route("dashboard", [2, 1])
+        self.assertEqual(url, "/dashboard/2/1")
 
     def test_can_find_route_optional_params(self):
         router = RouteCapsule(Route.get("/home/?id", "WelcomeController"))

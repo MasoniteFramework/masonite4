@@ -90,6 +90,7 @@ class Kernel:
         self.application.bind(
             "sign", Sign("-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
         )
+        self.application.bind("base_url", "http://localhost:8000")
 
     def register_commands(self):
         self.application.bind(
