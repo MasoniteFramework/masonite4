@@ -1,3 +1,4 @@
+from .ExceptionHandler import ExceptionHandler
 from .exceptions import (
     InvalidRouteCompileException,
     RouteMiddlewareNotFound,
@@ -8,6 +9,7 @@ from .exceptions import (
     InvalidHTTPStatusCode,
     RequiredContainerBindingNotFound,
     ViewException,
+    RouteNotFoundException,
     InvalidSecretKey,
     InvalidCSRFToken,
 )

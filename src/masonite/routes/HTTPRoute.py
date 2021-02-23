@@ -57,6 +57,43 @@ class HTTPRoute:
         self._domain = subdomain
         return self
 
+    def to_url(self, parameters={}):
+
+        # Split the url into a list
+        split_url = self.url.split("/")
+
+        # Start beginning of the new compiled url
+        compiled_url = "/"
+
+        # Iterate over the list
+        for url in split_url:
+            if url:
+                # if the url contains a parameter variable like @id:int
+                if "@" in url:
+                    url = url.replace("@", "").split(":")[0]
+                    if isinstance(parameters, dict):
+                        compiled_url += str(parameters[url]) + "/"
+                    elif isinstance(parameters, list):
+                        compiled_url += str(parameters.pop(0)) + "/"
+                elif "?" in url:
+                    url = url.replace("?", "").split(":")[0]
+                    if isinstance(parameters, dict):
+                        compiled_url += str(parameters.get(url, "/")) + "/"
+                    elif isinstance(parameters, list):
+                        compiled_url += str(parameters.pop(0)) + "/"
+                else:
+                    compiled_url += url + "/"
+
+        # The loop isn't perfect and may have an unwanted trailing slash
+        if compiled_url.endswith("/"):
+            compiled_url = compiled_url[:-1]
+
+        # The loop isn't perfect and may have 2 slashes next to eachother
+        if "//" in compiled_url:
+            compiled_url = compiled_url.replace("//", "/")
+
+        return compiled_url
+
     def _find_controller(self, controller, module):
         """Find the controller to attach to the route.
 
@@ -140,9 +177,6 @@ class HTTPRoute:
                 getattr(controller, self.controller_method),
                 # *self.request.url_params.values() TODO
             )
-
-            if hasattr(response, "rendered_template"):
-                response = response.rendered_template
 
             return response
 

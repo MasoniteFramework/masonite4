@@ -4,8 +4,8 @@ from .MessageAttachment import MessageAttachment
 class Mailable:
     def __init__(self):
         self._to = ""
-        self._cc = ""
-        self._bcc = ""
+        self._cc = None
+        self._bcc = None
         self._from = ""
         self._reply_to = ""
         self._subject = ""
