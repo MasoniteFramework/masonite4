@@ -70,11 +70,16 @@ class TestEvent(TestCase):
         self.event.listen("masonite.*.booted", [SendEmailListener])
         self.event.listen("masonite.commands", [SendEmailListener])
         self.event.listen("view.*", [SendEmailListener])
+        self.event.listen("masonite.exception.*", [SendEmailListener])
         self.event.listen("user.added", [UpdateAdminListener])
         self.assertEqual(self.event.fire("masonite.commands"), ["masonite.commands"])
         self.assertEqual(self.event.fire("masonite.orm.booted"), ["masonite.*.booted"])
         self.assertEqual(self.event.fire("masonite.orm"), [])
         self.assertEqual(self.event.fire("masonite.command"), [])
+        self.assertEqual(
+            self.event.fire("masonite.exception.ZeroDivisionError"),
+            ["masonite.exception.*"],
+        )
         self.assertEqual(self.event.fire("view.rendered"), ["view.*"])
         self.assertEqual(self.event.fire("user.added", 1), ["user.added"])
 
