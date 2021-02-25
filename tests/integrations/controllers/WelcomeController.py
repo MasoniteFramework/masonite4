@@ -6,7 +6,7 @@ from src.masonite.filesystem import Storage
 
 
 class WelcomeController(Controller):
-    def show(self):
+    def show(self, request: Request):
         return "welcome"
 
     def test(self):

@@ -3,7 +3,7 @@ from cleo import Application as CommandApplication
 from ..commands import TinkerCommand, CommandCapsule
 from ..storage import StorageCapsule
 import os
-from ..middleware import MiddlewareCapsule, VerifyCsrfToken, SessionMiddleware
+from ..middleware import MiddlewareCapsule, VerifyCsrfToken, SessionMiddleware, EncryptCookies
 from ..routes import RouteCapsule, Route
 import pydoc
 
@@ -11,7 +11,7 @@ import pydoc
 class HttpKernel:
 
     http_middleware = []
-    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken]}
+    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken, EncryptCookies]}
 
     def __init__(self, app):
         self.application = app
