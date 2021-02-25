@@ -3,7 +3,12 @@ from cleo import Application as CommandApplication
 from ..commands import TinkerCommand, CommandCapsule
 from ..storage import StorageCapsule
 import os
-from ..middleware import MiddlewareCapsule, VerifyCsrfToken, SessionMiddleware, EncryptCookies
+from ..middleware import (
+    MiddlewareCapsule,
+    VerifyCsrfToken,
+    SessionMiddleware,
+    EncryptCookies,
+)
 from ..routes import RouteCapsule, Route
 import pydoc
 
