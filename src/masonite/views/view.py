@@ -62,14 +62,6 @@ class View:
         self.dictionary.update(dictionary)
         self.dictionary.update(self._shared)
 
-        # Check if use cache and return template from cache if exists
-        if (
-            self.container.has("Cache")
-            and self.__cached_template_exists()
-            and not self.__is_expired_cache()
-        ):
-            return self.__get_cached_template()
-
         # Check if composers are even set for a speed improvement
         if self.composers:
             self._update_from_composers()
@@ -144,31 +136,6 @@ class View:
             self
         """
         self._shared.update(dictionary)
-        return self
-
-    def cache_for(self, time=None, cache_type=None):
-        """Set time and type for cache.
-
-        Keyword Arguments:
-            time {string} -- Time to cache template for (default: {None})
-            cache_type {string} -- Type of the cache. (default: {None})
-
-        Raises:
-            RequiredContainerBindingNotFound -- Thrown when the Cache key binding is not found in the container.
-
-        Returns:
-            self
-        """
-        if not self.container.has("Cache"):
-            raise RequiredContainerBindingNotFound(
-                "The 'Cache' container binding is required to use this method and wasn't found in the container. You may be missing a Service Provider"
-            )
-
-        self.cache = True
-        self.cache_time = float(time)
-        self.cache_type = cache_type
-        if self.__is_expired_cache():
-            self.__create_cache_template(self.template)
         return self
 
     def exists(self, template):
