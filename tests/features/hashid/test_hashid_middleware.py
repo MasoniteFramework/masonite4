@@ -4,7 +4,6 @@ from tests import TestCase
 
 
 class TestHashID(TestCase):
-
     def test_hashid_hashes_integer(self):
         assert hashid(10) == "l9avmeG"
 
