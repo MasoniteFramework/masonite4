@@ -39,11 +39,9 @@ class VerifyCsrfToken(Middleware):
             if request.cookie("csrf_token") and (
                 compare_digest(
                     request.cookie("csrf_token"),
-                    request.app.make("sign").unsign(token),
+                    token,
                 )
-                and compare_digest(
-                    request.app.make("sign").unsign(token), request.cookie("SESSID")
-                )
+                and compare_digest(token, request.cookie("SESSID"))
             ):
                 return True
             raise InvalidCSRFToken("Invalid CSRF token.")
