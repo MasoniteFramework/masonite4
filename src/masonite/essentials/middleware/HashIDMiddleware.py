@@ -1,6 +1,6 @@
 from ...middleware import Middleware
 
-from ..helpers.hashid import hashid
+from ..helpers import hashid
 
 
 class HashIDMiddleware(Middleware):
