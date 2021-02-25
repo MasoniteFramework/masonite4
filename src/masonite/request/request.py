@@ -74,7 +74,7 @@ class Request:
             return self.header_bag.add(Header(name, value))
 
     def all(self):
-        return self.input_bag.all()
+        return self.input_bag.all_as_values()
 
     def is_not_safe(self):
         """Check if the current request is not a get request.
