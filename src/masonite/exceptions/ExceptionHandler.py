@@ -29,6 +29,9 @@ class ExceptionHandler:
     def handle(self, exception):
         response = self.application.make("response")
         request = self.application.make("request")
+        self.application.make("event").fire(
+            f"masonite.exception.{exception.__class__.__name__}", exception
+        )
         handler = Handler(exception)
         handler.integrate(StackOverflowIntegration())
         handler.integrate(SolutionsIntegration())
