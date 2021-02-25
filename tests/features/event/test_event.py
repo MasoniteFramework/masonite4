@@ -23,12 +23,12 @@ class NewUserEvent(Event):
 
 
 class SendEmailListener:
-    def handle(self):
+    def handle(self, event):
         pass
 
 
 class UpdateAdminListener:
-    def handle(self, user):
+    def handle(self, event, user):
         print("update", user)
         pass
 
@@ -85,8 +85,10 @@ class TestEvent(TestCase):
 
     def test_fire_event_class(self):
         self.event.listen(NewUserEvent, [SendAlert])
-        self.event.fire(NewUserEvent(), [])
+        self.event.fire(NewUserEvent())
 
     def test_can_subscribe(self):
         self.event.subscribe(Subscriber())
-        self.event.fire("masonite.event_handled", ["masonite.event_handled"])
+        self.assertEqual(
+            self.event.fire("masonite.event_handled"), ["masonite.event_handled"]
+        )

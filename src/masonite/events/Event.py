@@ -29,13 +29,10 @@ class Event:
 
     def fire(self, event, *args, **kwargs):
         if isinstance(event, str):
-            if event in self.events:
-                for listener in self.events.get(event):
-                    listener().handle(*args, **kwargs)
             collected_events = self.collect_events(event)
             for collected_event in collected_events:
                 for listener in self.events.get(collected_event, []):
-                    listener().handle(event)
+                    listener().handle(event, *args, **kwargs)
             return collected_events
         else:
             if inspect.isclass(event):
@@ -44,8 +41,7 @@ class Event:
             else:
                 lookup = event.__class__
             for listener in self.events.get(lookup, []):
-                print("h")
-                listener().handle(event)
+                listener().handle(event, *args, **kwargs)
 
             return [event]
 
