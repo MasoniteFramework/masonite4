@@ -8,7 +8,7 @@ from src.masonite.broadcasting import Broadcast, PrivateChannel
 
 class CanBroadcast:
     def broadcast_on(self):
-        return PrivateChannel(f"order.{self.order_id}")
+        return PrivateChannel(f"private-shipped")
 
     def broadcast_with(self):
         return vars(self)

@@ -14,16 +14,19 @@ class BroadcastRoutes:
 
 class BroadcastingController:
     def authorize(self, request: Request, broadcast: Broadcast):
-        import pusher
-
-        pusher_client = pusher.Pusher(
-            app_id=os.getenv("PUSHER_APP_ID"),
-            key=os.getenv("PUSHER_CLIENT"),
-            secret=os.getenv("PUSHER_SECRET"),
-            cluster=os.getenv("PUSHER_CLUSTER"),
-            ssl=False,
+        return broadcast.driver("pusher").authorize(
+            request.input("channel_name"), request.input("socket_id")
         )
+        # import pusher
 
-        return pusher_client.authenticate(
-            channel=request.input("channel_name"), socket_id=request.input("socket_id")
-        )
+        # pusher_client = pusher.Pusher(
+        #     app_id=os.getenv("PUSHER_APP_ID"),
+        #     key=os.getenv("PUSHER_CLIENT"),
+        #     secret=os.getenv("PUSHER_SECRET"),
+        #     cluster=os.getenv("PUSHER_CLUSTER"),
+        #     ssl=False,
+        # )
+
+        # return pusher_client.authenticate(
+        #     channel=request.input("channel_name"), socket_id=request.input("socket_id")
+        # )

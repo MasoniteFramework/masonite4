@@ -18,6 +18,9 @@ Hello. Setup chat connection here
         });
 
         const channel = pusher.subscribe('private-shipped');
+        channel.bind('OrderProcessed', function(){
+            console.log('Private Event fired')
+        })
     </script>
 </body>
 </html>

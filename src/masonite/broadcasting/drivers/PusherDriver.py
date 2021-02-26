@@ -29,5 +29,13 @@ class PusherDriver:
         return self.connection
 
     def channel(self, channel, event, value):
-
         self.get_connection().trigger(channel, event, value)
+
+    def authorize(self, channel, socket_id):
+        pusher_client = self.get_connection()
+
+        # print('connect', self.get_connection().authenticate(
+        #     channel=channel, socket_id=socket_id
+        # ))
+
+        return pusher_client.authenticate(channel=channel, socket_id=socket_id)
