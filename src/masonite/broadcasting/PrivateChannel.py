@@ -9,5 +9,5 @@ class PrivateChannel:
         return (
             application.make("router")
             .find_by_name("broadcasting.authorize")
-            .get_response()
+            .get_response(application)
         )

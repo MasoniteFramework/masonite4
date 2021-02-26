@@ -14,7 +14,7 @@ class PusherDriver:
             raise ModuleNotFoundError(
                 "Could not find the 'pusher' library. Run 'pip install pusher' to fix this."
             )
-        print()
+
         if self.connection:
             return self.connection
 
