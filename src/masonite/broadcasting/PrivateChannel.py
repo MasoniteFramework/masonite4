@@ -6,4 +6,4 @@ class PrivateChannel:
         self.name = name
 
     def authorized(self, application):
-        return bool(application.make('request').user())
+        return bool(application.make("request").user())
