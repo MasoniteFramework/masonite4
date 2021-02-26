@@ -1,3 +1,23 @@
 
-<h1>Welcome</h1>
-token: {{ csrf_token }}
+Hello. Setup chat connection here
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+</head>
+<body>
+    
+    <script>
+        const pusher = new Pusher("e1cfc03ec195efdc845a", {
+            authEndpoint: '/broadcasting/authorize',
+            cluster: "mt1"
+        });
+
+        const channel = pusher.subscribe('private-shipped');
+    </script>
+</body>
+</html>

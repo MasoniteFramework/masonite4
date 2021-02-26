@@ -16,7 +16,7 @@ import pydoc
 class HttpKernel:
 
     http_middleware = []
-    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken, EncryptCookies]}
+    route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
 
     def __init__(self, app):
         self.application = app
