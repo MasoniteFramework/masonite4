@@ -48,7 +48,7 @@ class Broadcast:
             for channel in channels:
                 if not channel.authorized(
                     self.application
-                ):  # TODO: Need to get the authenticated user?
+                ):
                     continue
                 event_class = event.broadcast_as()
 
