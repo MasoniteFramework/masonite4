@@ -46,9 +46,7 @@ class Broadcast:
                 channels = [channels]
 
             for channel in channels:
-                if not channel.authorized(
-                    self.application
-                ):
+                if not channel.authorized(self.application):
                     continue
                 event_class = event.broadcast_as()
 
