@@ -1,6 +1,5 @@
 from ..routes import Route
 from ..request import Request
-import os
 from ..broadcasting import Broadcast
 
 
