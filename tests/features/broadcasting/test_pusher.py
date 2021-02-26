@@ -32,4 +32,4 @@ class TestFileCache(TestCase):
         print(self.driver.channel("order.1", "status", {"status": "processed"}))
 
     def test_can_fire_class(self):
-        print(self.driver.channel("private-orders", OrderProcessed()))
+        print(self.driver.channel(OrderProcessed()))

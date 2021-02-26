@@ -36,10 +36,13 @@ class Broadcast:
 
         return self.store_config.get(name)
 
-    def channel(self, channels, event, value=None):
+    def channel(self, channels, event=None, value=None, driver=None):
         store_config = self.get_config_options()
-        driver = self.get_driver(None)
+        driver = self.get_driver(driver)
         if not isinstance(event, str):
+            if event is None:
+                event = channels
+
             value = event.broadcast_with()
             channels = event.broadcast_on()
             if not isinstance(channels, list):
