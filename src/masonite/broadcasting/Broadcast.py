@@ -44,6 +44,7 @@ class Broadcast:
             channels = event.broadcast_on()
             if not isinstance(channels, list):
                 channels = [channels]
+
             for channel in channels:
                 if not channel.authorized(
                     self.application

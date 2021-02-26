@@ -3,12 +3,12 @@ from src.masonite.views import View
 from src.masonite.response.response import Response
 from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
-from src.masonite.broadcasting import Broadcast, PrivateChannel
+from src.masonite.broadcasting import Broadcast, Channel
 
 
 class CanBroadcast:
     def broadcast_on(self):
-        return PrivateChannel(f"private-shipped")
+        return Channel(f"private-shipped")
 
     def broadcast_with(self):
         return vars(self)
