@@ -42,12 +42,11 @@ class Broadcast:
         if not isinstance(event, str):
             if event is None:
                 event = channels
+                channels = event.broadcast_on()
 
             value = event.broadcast_with()
-            channels = event.broadcast_on()
             if not isinstance(channels, list):
                 channels = [channels]
-
             for channel in channels:
                 if not channel.authorized(self.application):
                     continue
