@@ -177,8 +177,9 @@ class HTTPRoute:
                 getattr(controller, self.controller_method),
                 # *self.request.url_params.values() TODO
             )
-
             return response
+
+        return getattr(self.controller_class(), self.controller_method)()
 
     def middleware(self, *args):
         """Load a list of middleware to run.

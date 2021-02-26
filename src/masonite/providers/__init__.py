@@ -12,3 +12,4 @@ from .QueueProvider import QueueProvider
 from .CacheProvider import CacheProvider
 from ..events.providers import EventProvider
 from ..filesystem.providers import StorageProvider
+from ..broadcasting.providers import BroadcastProvider

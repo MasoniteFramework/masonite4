@@ -46,4 +46,4 @@ class RouteProvider(Provider):
                 handler="after",
             )
         else:
-            raise Exception(f"NO route found for {request.get_path()}")
+            response.view("route not found", status=404)
