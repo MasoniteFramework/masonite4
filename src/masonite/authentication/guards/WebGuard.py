@@ -62,7 +62,7 @@ class WebGuard:
             object|False -- Returns the current authenticated user object or False or None if there is none.
         """
         attempt = self.options.get("model")().reset_password(username, new_password)
-        
+
         if attempt:
             return attempt
 
