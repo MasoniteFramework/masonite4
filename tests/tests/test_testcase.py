@@ -2,8 +2,7 @@ from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
 from src.masonite.routes import Route
-from src.masonite.auth import Authenticates
-from src.masonite.auth.guards import WebGuard
+from src.masonite.authentication import Authenticates
 
 
 class User(Model, Authenticates):

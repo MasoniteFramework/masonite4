@@ -2,9 +2,7 @@ from tests import TestCase
 from src.masonite.foundation import Application
 import os
 from masoniteorm.models import Model
-from src.masonite.auth import Authenticates
-from src.masonite.authentication import Auth
-from src.masonite.auth.guards import WebGuard
+from src.masonite.authentication import Authenticates, Auth
 
 
 class TestAuthentication(TestCase):
