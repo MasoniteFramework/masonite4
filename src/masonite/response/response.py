@@ -171,6 +171,9 @@ class Response:
 
         return self.data()
 
+    def back(self):
+        return self.redirect(url=self.app.make('request').get_path())
+
     def redirect(self, location=None, name=None, params={}, url=None, status=302):
         """Set the redirection on the server.
 

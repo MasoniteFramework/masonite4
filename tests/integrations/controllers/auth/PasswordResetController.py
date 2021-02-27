@@ -24,5 +24,6 @@ class PasswordResetController:
     ):  # store password_reset record
         auth.reset_password(request.input("password"), request.input("token"))
 
+        # Need to validate??
         # Redirect back?
-        return "event fired"
+        return response.back()
