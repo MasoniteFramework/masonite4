@@ -1,3 +1,6 @@
+import pendulum
+import uuid
+
 class Auth:
     def __init__(self, application, guard_config=None):
         self.application = application
@@ -69,3 +72,42 @@ class Auth:
         """
         auth_config = self.get_config_options()
         return self.get_guard().set_options(auth_config).register(dictionary)
+
+    def password_reset(self, email):
+        """Logout the current authenticated user.
+
+        Returns:
+            self
+        """
+        token = str(uuid.uuid4())
+        try:
+            self.application.make('builder').table(self.guard_config.get('password_reset_table')).create({
+                "email": email,
+                "token": token,
+                "expires_at": pendulum.now().add(minutes=self.guard_config.get('password_reset_expiration')).to_datetime_string() if self.guard_config.get('password_reset_expiration') else None,
+                "created_at": pendulum.now().to_datetime_string()
+            })
+        except Exception:
+            return False
+
+        self.application.make('event').fire("auth.password_reset", email, token)
+        return token
+
+    def reset_password(self, password, token):
+        """Logout the current authenticated user.
+
+        Returns:
+            self
+        """
+        #  Get the token
+        #  Check the token from the database
+        #  Check the expiration of the token
+        #  Delete the expiration from the token
+
+        reset_record = self.application.make('builder').table(self.guard_config.get('password_reset_table')).where('token', token).first()
+        auth_config = self.get_config_options()
+        print('guard reset', reset_record.get("email"), password)
+        return self.get_guard().set_options(auth_config).reset_password(reset_record.get("email"), password)
+        # {'email': 'jmancuso.mil%40gmail.com', 'token': '651e67a7-8526-4614-9415-15f3561c5cff', 'expires_at': '2021-02-28 12:22:19', 'created_at': '2021-02-27 12:22:19'}
+
+

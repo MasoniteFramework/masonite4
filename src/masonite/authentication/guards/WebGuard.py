@@ -52,6 +52,22 @@ class WebGuard:
 
         return False
 
+    def reset_password(self, username, new_password):
+        """Login a user by the user ID.
+
+        Arguments:
+            user_id {string|int} -- The ID of the user model record.
+
+        Returns:
+            object|False -- Returns the current authenticated user object or False or None if there is none.
+        """
+        attempt = self.options.get("model")().reset_password(username, new_password)
+        
+        if attempt:
+            return attempt
+
+        return False
+
     def once(self):
         """Log in the user without saving a cookie.
 

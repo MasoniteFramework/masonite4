@@ -113,7 +113,7 @@ class InputBag:
 
         return default
 
-    def clean(self, value, clean=True, quote=True):
+    def clean(self, value, clean=False, quote=True):
         if not clean:
             return value
 
