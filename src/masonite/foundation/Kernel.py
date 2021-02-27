@@ -42,6 +42,7 @@ class Kernel:
         self.application.bind("config.location", "tests/integrations/config")
         self.application.bind("config.cache", "tests.integrations.config.cache")
         self.application.bind("config.broadcast", "tests.integrations.config.broadcast")
+        self.application.bind("config.auth", "tests.integrations.config.auth")
         self.application.bind(
             "config.filesystem", "tests.integrations.config.filesystem"
         )

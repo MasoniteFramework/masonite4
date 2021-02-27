@@ -23,6 +23,16 @@ class Authenticates:
 
         return False
 
+    def attempt_by_id(self, user_id):
+        """Attempts to login using a username and password"""
+        record = self.find(user_id)
+        if not record:
+            return False
+
+        record.set_remember_token().save()
+        return record
+
+
     def get_remember_token(self):
         """Attempts to login using a username and password"""
         return self.remember_token

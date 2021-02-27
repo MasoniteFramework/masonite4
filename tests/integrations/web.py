@@ -9,4 +9,9 @@ Route.get("/emit", "WelcomeController@emit"),
 Route.get("/view", "WelcomeController@view"),
 Route.get("/mail", "MailableController@view"),
 
+Route.get('/login', "auth.LoginController@show").name("login")
+Route.get('/register', "auth.RegisterController@show").name("register")
+Route.post('/register', "auth.RegisterController@store").name("register.store")
+Route.post('/login', "auth.LoginController@store").name("login.store")
+
 BroadcastRoutes.routes()
