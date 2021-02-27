@@ -11,9 +11,7 @@ class LoginController:
         return view.render("auth.login")
 
     def store(self, view: View, request: Request, auth: Auth):  # Show login page
-        login = auth.attempt(
-            request.input("username"), request.input("password")
-        )
+        login = auth.attempt(request.input("username"), request.input("password"))
 
         if login:
             dd(login)

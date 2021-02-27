@@ -120,11 +120,15 @@ class Auth:
             .first()
         )
         auth_config = self.get_config_options()
-        (self.get_guard()
+        (
+            self.get_guard()
             .set_options(auth_config)
-            .reset_password(reset_record.get("email"), password))
+            .reset_password(reset_record.get("email"), password)
+        )
 
-        (self.application.make("builder")
+        (
+            self.application.make("builder")
             .table(self.guard_config.get("password_reset_table"))
             .where("token", token)
-            .delete())
+            .delete()
+        )
