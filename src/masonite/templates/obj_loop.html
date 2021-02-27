@@ -27,8 +27,8 @@
                 {% if len(getattr(obj, key)) %}
                 <br>
                     {% for key in getattr(obj, key) %}
-                        {% if isinstance(key, Model) %}
-                            <div class="obj-propert-type-item">{{ key }}<br></div>
+                        {% if hasattr(key, 'serialize') %}
+                            <div class="obj-propert-type-item">{{ key.serialize() }}<br></div>
                         {% endif %}
                     {% endfor %}
                 {% endif %}

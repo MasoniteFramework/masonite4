@@ -70,6 +70,9 @@ class Request:
     def all(self):
         return self.input_bag.all_as_values()
 
+    def only(self, *inputs):
+        return self.input_bag.only(*inputs)
+
     def is_not_safe(self):
         """Check if the current request is not a get request.
 

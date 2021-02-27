@@ -159,6 +159,16 @@ class InputBag:
 
         return new
 
+    def only(self, *args):
+        all = self.all()
+        new = {}
+        for name, input in all.items():
+            if name not in args:
+                continue
+            new.update({name: self.get(name)})
+
+        return new
+
     def query_parse(self, query_string):
         d = {}
         for name, value in parse_qs(query_string).items():

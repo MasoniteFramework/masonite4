@@ -23,6 +23,12 @@ class Authenticates:
 
         return False
 
+    def register(self, dictionary):
+        return self.create(dictionary)
+
+    def get_id(self):
+        return self.get_primary_key_value()
+
     def attempt_by_id(self, user_id):
         """Attempts to login using a username and password"""
         record = self.find(user_id)

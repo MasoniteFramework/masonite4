@@ -60,3 +60,12 @@ class Auth:
         """
         auth_config = self.get_config_options()
         return self.get_guard().set_options(auth_config).user()
+
+    def register(self, dictionary):
+        """Logout the current authenticated user.
+
+        Returns:
+            self
+        """
+        auth_config = self.get_config_options()
+        return self.get_guard().set_options(auth_config).register(dictionary)

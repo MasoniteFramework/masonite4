@@ -13,6 +13,13 @@ class WebGuard:
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt
 
+    def register(self, dictionary):
+        try:
+            register = self.options.get("model")().register(dictionary)
+        except Exception:
+            return False
+        return self.attempt_by_id(register.get_id())
+
     def user(self):
         """Get the currently logged in user.
 
