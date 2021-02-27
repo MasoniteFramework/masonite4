@@ -13,6 +13,21 @@ class WebGuard:
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt
 
+    def user(self):
+        """Get the currently logged in user.
+
+        Raises:
+            exception -- Raised when there has been an error handling the user model.
+
+        Returns:
+            object|bool -- Returns the current authenticated user object or False or None if there is none.
+        """
+        token = self.application.make("request").cookie("token")
+        if token and self.model:
+            return self.model.where("remember_token", token).first() or False
+
+        return False
+
     def attempt_by_id(self, user_id):
         """Login a user by the user ID.
 

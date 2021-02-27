@@ -51,4 +51,13 @@ class Auth:
         """
         self.application.make("request").remove_user()
         return self.application.make("request").delete_cookie("token")
+    
+    def user(self):
+        """Logout the current authenticated user.
+
+        Returns:
+            self
+        """
+        auth_config = self.get_config_options()
+        return self.get_guard().set_options(auth_config).user()  
         
