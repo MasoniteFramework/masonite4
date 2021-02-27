@@ -6,10 +6,10 @@ class WebGuard:
     def set_options(self, options):
         self.options = options
         return self
-    
+
     def attempt(self, username, password):
-        attempt = self.options.get('model')().attempt(username, password)
-        if attempt and not self.options.get('once'):
+        attempt = self.options.get("model")().attempt(username, password)
+        if attempt and not self.options.get("once"):
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt
 
@@ -37,9 +37,9 @@ class WebGuard:
         Returns:
             object|False -- Returns the current authenticated user object or False or None if there is none.
         """
-        attempt = self.options.get('model')().attempt_by_id(user_id)
+        attempt = self.options.get("model")().attempt_by_id(user_id)
 
-        if attempt and not self.options.get('once'):
+        if attempt and not self.options.get("once"):
             self.application.make("request").cookie("token", attempt.remember_token)
             return attempt
 

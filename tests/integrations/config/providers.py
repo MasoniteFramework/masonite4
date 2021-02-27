@@ -34,5 +34,5 @@ PROVIDERS = [
     EventProvider,
     StorageProvider,
     BroadcastProvider,
-    AuthenticationProvider
+    AuthenticationProvider,
 ]

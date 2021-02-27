@@ -32,7 +32,6 @@ class Authenticates:
         record.set_remember_token().save()
         return record
 
-
     def get_remember_token(self):
         """Attempts to login using a username and password"""
         return self.remember_token

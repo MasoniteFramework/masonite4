@@ -10,7 +10,7 @@ from src.masonite.auth.guards import WebGuard
 class TestAuthentication(TestCase):
     def setUp(self):
         super().setUp()
-        self.auth = self.application.make('auth')
+        self.auth = self.application.make("auth")
         self.make_request()
 
     def test_attempt(self):
@@ -18,9 +18,7 @@ class TestAuthentication(TestCase):
         self.assertFalse(self.auth.attempt("idmann509@gmail.com", "secret1"))
 
     def test_auth_class_registers_cookie(self):
-        self.auth.guard("web").attempt(
-            "idmann509@gmail.com", "secret"
-        )
+        self.auth.guard("web").attempt("idmann509@gmail.com", "secret")
         self.assertTrue(self.application.make("request").cookie("token"))
 
     def test_logout(self):

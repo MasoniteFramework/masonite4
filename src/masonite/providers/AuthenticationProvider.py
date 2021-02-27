@@ -16,9 +16,9 @@ class AuthenticationProvider(Provider):
             load(self.application.make("config.auth")).GUARDS
         )
 
-        auth.add_guard('web', WebGuard(self.application))
+        auth.add_guard("web", WebGuard(self.application))
 
-        self.application.bind('auth', auth)
+        self.application.bind("auth", auth)
 
     def boot(self):
         pass
