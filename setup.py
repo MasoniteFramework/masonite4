@@ -70,8 +70,6 @@ setup(
     packages=[
         "masonite",
         "masonite.auth",
-        "masonite.auth.models",
-        "masonite.auth.guards",
         "masonite.commands",
         "masonite.container",
         "masonite.controllers",
