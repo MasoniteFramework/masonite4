@@ -1,5 +1,5 @@
 from src.masonite.routes import Route
-from src.masonite.broadcasting.BroadcastRoutes import BroadcastRoutes
+from src.masonite.broadcasting import Broadcast
 from src.masonite.authentication import Auth
 
 Route.get("/", "WelcomeController@show").name("welcome"),
@@ -27,5 +27,5 @@ Route.get("/mail", "MailableController@view"),
 # Route.post("/login", "auth.LoginController@store").name("login.store")
 # Route.post("/login", "auth.LoginController@store").name("login.store")
 
-BroadcastRoutes.routes()
+Broadcast.routes()
 Auth.routes()
