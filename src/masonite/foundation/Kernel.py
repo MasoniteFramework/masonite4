@@ -9,6 +9,7 @@ from ..commands import (
     QueueRetryCommand,
     QueueTableCommand,
     QueueFailedCommand,
+    AuthCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -108,5 +109,6 @@ class Kernel:
                 QueueRetryCommand(self.application),
                 QueueFailedCommand(),
                 QueueTableCommand(),
+                AuthCommand(self.application),
             ),
         )

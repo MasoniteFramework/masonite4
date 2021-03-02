@@ -14,7 +14,7 @@ class LoginController:
         login = auth.attempt(request.input("username"), request.input("password"))
 
         if login:
-            return response.redirect(name="auth.home")
+            return response.redirect(name="home")
 
         # Go back to login page
         return response.redirect(name="login")

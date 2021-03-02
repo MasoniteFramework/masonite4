@@ -1,4 +1,5 @@
 from .CommandCapsule import CommandCapsule
+from .AuthCommand import AuthCommand
 from .TinkerCommand import TinkerCommand
 from .KeyCommand import KeyCommand
 from .ServeCommand import ServeCommand
