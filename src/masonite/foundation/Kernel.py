@@ -10,6 +10,9 @@ from ..commands import (
     QueueTableCommand,
     QueueFailedCommand,
     AuthCommand,
+    MakeControllerCommand,
+    MakeJobCommand,
+    MakeMailableCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -97,6 +100,8 @@ class Kernel:
         )
         self.application.bind("base_url", "http://localhost:8000")
         self.application.bind("resolver", DB)
+        self.application.bind("jobs.location", "tests/integrations/jobs")
+        self.application.bind("mailables.location", "tests/integrations/mailables")
 
     def register_commands(self):
         self.application.bind(
@@ -110,5 +115,8 @@ class Kernel:
                 QueueFailedCommand(),
                 QueueTableCommand(),
                 AuthCommand(self.application),
+                MakeControllerCommand(self.application),
+                MakeJobCommand(self.application),
+                MakeMailableCommand(self.application),
             ),
         )

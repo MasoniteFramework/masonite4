@@ -7,3 +7,6 @@ from .QueueWorkCommand import QueueWorkCommand
 from .QueueRetryCommand import QueueRetryCommand
 from .QueueTableCommand import QueueTableCommand
 from .QueueFailedCommand import QueueFailedCommand
+from .MakeControllerCommand import MakeControllerCommand
+from .MakeJobCommand import MakeJobCommand
+from .MakeMailableCommand import MakeMailableCommand
