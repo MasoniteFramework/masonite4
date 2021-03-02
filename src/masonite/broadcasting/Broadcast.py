@@ -1,3 +1,6 @@
+from ..routes import Route
+
+
 class Broadcast:
     def __init__(self, application, store_config=None):
         self.application = application
@@ -55,3 +58,11 @@ class Broadcast:
                 driver.set_options(store_config).channel(
                     channel.name, event_class, value
                 )
+
+    @classmethod
+    def routes(self):
+        from .controllers import BroadcastingController
+
+        Route.post("/broadcasting/authorize", BroadcastingController.authorize).name(
+            "broadcasting.authorize"
+        )

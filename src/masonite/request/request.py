@@ -30,7 +30,7 @@ class Request:
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")
 
-    def input(self, name, default=False, clean=False, quote=True):
+    def input(self, name, default=False):
         """Get a specific input value.
 
         Arguments:
@@ -46,7 +46,7 @@ class Request:
         """
         name = str(name)
 
-        return self.input_bag.get(name, default=default, clean=clean, quote=quote)
+        return self.input_bag.get(name, default=default)
 
     def cookie(self, name, value=None):
         if value is None:
@@ -69,6 +69,9 @@ class Request:
 
     def all(self):
         return self.input_bag.all_as_values()
+
+    def only(self, *inputs):
+        return self.input_bag.only(*inputs)
 
     def is_not_safe(self):
         """Check if the current request is not a get request.

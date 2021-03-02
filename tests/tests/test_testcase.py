@@ -2,9 +2,7 @@ from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
 from src.masonite.routes import Route
-from src.masonite.auth import Authenticates
-from src.masonite.auth import Auth
-from src.masonite.auth.guards import WebGuard
+from src.masonite.authentication import Authenticates
 
 
 class User(Model, Authenticates):
@@ -60,10 +58,6 @@ class TestTestingAssertions(TestCase):
             Route.get("/test-session-2", "WelcomeController@session2").name("session2"),
             Route.get("/test-authenticates", "WelcomeController@auth").name("auth"),
         )
-        # maybe this should be registered directly in base test case
-        auth = Auth(self.application).set_authentication_model(User())
-        auth.set_guard("web", WebGuard(self.application))
-        self.application.bind("auth", auth)
 
     def test_assert_contains(self):
         self.get("/").assertContains("welcome")
