@@ -109,10 +109,6 @@ class Auth:
         Returns:
             self
         """
-        #  Get the token
-        #  Check the token from the database
-        #  Check the expiration of the token
-        #  Delete the expiration from the token
 
         reset_record = (
             self.application.make("builder")
