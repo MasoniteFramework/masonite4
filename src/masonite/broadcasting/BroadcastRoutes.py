@@ -9,6 +9,3 @@ class BroadcastRoutes:
         Route.post("/broadcasting/authorize", BroadcastingController.authorize).name(
             "broadcasting.authorize"
         )
-
-
-
