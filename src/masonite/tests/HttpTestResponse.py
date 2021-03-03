@@ -163,7 +163,6 @@ class HttpTestResponse:
             assert not errors
         else:
             for key in keys:
-                print("errors?", errors)
                 assert not errors.get(key)
         return self
 

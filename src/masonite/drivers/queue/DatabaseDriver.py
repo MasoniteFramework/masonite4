@@ -39,7 +39,6 @@ class DatabaseDriver(HasColoredCommands):
     def consume(self):
         builder = self.get_builder()
 
-        print(self.options.get("attempts"))
 
         while True:
             time.sleep(int(self.options.get("poll", 1)))
