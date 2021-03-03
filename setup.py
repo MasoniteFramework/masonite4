@@ -39,6 +39,7 @@ setup(
         "bcrypt>=3.2,<3.3",
         "whitenoise>=5.2,<5.3",
         "python-dotenv>=0.15,<0.16",
+        "cryptography>=3.3,<3.4",
         "hashids>=1.3,<1.4",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
