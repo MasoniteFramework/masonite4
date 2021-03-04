@@ -1,7 +1,7 @@
-from masonite.controllers import Controller
-from masonite.views import View
+# from masonite.controllers import Controller
+# from masonite.views import View
 
 
-class HelloController(Controller):
-    def show(self, view: View):
-        return view.render("")
+# class HelloController(Controller):
+#     def show(self, view: View):
+#         return view.render("")

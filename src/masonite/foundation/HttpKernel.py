@@ -11,7 +11,7 @@ from ..middleware import (
 )
 from ..routes import RouteCapsule, Route
 from ..middleware import APIAuthenticationMiddleware
-import pydoc
+from ..utils.structures import load
 
 
 class HttpKernel:
@@ -47,5 +47,5 @@ class HttpKernel:
 
         self.application.bind(
             "router",
-            RouteCapsule(*pydoc.locate(self.application.make("routes.web")).routes),
+            RouteCapsule(*load(self.application.make("routes.web")).routes),
         )

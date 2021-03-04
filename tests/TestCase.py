@@ -80,7 +80,7 @@ class TestCase(TestCase):
     def fetch(self, route, data=None, method=None):
         if data is None:
             data = {}
-        token = self.application.make("sign").sign("cookie")
+        token = "cookie"
         data.update({"__token": token})
         wsgi_request = generate_wsgi(
             {

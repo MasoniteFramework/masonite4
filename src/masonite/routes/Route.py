@@ -134,7 +134,6 @@ class Route:
                 route.list_middleware = list(options.get("middleware"))
 
             inner.append(route)
-        self.routes = inner
         return inner
 
     @classmethod
