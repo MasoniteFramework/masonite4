@@ -22,6 +22,8 @@ class HttpKernel:
             EncryptCookies,
             SessionMiddleware,
             VerifyCsrfToken,
+        ],
+        "api": [
             APIAuthenticationMiddleware,
         ]
     }

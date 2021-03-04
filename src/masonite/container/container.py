@@ -19,7 +19,7 @@ class Container:
     strict = False
     override = True
     resolve_parameters = {}
-    remember = True
+    remember = False
     _hooks = {
         "make": {},
         "bind": {},
