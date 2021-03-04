@@ -17,18 +17,6 @@ class TestCase(TestCase):
         from wsgi import application
 
         self.application = application
-
-        # self.application.bind(
-        #     "router",
-        #     RouteCapsule(
-        #         Route.set_controller_module_location(
-        #             "tests.integrations.controllers"
-        #         ).get("/", "WelcomeController@show"),
-        #         Route.set_controller_module_location(
-        #             "tests.integrations.controllers"
-        #         ).post("/", "WelcomeController@show"),
-        #     ),
-        # )
         self.original_class_mocks = {}
         self._test_cookies = {}
         self._test_headers = {}
