@@ -8,7 +8,7 @@ class APIGuard:
         return self
 
     def attempt(self, token, password=None):
-        attempt = self.options.get("model")().where('api_token', token).first()
+        attempt = self.options.get("model")().where("api_token", token).first()
         if attempt:
             return attempt
 

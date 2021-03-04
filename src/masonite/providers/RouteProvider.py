@@ -28,7 +28,9 @@ class RouteProvider(Provider):
             pipe = Pipeline(request, response).through(
                 (
                     self.application.make("middleware").get_http_middleware()
-                    + self.application.make("middleware").get_route_middleware(route.get_middleware())
+                    + self.application.make("middleware").get_route_middleware(
+                        route.get_middleware()
+                    )
                 ),
                 handler="before",
             )
@@ -39,7 +41,9 @@ class RouteProvider(Provider):
             Pipeline(request, response).through(
                 (
                     self.application.make("middleware").get_http_middleware()
-                    + self.application.make("middleware").get_route_middleware(route.get_middleware())
+                    + self.application.make("middleware").get_route_middleware(
+                        route.get_middleware()
+                    )
                 ),
                 handler="after",
             )

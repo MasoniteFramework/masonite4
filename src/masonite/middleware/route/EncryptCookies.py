@@ -3,7 +3,7 @@ class EncryptCookies:
         for key, cookie in request.cookie_jar.all().items():
             try:
                 cookie.value = request.app.make("sign").unsign(cookie.value)
-            except:
+            except Exception:
                 cookie.value = cookie.value
 
         return request

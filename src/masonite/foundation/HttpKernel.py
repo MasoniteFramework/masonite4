@@ -25,7 +25,7 @@ class HttpKernel:
         ],
         "api": [
             APIAuthenticationMiddleware,
-        ]
+        ],
     }
 
     def __init__(self, app):

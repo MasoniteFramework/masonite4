@@ -10,13 +10,10 @@ Route.group(
     Route.get("/emit", "WelcomeController@emit"),
     Route.get("/view", "WelcomeController@view"),
     Route.get("/mail", "MailableController@view"),
-    middleware=("web",)
+    middleware=("web",),
 )
 
-Route.group(
-    Route.get("/protected", "WelcomeController@protect"),
-    middleware=("api",)
-)
+Route.group(Route.get("/protected", "WelcomeController@protect"), middleware=("api",))
 
 Broadcast.routes()
 Auth.routes()
