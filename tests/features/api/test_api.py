@@ -11,6 +11,7 @@ class TestAPI(TestCase):
             .assertIsStatus(401)
             .assertContains("not authorized")
         )
+
         response = (
             self.get("/protected", {"api_token": user.api_token})
             .assertOk()

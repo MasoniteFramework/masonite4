@@ -57,6 +57,9 @@ class HTTPRoute:
         self._domain = subdomain
         return self
 
+    def get_middleware(self):
+        return self.list_middleware
+
     def to_url(self, parameters={}):
 
         # Split the url into a list

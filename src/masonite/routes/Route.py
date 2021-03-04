@@ -130,6 +130,9 @@ class Route:
             if options.get("name"):
                 route._name = options.get("name") + route._name
 
+            if options.get("middleware"):
+                route.list_middleware = list(options.get("middleware"))
+
             inner.append(route)
         self.routes = inner
         return inner
