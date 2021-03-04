@@ -39,7 +39,6 @@ class DatabaseDriver(HasColoredCommands):
     def consume(self):
         builder = self.get_builder()
 
-
         while True:
             time.sleep(int(self.options.get("poll", 1)))
             builder = builder.new().table(self.options.get("table"))

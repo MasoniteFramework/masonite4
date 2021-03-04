@@ -18,17 +18,17 @@ class TestCase(TestCase):
 
         self.application = application
 
-        self.application.bind(
-            "router",
-            RouteCapsule(
-                Route.set_controller_module_location(
-                    "tests.integrations.controllers"
-                ).get("/", "WelcomeController@show"),
-                Route.set_controller_module_location(
-                    "tests.integrations.controllers"
-                ).post("/", "WelcomeController@show"),
-            ),
-        )
+        # self.application.bind(
+        #     "router",
+        #     RouteCapsule(
+        #         Route.set_controller_module_location(
+        #             "tests.integrations.controllers"
+        #         ).get("/", "WelcomeController@show"),
+        #         Route.set_controller_module_location(
+        #             "tests.integrations.controllers"
+        #         ).post("/", "WelcomeController@show"),
+        #     ),
+        # )
         self.original_class_mocks = {}
         self._test_cookies = {}
         self._test_headers = {}
@@ -105,9 +105,9 @@ class TestCase(TestCase):
         for name, value in self._test_headers.items():
             request.header(name, value)
 
-        route = self.application.make("router").find(route, method)
-        if route:
-            return HttpTestResponse(self.application, request, response, route)
+        route_class = self.application.make("router").find(route, method)
+        if route_class:
+            return HttpTestResponse(self.application, request, response, route_class)
         raise Exception(f"NO route found for {route}")
 
     def mock_start_response(self, *args, **kwargs):

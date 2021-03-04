@@ -2,7 +2,6 @@ from .Provider import Provider
 from ..routes import RouteCapsule, Route
 from ..pipeline import Pipeline
 
-# from ..middleware.route import VerifyCsrfToken
 import pydoc
 
 
@@ -24,25 +23,23 @@ class RouteProvider(Provider):
         route = router.find(request.get_path(), request.get_request_method())
 
         # Run before middleware
-
         if route:
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_http_middleware(),
-                handler="before",
-            )
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(["web"]),
+            pipe = Pipeline(request, response).through(
+                (
+                    self.application.make("middleware").get_http_middleware()
+                    + self.application.make("middleware").get_route_middleware(["web"])
+                ),
                 handler="before",
             )
 
-            response.view(route.get_response(self.application))
+            if pipe:
+                response.view(route.get_response(self.application))
 
             Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(["web"]),
-                handler="after",
-            )
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_http_middleware(),
+                (
+                    self.application.make("middleware").get_http_middleware()
+                    + self.application.make("middleware").get_route_middleware(["web"])
+                ),
                 handler="after",
             )
         else:

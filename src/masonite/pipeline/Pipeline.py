@@ -5,7 +5,10 @@ class Pipeline:
 
     def through(self, pipe_list, handler="handle"):
         passthrough = self.payload
+
         for pipe in pipe_list:
             response = getattr(pipe(), handler)(self.payload, *self.args)
             if response != passthrough:
-                break
+                return False
+
+        return True

@@ -19,7 +19,9 @@ class HttpTestResponse:
         return self
 
     def assertContains(self, content):
-        assert content in str(self.content), f"{content} not found."
+        assert content in str(
+            self.content
+        ), f"'{content}' not found in response: '{str(self.content)}'."
         return self
 
     def assertNotContains(self, content):

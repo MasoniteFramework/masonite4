@@ -108,3 +108,6 @@ class WelcomeController(Controller):
     def auth(self, request: Request):
         request.app.make("auth").guard("web").attempt("idmann509@gmail.com", "secret")
         return "logged in"
+
+    def protect(self, request: Request):
+        return "authorized"

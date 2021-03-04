@@ -39,7 +39,7 @@ class Auth:
         return options
 
     def attempt(self, email, password, once=False):
-        auth_config = self.get_config_options()
+        auth_config = self.get_config_options(self._guard)
         auth_config.update({"once": once})
         return self.get_guard().set_options(auth_config).attempt(email, password)
 

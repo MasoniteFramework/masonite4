@@ -1,3 +1,7 @@
+import string
+import random
+
+
 def flatten(routes):
     """Flatten the grouped lists of lists into a single list.
 
@@ -518,6 +522,20 @@ class HasColoredCommands:
 
     def info(self, message):
         return self.success(message)
+
+
+def random_string(length=4):
+    """Generate a random string based on the length given.
+
+    Keyword Arguments:
+        length {int} -- The amount of the characters to generate (default: {4})
+
+    Returns:
+        string
+    """
+    return "".join(
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(length)
+    )
 
 
 def password(password_string):

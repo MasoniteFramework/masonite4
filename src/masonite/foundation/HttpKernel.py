@@ -10,13 +10,21 @@ from ..middleware import (
     EncryptCookies,
 )
 from ..routes import RouteCapsule, Route
+from ..middleware import APIAuthenticationMiddleware
 import pydoc
 
 
 class HttpKernel:
 
     http_middleware = []
-    route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
+    route_middleware = {
+        "web": [
+            EncryptCookies,
+            SessionMiddleware,
+            VerifyCsrfToken,
+            APIAuthenticationMiddleware,
+        ]
+    }
 
     def __init__(self, app):
         self.application = app
