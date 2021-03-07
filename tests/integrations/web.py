@@ -1,6 +1,7 @@
 from src.masonite.routes import Route
 from src.masonite.broadcasting import Broadcast
 from src.masonite.authentication import Auth
+from tests.integrations.app.User import User
 
 Route.group(
     Route.get("/", "WelcomeController@show").name("welcome"),
@@ -15,8 +16,8 @@ Route.group(
 
 Route.group(
     Route.get("/protected", "WelcomeController@protect"),
-    Route.get("/users", "api.UserResource@index").name("users.index"),
-    Route.get("/users/@id", "api.UserResource@show").name("users.show"),
+    Route.get("/users", "api.UserResource@_index").name("users.index"),
+    Route.get("/users/@id", "api.UserResource@_show").name("users.show"),
     middleware=("api",),
     prefix="/api",
 )

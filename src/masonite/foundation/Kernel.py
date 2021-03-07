@@ -13,6 +13,7 @@ from ..commands import (
     MakeControllerCommand,
     MakeJobCommand,
     MakeMailableCommand,
+    MakeResourceCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -50,6 +51,7 @@ class Kernel:
         self.application.bind(
             "config.filesystem", "tests.integrations.config.filesystem"
         )
+        self.application.bind("resource.location", "tests/integrations/app/resources")
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
@@ -118,5 +120,6 @@ class Kernel:
                 MakeControllerCommand(self.application),
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
+                MakeResourceCommand(self.application),
             ),
         )
