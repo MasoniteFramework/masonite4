@@ -10,13 +10,14 @@ from ..middleware import (
     EncryptCookies,
 )
 from ..routes import RouteCapsule, Route
-from ..middleware import APIAuthenticationMiddleware
+from ..middleware import APIAuthenticationMiddleware, ResponseMiddleware
 from ..utils.structures import load
 
 
 class HttpKernel:
 
-    http_middleware = []
+    http_middleware = [ResponseMiddleware]
+
     route_middleware = {
         "web": [
             EncryptCookies,

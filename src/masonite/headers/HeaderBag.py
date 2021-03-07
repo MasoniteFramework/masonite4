@@ -35,6 +35,8 @@ class HeaderBag:
         for key, value in environ.items():
             if key.startswith("HTTP_"):
                 self.add(Header(key, value))
+            elif key.lower().replace("-", "_") in ("content_type", "content_length"):
+                self.add(Header(key, value))
 
     def to_dict(self):
         dic = {}
