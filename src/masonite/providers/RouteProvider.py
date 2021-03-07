@@ -35,12 +35,9 @@ class RouteProvider(Provider):
                 handler="before",
             )
 
-            print("before pipe")
-
             if pipe:
                 response.view(route.get_response(self.application))
 
-            print("after pipe")
             Pipeline(request, response).through(
                 (
                     self.application.make("middleware").get_http_middleware()

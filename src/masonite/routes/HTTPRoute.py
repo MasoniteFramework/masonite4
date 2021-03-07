@@ -311,20 +311,9 @@ class HTTPRoute:
         return regex
 
     def extract_parameters(self, path):
-        if not path.endswith("/"):
-            matching_regex = self._compiled_regex
-        elif path == "/":
+        if (not path.endswith("/")) or path == "/":
             matching_regex = self._compiled_regex
         else:
             matching_regex = self._compiled_regex_end
-        try:
-            parameter_dict = {}
-            for index, value in enumerate(matching_regex.match(path).groups()):
-                parameter_dict[
-                    self.url_list[index]
-                ] = value or self.get_default_parameter(self.url_list[index])
-            return parameter_dict
-        except AttributeError:
-            pass
 
-        return {}
+        return dict(zip(self.url_list, matching_regex.match(path).groups()))
