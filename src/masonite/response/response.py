@@ -102,7 +102,7 @@ class Response:
         Returns:
             self
         """
-        return self._status
+        return self._status or '200 OK'
 
     def get_status(self):
         return self._get_status_code_by_value(self.get_status_code())
@@ -146,8 +146,7 @@ class Response:
             view, status = view
             self.status(status)
 
-        if not self.get_status_code():
-            self.status(status)
+        self.status(status)
 
         if isinstance(view, (dict, list)):
             return self.json(view, status=self.get_status_code())
@@ -158,9 +157,10 @@ class Response:
         elif hasattr(view, "get_response"):
             view = view.get_response()
         elif view is None:
-            raise ResponseError(
-                "Responses cannot be of type: None. Did you return anything in your responsable method?"
-            )
+            view = None
+            # raise ResponseError(
+            #     "Responses cannot be of type: None. Did you return anything in your responsable method?"
+            # )
 
         if isinstance(view, str):
             self.content = bytes(view, "utf-8")
@@ -185,18 +185,17 @@ class Response:
         Returns:
             string -- Returns the data to be returned.
         """
-        self.status(status)
 
         if location:
             self.header_bag.add(Header("Location", location))
-            return self.view("Redirecting ...")
+            return self.view("Redirecting ...", status=status)
         elif name:
             url = self._get_url_from_route_name(name, params)
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
+            return self.view("Redirecting ...", status=status)
         elif url:
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
+            return self.view("Redirecting ...", status=status)
 
     def _get_url_from_route_name(self, name, params={}):
         route = self.app.make("router").find_by_name(name)
@@ -210,7 +209,7 @@ class Response:
         Returns:
             bytes -- The converted response to bytes.
         """
-        return self.converted_data()
+        return self.converted_data() or ""
 
     def download(self, name, location, force=False):
         if force:

@@ -24,7 +24,7 @@ class RouteProvider(Provider):
 
         # Run before middleware
         if route:
-            print(route.list_middleware)
+            request.url_params = route.extract_parameters(request.get_path())
             pipe = Pipeline(request, response).through(
                 (
                     self.application.make("middleware").get_http_middleware()
@@ -35,9 +35,12 @@ class RouteProvider(Provider):
                 handler="before",
             )
 
+            print('before pipe')
+
             if pipe:
                 response.view(route.get_response(self.application))
 
+            print('after pipe')
             Pipeline(request, response).through(
                 (
                     self.application.make("middleware").get_http_middleware()
