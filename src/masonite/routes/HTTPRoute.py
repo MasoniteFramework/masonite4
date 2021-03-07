@@ -177,7 +177,7 @@ class HTTPRoute:
             # Resolve Controller Method
             response = app.resolve(
                 getattr(controller, self.controller_method),
-                *app.make('request').url_params.values()
+                *app.make("request").url_params.values()
             )
             return response
 

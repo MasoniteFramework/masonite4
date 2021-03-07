@@ -9,5 +9,7 @@ class ResponseMiddleware(Middleware):
         if request.header("content-type") == "application/json":
             response.header("content-type", "application/json; charset=utf-8")
             if response.content is None:
-                response.view({"status": 404, "message": "Resource Not Found"}, status=404)
+                response.view(
+                    {"status": 404, "message": "Resource Not Found"}, status=404
+                )
         return request

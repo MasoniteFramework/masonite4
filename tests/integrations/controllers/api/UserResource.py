@@ -1,7 +1,7 @@
 from ...app.User import User
 
-class UserResource:
 
+class UserResource:
     def show(self, user_id):
         return User.find(user_id)
 

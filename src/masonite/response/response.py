@@ -102,7 +102,7 @@ class Response:
         Returns:
             self
         """
-        return self._status or '200 OK'
+        return self._status or "200 OK"
 
     def get_status(self):
         return self._get_status_code_by_value(self.get_status_code())

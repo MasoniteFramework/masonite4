@@ -15,10 +15,10 @@ Route.group(
 
 Route.group(
     Route.get("/protected", "WelcomeController@protect"),
-    Route.get("/users", "api.UserResource@index").name('users.index'), 
-    Route.get("/users/@id", "api.UserResource@show").name('users.show'), 
+    Route.get("/users", "api.UserResource@index").name("users.index"),
+    Route.get("/users/@id", "api.UserResource@show").name("users.show"),
     middleware=("api",),
-    prefix="/api"
+    prefix="/api",
 )
 
 Broadcast.routes()
