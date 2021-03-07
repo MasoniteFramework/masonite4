@@ -1,12 +1,12 @@
 from ...request import Request
 
-class Resource:
 
-    def _show(self, request: Request, user_id): 
+class Resource:
+    def _show(self, request: Request, user_id):
         return self.to_dict(request, self.show(request, user_id))
 
     def _index(self, request: Request):
-        pagination = User.paginate(request.input('limit', 10), request.input('page', 1))
+        pagination = User.paginate(request.input("limit", 10), request.input("page", 1))
         result = []
         for model in pagination.result:
             result.append(self.to_dict(request, model))
@@ -19,11 +19,11 @@ class Resource:
     def when(self, conditional, callback, default=None):
         if conditional:
             return callback()
-        
+
         return default
 
     def relation(self, conditional, default=None):
         if conditional:
             return conditional.serialize()
-        
+
         return default

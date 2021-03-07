@@ -6,8 +6,8 @@ from src.masonite.authentication import Authenticates
 class User(Model, Authenticates):
     __fillable__ = ["name", "password", "email"]
 
-
     @belongs_to("id", "user_id")
     def profile(self):
         from .Profile import Profile
+
         return Profile

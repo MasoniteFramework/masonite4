@@ -33,11 +33,13 @@ class MakeResourceCommand(Command):
             content = f.read()
             content = content.replace("__class__", name)
             content = content.replace("__model__", model or self.argument("name"))
-            content = content.replace("__record__", inflection.underscore(model or self.argument("name")))
+            content = content.replace(
+                "__record__", inflection.underscore(model or self.argument("name"))
+            )
 
         file_name = os.path.join(
-                self.app.make("resource.location").replace(".", "/"), name + ".py"
-            )
+            self.app.make("resource.location").replace(".", "/"), name + ".py"
+        )
         make_directory(file_name)
         with open(
             file_name,
