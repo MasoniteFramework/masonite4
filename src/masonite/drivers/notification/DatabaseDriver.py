@@ -1,6 +1,5 @@
 """Database driver Class."""
 import json
-from masonite.app import App
 from masonite import Queue
 
 from ..models import DatabaseNotification

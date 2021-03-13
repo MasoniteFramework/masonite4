@@ -1,9 +1,4 @@
-from abc import abstractmethod
-from abc import ABC
-
-
-class BaseDriver(ABC):
-    @abstractmethod
+class BaseDriver:
     def send(self, notifiable, notification):
         """Implements sending the notification to notifiables through
         this channel."""
@@ -11,7 +6,6 @@ class BaseDriver(ABC):
             "send() method must be implemented for a notification channel."
         )
 
-    @abstractmethod
     def queue(self, notifiable, notification):
         """Implements queuing the notification to be sent later to notifiables through
         this channel."""

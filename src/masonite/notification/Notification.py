@@ -1,9 +1,8 @@
 """Base Notification facade."""
-from abc import ABC, abstractmethod
 
 
-class Notification(ABC):
-    """Base Notification."""
+class Notification:
+    """Notification class representing a notification."""
 
     def __init__(self, *args, **kwargs):
         self.id = None
@@ -14,7 +13,6 @@ class Notification(ABC):
         """Get the channels the event should broadcast on."""
         return []
 
-    @abstractmethod
     def via(self, notifiable):
         """Defines the notification's delivery channels."""
         return []
