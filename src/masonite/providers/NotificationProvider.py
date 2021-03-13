@@ -8,6 +8,7 @@ from ..drivers.notification import (
     # SlackDriver,
 )
 from ..notification import NotificationManager
+from ..notification import MockNotification
 
 
 class NotificationProvider(Provider):
@@ -28,6 +29,7 @@ class NotificationProvider(Provider):
         # TODO: to rewrite
         # self.app.bind("NotificationCommand", NotificationCommand())
         self.application.bind("notification", notification_manager)
+        self.application.bind("mock.notification", MockNotification)
 
     def boot(self):
         # TODO: to rewrite
