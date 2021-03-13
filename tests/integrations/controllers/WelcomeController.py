@@ -2,17 +2,42 @@ from src.masonite.controllers import Controller
 from src.masonite.views import View
 from src.masonite.response.response import Response
 from src.masonite.request.request import Request
+from src.masonite.filesystem import Storage
+from src.masonite.broadcasting import Broadcast, Channel
+
+
+class CanBroadcast:
+    def broadcast_on(self):
+        return Channel(f"private-shipped")
+
+    def broadcast_with(self):
+        return vars(self)
+
+    def broadcast_as(self):
+        return self.__class__.__name__
+
+
+class OrderProcessed(CanBroadcast):
+    def __init__(self):
+        self.order_id = 1
 
 
 class WelcomeController(Controller):
-    def show(self):
+    def show(self, request: Request):
         return "welcome"
 
     def test(self):
         return 2 / 0
 
+    def emit(self, broadcast: Broadcast):
+        broadcast.channel("private-orders", OrderProcessed())
+        return "emitted"
+
     def view(self, view: View):
         return view.render("welcome")
+
+    def upload(self, request: Request, storage: Storage):
+        return storage.disk("s3").store(request.input("profile"))
 
     def create(self):
         return "user created", 201

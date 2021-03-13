@@ -57,6 +57,11 @@ class TestInput(TestCase):
         bag.load({"QUERY_STRING": "hello=you&goodbye=me"})
         self.assertTrue(bag.has("hello", "goodbye"))
 
+    def test_only(self):
+        bag = InputBag()
+        bag.load({"QUERY_STRING": "hello=you&goodbye=me&name=Joe"})
+        self.assertEqual(bag.only("hello", "name"), {"hello": "you", "name": "Joe"})
+
     def test_can_parse_post_params(self):
         bag = InputBag()
         bag.load({"wsgi.input": self.post_data, "CONTENT_TYPE": "application/json"})

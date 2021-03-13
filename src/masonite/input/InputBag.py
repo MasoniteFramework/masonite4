@@ -5,6 +5,7 @@ import json
 import cgi
 import re
 from ..utils.structures import Dot
+from ..filesystem import UploadedFile
 
 
 class InputBag:
@@ -69,7 +70,25 @@ class InputBag:
                 )
 
                 for name in fields:
-                    self.post_data.update({name: Input(name, fields.getvalue(name))})
+                    value = fields.getvalue(name)
+                    if isinstance(value, bytes):
+                        self.post_data.update(
+                            {
+                                name: UploadedFile(
+                                    fields[name].filename, fields.getvalue(name)
+                                )
+                            }
+                        )
+                    else:
+                        self.post_data.update(
+                            {name: Input(name, fields.getvalue(name))}
+                        )
+
+                    print(
+                        "nn",
+                        name,
+                        type(fields.getvalue(name)),
+                    )
             else:
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
@@ -86,35 +105,13 @@ class InputBag:
 
         input = Dot().dot(name, self.all(), default=default)
         if isinstance(input, (dict, str)):
-            return self.clean(input, clean=clean)
+            return input
         elif hasattr(input, "value"):
-            return self.clean(input.value, clean=clean)
+            return input.value
         else:
-            return self.clean(input, clean=clean)
+            return input
 
         return default
-
-    def clean(self, value, clean=True, quote=True):
-        if not clean:
-            return value
-
-        import html
-
-        try:
-            if isinstance(value, str):
-                return html.escape(value, quote=quote)
-            elif isinstance(value, list):
-                return [html.escape(x, quote=quote) for x in value]
-            elif isinstance(value, int):
-                return value
-            elif isinstance(value, dict):
-                return {
-                    key: html.escape(val, quote=quote) for (key, val) in value.items()
-                }
-        except (AttributeError, TypeError):
-            pass
-
-        return value
 
     def has(self, *names):
         return all((name in self.all()) for name in names)
@@ -136,6 +133,16 @@ class InputBag:
             if not internal_variables:
                 if name.startswith("__"):
                     continue
+            new.update({name: self.get(name)})
+
+        return new
+
+    def only(self, *args):
+        all = self.all()
+        new = {}
+        for name, input in all.items():
+            if name not in args:
+                continue
             new.update({name: self.get(name)})
 
         return new

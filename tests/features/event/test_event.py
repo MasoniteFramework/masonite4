@@ -23,12 +23,12 @@ class NewUserEvent(Event):
 
 
 class SendEmailListener:
-    def handle(self):
+    def handle(self, event):
         pass
 
 
 class UpdateAdminListener:
-    def handle(self, user):
+    def handle(self, event, user):
         print("update", user)
         pass
 
@@ -70,18 +70,25 @@ class TestEvent(TestCase):
         self.event.listen("masonite.*.booted", [SendEmailListener])
         self.event.listen("masonite.commands", [SendEmailListener])
         self.event.listen("view.*", [SendEmailListener])
+        self.event.listen("masonite.exception.*", [SendEmailListener])
         self.event.listen("user.added", [UpdateAdminListener])
         self.assertEqual(self.event.fire("masonite.commands"), ["masonite.commands"])
         self.assertEqual(self.event.fire("masonite.orm.booted"), ["masonite.*.booted"])
         self.assertEqual(self.event.fire("masonite.orm"), [])
         self.assertEqual(self.event.fire("masonite.command"), [])
+        self.assertEqual(
+            self.event.fire("masonite.exception.ZeroDivisionError"),
+            ["masonite.exception.*"],
+        )
         self.assertEqual(self.event.fire("view.rendered"), ["view.*"])
         self.assertEqual(self.event.fire("user.added", 1), ["user.added"])
 
     def test_fire_event_class(self):
         self.event.listen(NewUserEvent, [SendAlert])
-        self.event.fire(NewUserEvent(), [])
+        self.event.fire(NewUserEvent())
 
     def test_can_subscribe(self):
         self.event.subscribe(Subscriber())
-        self.event.fire("masonite.event_handled", ["masonite.event_handled"])
+        self.assertEqual(
+            self.event.fire("masonite.event_handled"), ["masonite.event_handled"]
+        )

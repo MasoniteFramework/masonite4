@@ -7,7 +7,10 @@ from .AuthenticationProvider import AuthenticationProvider
 from .Provider import Provider
 from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider
+from .HelpersProvider import HelpersProvider
 from .QueueProvider import QueueProvider
 from .NotificationProvider import NotificationProvider
 from .CacheProvider import CacheProvider
 from ..events.providers import EventProvider
+from ..filesystem.providers import StorageProvider
+from ..broadcasting.providers import BroadcastProvider

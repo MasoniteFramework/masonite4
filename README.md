@@ -116,7 +116,7 @@ class VerifyCsrfToken(Middleware):
         request.app.make("view").share(
             {
                 "csrf_field": Markup(
-                    "<input type='hidden' name='__token' value='{0}' />".format(token)
+                    f"<input type='hidden' name='__token' value='{token}' />"
                 ),
                 "csrf_token": token,
             }

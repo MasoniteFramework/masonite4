@@ -29,8 +29,15 @@ class TestCase(TestCase):
                 ).post("/", "WelcomeController@show"),
             ),
         )
+        self.original_class_mocks = {}
         self._test_cookies = {}
         self._test_headers = {}
+        if hasattr(self, "startTestRun"):
+            self.startTestRun()
+
+    def tearDown(self):
+        if hasattr(self, "stopTestRun"):
+            self.stopTestRun()
 
     def setRoutes(self, *routes):
         self.application.bind(
@@ -106,6 +113,19 @@ class TestCase(TestCase):
     def mock_start_response(self, *args, **kwargs):
         pass
 
+    def fake(self, binding):
+        """Mock a service with its mocked implementation or with a given custom
+        one."""
+
+        # save original first
+        self.original_class_mocks.update(
+            {binding: self.application.make(binding, self.application)}
+        )
+        # mock by overriding with mocked version
+        mock = self.application.make(f"mock.{binding}", self.application)
+        self.application.bind(binding, mock)
+        return mock
+
     def withCookies(self, cookies_dict):
         self._test_cookies = cookies_dict
         return self
@@ -120,7 +140,7 @@ class TestCase(TestCase):
             user.get_primary_key_value()
         )
 
-    def fake(self, binding):
-        mock = MagicMock(self.application.make(binding))
-        self.application.bind(binding, mock)
-        return mock
+    def restore(self, binding):
+        """Restore the service previously mocked to the original one."""
+        original = self.original_class_mocks.get(binding)
+        self.application.bind(binding, original)

@@ -1,4 +1,6 @@
 from .ExceptionHandler import ExceptionHandler
+from .DumpExceptionHandler import DumpExceptionHandler
+from .DD import DD
 from .exceptions import (
     InvalidRouteCompileException,
     RouteMiddlewareNotFound,
@@ -9,6 +11,8 @@ from .exceptions import (
     InvalidHTTPStatusCode,
     RequiredContainerBindingNotFound,
     ViewException,
+    RouteNotFoundException,
+    DumpException,
     InvalidSecretKey,
     InvalidCSRFToken,
     NotificationException,

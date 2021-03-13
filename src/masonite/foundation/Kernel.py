@@ -9,6 +9,10 @@ from ..commands import (
     QueueRetryCommand,
     QueueTableCommand,
     QueueFailedCommand,
+    AuthCommand,
+    MakeControllerCommand,
+    MakeJobCommand,
+    MakeMailableCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -44,6 +48,11 @@ class Kernel:
         )
         self.application.bind("config.location", "tests/integrations/config")
         self.application.bind("config.cache", "tests.integrations.config.cache")
+        self.application.bind("config.broadcast", "tests.integrations.config.broadcast")
+        self.application.bind("config.auth", "tests.integrations.config.auth")
+        self.application.bind(
+            "config.filesystem", "tests.integrations.config.filesystem"
+        )
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
@@ -78,9 +87,11 @@ class Kernel:
                 "tests/integrations/storage/public": "/",
             }
         )
-        self.application.bind("storage", storage)
+        self.application.bind("storage_capsule", storage)
 
     def register_framework(self):
+        from config.database import DB
+
         self.application.set_response_handler(response_handler)
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
@@ -90,6 +101,10 @@ class Kernel:
         self.application.bind(
             "sign", Sign("-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
         )
+        self.application.bind("base_url", "http://localhost:8000")
+        self.application.bind("resolver", DB)
+        self.application.bind("jobs.location", "tests/integrations/jobs")
+        self.application.bind("mailables.location", "tests/integrations/mailables")
 
     def register_commands(self):
         self.application.bind(
@@ -102,5 +117,9 @@ class Kernel:
                 QueueRetryCommand(self.application),
                 QueueFailedCommand(),
                 QueueTableCommand(),
+                AuthCommand(self.application),
+                MakeControllerCommand(self.application),
+                MakeJobCommand(self.application),
+                MakeMailableCommand(self.application),
             ),
         )

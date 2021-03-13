@@ -11,6 +11,10 @@ from src.masonite.providers import (
     QueueProvider,
     CacheProvider,
     EventProvider,
+    StorageProvider,
+    HelpersProvider,
+    BroadcastProvider,
+    AuthenticationProvider,
 )
 
 from src.masonite.scheduling.providers import ScheduleProvider
@@ -18,6 +22,7 @@ from src.masonite.scheduling.providers import ScheduleProvider
 
 PROVIDERS = [
     FrameworkProvider,
+    HelpersProvider,
     RouteProvider,
     ViewProvider,
     WhitenoiseProvider,
@@ -29,4 +34,7 @@ PROVIDERS = [
     QueueProvider,
     ScheduleProvider,
     EventProvider,
+    StorageProvider,
+    BroadcastProvider,
+    AuthenticationProvider,
 ]

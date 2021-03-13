@@ -1,8 +1,6 @@
 from tests import TestCase
-from src.masonite.drivers.mail.Recipient import Recipient
-from unittest.mock import MagicMock
-import os
 from src.masonite.mail import Mailable
+import pytest
 
 
 class Welcome(Mailable):
@@ -16,7 +14,7 @@ class Welcome(Mailable):
         )
 
 
+@pytest.mark.integrations
 class TestSMTPDriver(TestCase):
     def test_send_mailable(self):
-        if os.getenv("RUN_MAIL") == "True":
-            self.application.make("mail").mailable(Welcome()).send()
+        self.application.make("mail").mailable(Welcome()).send()
