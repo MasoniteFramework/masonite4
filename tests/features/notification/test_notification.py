@@ -26,10 +26,3 @@ class TestNotification(TestCase):
 
     def test_notification_type(self):
         self.assertEqual("WelcomeNotification", WelcomeNotification().type())
-
-    def test_that_via_should_be_implemented(self):
-        class WelcomeNotification(Notification):
-            pass
-
-        with self.assertRaises(TypeError):
-            WelcomeNotification()

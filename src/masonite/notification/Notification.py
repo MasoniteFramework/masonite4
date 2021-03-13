@@ -15,7 +15,7 @@ class Notification:
 
     def via(self, notifiable):
         """Defines the notification's delivery channels."""
-        return []
+        raise NotImplementedError("via() method should be implemented.")
 
     @property
     def should_send(self):
