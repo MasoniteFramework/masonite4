@@ -36,6 +36,9 @@ class NotificationManager(object):
         self, notifiables, notification, drivers=[], dry=False, fail_silently=False
     ):
         """Send the given notification to the given notifiables immediately."""
+        if not notification.should_send or dry:
+            return
+
         notifiables = self._format_notifiables(notifiables)
         for notifiable in notifiables:
             # get drivers to use for sending this notification
@@ -56,38 +59,19 @@ class NotificationManager(object):
                     continue
                 if not notification.id:
                     notification.id = uuid.uuid4()
-                self.send_or_queue(
-                    notifiable,
-                    notification,
-                    driver_instance,
-                    dry=dry,
-                    fail_silently=fail_silently,
-                )
+                try:
+                    if isinstance(notification, ShouldQueue):
+                        return driver_instance.queue(notifiable, notification)
+                    else:
+                        return driver_instance.send(notifiable, notification)
+                except Exception as e:
+                    if notification.ignore_errors or fail_silently:
+                        pass
+                    else:
+                        raise e
 
     # def is_custom_channel(self, channel):
     #     return issubclass(channel, BaseDriver)
-
-    def send_or_queue(
-        self,
-        notifiable,
-        notification,
-        driver_instance,
-        dry=False,
-        fail_silently=False,
-    ):
-        """Send or queue the given notification through the given channel to one notifiable."""
-        if not notification.should_send or dry:
-            return
-        try:
-            if isinstance(notification, ShouldQueue):
-                return driver_instance.queue(notifiable, notification)
-            else:
-                return driver_instance.send(notifiable, notification)
-        except Exception as e:
-            if notification.ignore_errors or fail_silently:
-                pass
-            else:
-                raise e
 
     def _format_notifiables(self, notifiables):
         if isinstance(notifiables, list) or isinstance(notifiables, Collection):
