@@ -1,10 +1,8 @@
 """Notification handler class"""
 import uuid
-from masoniteorm.models import Model
 
 from ..utils.collections import Collection
-from ..drivers.notification.BaseDriver import BaseDriver
-from ..exceptions.exceptions import NotificationException, DriverNotFound
+from ..exceptions.exceptions import NotificationException
 from ..queues import ShouldQueue
 
 
@@ -27,7 +25,8 @@ class NotificationManager(object):
         return self.drivers[name]
 
     def set_configuration(self, config):
-        self.driver_config = config
+        self.driver_config = config.DRIVERS
+        self.options = {"dry": config.DRY}
         return self
 
     def get_config_options(self, driver):
@@ -55,11 +54,11 @@ class NotificationManager(object):
                 if isinstance(notifiable, AnonymousNotifiable) and driver == "database":
                     # this case is not possible but that should not stop other channels to be used
                     continue
-                notification_id = uuid.uuid4()
+                if not notification.id:
+                    notification.id = uuid.uuid4()
                 self.send_or_queue(
                     notifiable,
                     notification,
-                    notification_id,
                     driver_instance,
                     dry=dry,
                     fail_silently=fail_silently,
@@ -72,14 +71,11 @@ class NotificationManager(object):
         self,
         notifiable,
         notification,
-        notification_id,
         driver_instance,
         dry=False,
         fail_silently=False,
     ):
         """Send or queue the given notification through the given channel to one notifiable."""
-        if not notification.id:
-            notification.id = notification_id
         if not notification.should_send or dry:
             return
         try:
