@@ -1,7 +1,6 @@
-"""Vonage driver Class."""
+"""Vonage notification driver."""
 from ....exceptions import NotificationException
 from ..BaseDriver import BaseDriver
-from .Sms import Sms
 
 
 class VonageDriver(BaseDriver):
@@ -14,10 +13,14 @@ class VonageDriver(BaseDriver):
         return self
 
     def build(self, notifiable, notification):
-        """Prepare SMS and list of recipients."""
-        data = self.get_data("vonage", notifiable, notification)
-        recipients = self.get_recipients("vonage", notifiable, notification)
-        return data, recipients
+        """Build SMS payload sent to Vonage API."""
+        sms = self.get_data("vonage", notifiable, notification)
+        if not sms._from:
+            sms = sms.from_(self.options.get("sms_from"))
+        if not sms._to:
+            recipients = notifiable.route_notification_for("vonage")
+            sms = sms.to(recipients)
+        return sms.build().get_options()
 
     def get_sms_client(self):
         try:
@@ -34,60 +37,18 @@ class VonageDriver(BaseDriver):
 
     def send(self, notifiable, notification):
         """Used to send the SMS."""
-        data, recipients = self.build(notifiable, notification)
-        responses = []
+        sms = self.build(notifiable, notification)
         client = self.get_sms_client()
-
-        for recipient in recipients:
-            payload = self.build_payload(data, recipient)
-            response = client.send_message(payload)
-            self._handle_errors(response)
-            responses.append(response)
-        return responses
+        # TODO: here if multiple recipients are defined in Sms it won't work ? check with Vonage API
+        response = client.send_message(sms)
+        self._handle_errors(response)
+        return response
 
     def queue(self, notifiable, notification):
         """Used to queue the SMS notification to be send."""
-        data, recipients, sms = self._prepare_sms(notifiable, notification)
-        for recipient in recipients:
-            payload = self.build_payload(data, recipient)
-            self.application.make("queue").push(sms.send_message, args=(payload,))
-
-    def get_recipients(self, notifiable, notification):
-        """Get recipients which can be defined through notifiable route method.
-        It can be one or a list of phone numbers.
-            return phone
-            return [phone1, phone2]
-        """
-        recipients = notifiable.route_notification_for("vonage", notification)
-        # multiple recipients
-        if isinstance(recipients, list):
-            _recipients = []
-            for recipient in recipients:
-                _recipients.append(recipient)
-        else:
-            _recipients = [recipients]
-        return _recipients
-
-    def build_payload(self, data, recipient):
-        """Build SMS payload sent to Vonage API."""
-
-        if isinstance(data, str):
-            data = Sms(data)
-
-        # define send_from from config if not set
-        if not data._from:
-            data = data.send_from(self.options.get("sms_from"))
-        payload = {**data.as_dict(), "to": recipient}
-        self._validate_payload(payload)
-        return payload
-
-    def _validate_payload(self, payload):
-        """Validate SMS payload before sending by checking that from et to
-        are correctly set."""
-        if not payload.get("from", None):
-            raise NotificationException("from must be specified.")
-        if not payload.get("to", None):
-            raise NotificationException("to must be specified.")
+        sms = self.build(notifiable, notification)
+        client = self.get_sms_client()
+        self.application.make("queue").push(client.send_message, args=(sms,))
 
     def _handle_errors(self, response):
         """Handle errors of Vonage API. Raises VonageAPIError if request does

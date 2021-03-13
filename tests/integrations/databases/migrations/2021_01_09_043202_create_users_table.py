@@ -11,6 +11,7 @@ class CreateUsersTable(Migration):
             table.string("password")
             table.string("second_password").nullable()
             table.string("remember_token").nullable()
+            table.string("phone").nullable()
             table.timestamp("verified_at").nullable()
             table.timestamps()
 

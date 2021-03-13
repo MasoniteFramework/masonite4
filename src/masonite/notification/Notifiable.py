@@ -21,7 +21,7 @@ class Notifiable(object):
 
         try:
             method = getattr(self, method_name)
-            return method(self)
+            return method()
         except AttributeError:
             # if no method is defined on notifiable use default
             if channel == "database":

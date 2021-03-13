@@ -34,28 +34,25 @@ class NotificationManager(object):
         return self.driver_config.get(driver, {})
 
     def send(
-        self, notifiables, notification, channels=[], dry=False, fail_silently=False
+        self, notifiables, notification, drivers=[], dry=False, fail_silently=False
     ):
         """Send the given notification to the given notifiables immediately."""
         notifiables = self._format_notifiables(notifiables)
         for notifiable in notifiables:
-            # get channels for this notification
-            # allow override of channels list at send
-            _channels = channels if channels else notification.via(notifiable)
-            _channels = self.prepare_channels(_channels)
-            if not _channels:
+            # get drivers to use for sending this notification
+            drivers = drivers if drivers else notification.via(notifiable)
+            if not drivers:
                 raise NotificationException(
                     "No channels have been defined in via() method of {0} class.".format(
                         notification.type()
                     )
                 )
-            for channel in _channels:
+            for driver in drivers:
+                self.options.update(self.get_config_options(driver))
+                driver_instance = self.get_driver(driver).set_options(self.options)
                 from .AnonymousNotifiable import AnonymousNotifiable
 
-                if (
-                    isinstance(notifiable, AnonymousNotifiable)
-                    and channel == "database"
-                ):
+                if isinstance(notifiable, AnonymousNotifiable) and driver == "database":
                     # this case is not possible but that should not stop other channels to be used
                     continue
                 notification_id = uuid.uuid4()
@@ -63,20 +60,20 @@ class NotificationManager(object):
                     notifiable,
                     notification,
                     notification_id,
-                    channel,
+                    driver_instance,
                     dry=dry,
                     fail_silently=fail_silently,
                 )
 
-    def is_custom_channel(self, channel):
-        return issubclass(channel, BaseDriver)
+    # def is_custom_channel(self, channel):
+    #     return issubclass(channel, BaseDriver)
 
     def send_or_queue(
         self,
         notifiable,
         notification,
         notification_id,
-        channel_instance,
+        driver_instance,
         dry=False,
         fail_silently=False,
     ):
@@ -86,19 +83,15 @@ class NotificationManager(object):
         if not notification.should_send or dry:
             return
         try:
-            # TODO: adapt with
-            # self.get_driver(driver).set_options(self.options).send()
             if isinstance(notification, ShouldQueue):
-                return channel_instance.queue(notifiable, notification)
+                return driver_instance.queue(notifiable, notification)
             else:
-                return channel_instance.send(notifiable, notification)
+                return driver_instance.send(notifiable, notification)
         except Exception as e:
             if notification.ignore_errors or fail_silently:
                 pass
             else:
                 raise e
-
-        # TODO (later): dispatch send event
 
     def _format_notifiables(self, notifiables):
         if isinstance(notifiables, list) or isinstance(notifiables, Collection):
@@ -106,41 +99,8 @@ class NotificationManager(object):
         else:
             return [notifiables]
 
-    def prepare_channels(self, channels):
-        """Check channels list to get a list of channels string name which
-        will be fetched from container later and also checks if custom notifications
-        classes are provided.
-
-        For custom notifications check that the class implements NotificationContract.
-        For driver notifications (official or not) check that the driver exists in the container.
-        """
-        _channels = []
-        for channel in channels:
-            if isinstance(channel, str):
-                # check that related notification driver is known and registered in the container
-                try:
-                    _channels.append(
-                        self.application.make("notification").get_driver(channel)
-                    )
-                except DriverNotFound:
-                    raise NotificationException(
-                        "{0} notification driver has not been found in the container. Check that it is registered correctly.".format(
-                            channel
-                        )
-                    )
-            elif self.is_custom_channel(channel):
-                _channels.append(channel())
-            else:
-                raise NotificationException(
-                    "{0} notification class cannot be used because it does not implements NotificationContract.".format(
-                        channel
-                    )
-                )
-
-        return _channels
-
-    def route(self, channel, route):
+    def route(self, driver, route):
         """Specify how to send a notification to an anonymous notifiable."""
         from .AnonymousNotifiable import AnonymousNotifiable
 
-        return AnonymousNotifiable().route(channel, route)
+        return AnonymousNotifiable().route(driver, route)

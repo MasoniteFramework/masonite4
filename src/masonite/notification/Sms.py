@@ -1,9 +1,10 @@
-"""Vonage Sms Component"""
+"""Sms Component"""
 
 
 class Sms:
 
     _from = ""
+    _to = ""
     _text = ""
     _client_ref = ""
     _type = "text"
@@ -11,7 +12,7 @@ class Sms:
     def __init__(self, text=""):
         self._text = text
 
-    def send_from(self, number):
+    def from_(self, number):
         """Set the name or number the message should be sent from. Numbers should
         be specified in E.164 format. Details can be found here:
         https://developer.nexmo.com/messaging/sms/guides/custom-sender-id"""
@@ -20,6 +21,10 @@ class Sms:
 
     def text(self, text):
         self._text = text
+        return self
+
+    def to(self, to):
+        self._to = to
         return self
 
     def set_unicode(self):
@@ -34,13 +39,16 @@ class Sms:
         self._client_ref = client_ref
         return self
 
-    def as_dict(self):
+    def build(self, *args, **kwargs):
+        return self
+
+    def get_options(self):
         base_dict = {
+            "to": self._to,
             "from": self._from,
             "text": self._text,
+            "type": self._type,
         }
-        if self._type:
-            base_dict.update({"type": self._type})
         if self._client_ref:
             base_dict.update({"client-ref": self._client_ref})
         return base_dict

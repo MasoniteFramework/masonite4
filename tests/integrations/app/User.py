@@ -3,4 +3,4 @@ from src.masonite.authentication import Authenticates
 
 
 class User(Model, Authenticates):
-    __fillable__ = ["name", "password", "email"]
+    __fillable__ = ["name", "password", "email", "phone"]

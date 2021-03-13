@@ -19,7 +19,7 @@ class AnonymousNotifiable(Notifiable):
         self._routes[channel] = route
         return self
 
-    def route_notification_for(self, channel, notification=None):
+    def route_notification_for(self, channel):
         try:
             return self._routes[channel]
         except KeyError:

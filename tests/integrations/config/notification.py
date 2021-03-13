@@ -9,3 +9,5 @@ DRIVERS = {
         "sms_from": os.getenv("VONAGE_SMS_FROM", "+33000000000"),
     },
 }
+
+DRY = False
