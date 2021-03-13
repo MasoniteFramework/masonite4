@@ -8,7 +8,6 @@ class VonageDriver(BaseDriver):
     def __init__(self, application):
         self.app = application
         self.options = {}
-        self._client = self.get_sms_client()
 
     def set_options(self, options):
         self.options = options
@@ -21,9 +20,13 @@ class VonageDriver(BaseDriver):
         return data, recipients
 
     def get_sms_client(self):
-        import vonage
-        from vonage.sms import Sms
-
+        try:
+            import vonage
+            from vonage.sms import Sms
+        except ImportError:
+            raise ModuleNotFoundError(
+                "Could not find the 'vonage' library. Run 'pip install vonage' to fix this."
+            )
         client = vonage.Client(
             key=self.options.get("key"), secret=self.options.get("secret")
         )
@@ -33,9 +36,11 @@ class VonageDriver(BaseDriver):
         """Used to send the SMS."""
         data, recipients = self.build(notifiable, notification)
         responses = []
+        client = self.get_sms_client()
+
         for recipient in recipients:
             payload = self.build_payload(data, recipient)
-            response = self._client.send_message(payload)
+            response = client.send_message(payload)
             self._handle_errors(response)
             responses.append(response)
         return responses
