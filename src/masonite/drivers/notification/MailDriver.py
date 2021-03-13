@@ -16,7 +16,7 @@ class MailDriver(BaseDriver):
         """Used to send the email."""
         mailable = self.get_data("mail", notifiable, notification)
         if not mailable._to:
-            recipients = notifiable.route_notification_for("mail", notification)
+            recipients = notifiable.route_notification_for("mail")
             mailable = mailable.to(recipients)
         # TODO: allow changing driver how ?????
         return self.application.make("mail").mailable(mailable).send(driver="terminal")
@@ -25,7 +25,7 @@ class MailDriver(BaseDriver):
         """Used to queue the email to send."""
         mailable = self.get_data("mail", notifiable, notification)
         if not mailable._to:
-            recipients = notifiable.route_notification_for("mail", notification)
+            recipients = notifiable.route_notification_for("mail")
             mailable = mailable.to(recipients)
         # TODO: allow changing driver for queueing + for sending mail ?
         return self.application.make("queue").push(
