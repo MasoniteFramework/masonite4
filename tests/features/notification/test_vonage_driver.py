@@ -76,7 +76,6 @@ class TestVonageDriver(TestCase):
                 WelcomeNotification()
             )
 
-    @pytest.mark.skip("Waiting for adding phone field to user.")
     def test_send_to_notifiable(self):
         with patch("vonage.sms.Sms") as MockSmsClass:
             MockSmsClass.return_value.send_message.return_value = (
