@@ -89,6 +89,7 @@ class Mailable:
             "html_content": self.html_content,
             "reply_to": self._reply_to,
             "attachments": self.attachments,
+            "priority": self._priority,
         }
 
     def build(self, *args, **kwargs):
