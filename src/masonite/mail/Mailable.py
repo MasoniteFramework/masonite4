@@ -64,11 +64,11 @@ class Mailable:
         return self
 
     def high_priority(self):
-        self._priority = 1
+        self.priority(1)
         return self
 
     def low_priority(self):
-        self._priority = 5
+        self.priority(5)
         return self
 
     def get_response(self):
