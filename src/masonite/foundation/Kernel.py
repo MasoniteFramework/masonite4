@@ -13,6 +13,7 @@ from ..commands import (
     MakeControllerCommand,
     MakeJobCommand,
     MakeMailableCommand,
+    MakeNotificationCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -105,6 +106,9 @@ class Kernel:
         self.application.bind("resolver", DB)
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+        self.application.bind(
+            "notifications.location", "tests/integrations/notifications"
+        )
 
     def register_commands(self):
         self.application.bind(
@@ -121,5 +125,6 @@ class Kernel:
                 MakeControllerCommand(self.application),
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
+                MakeNotificationCommand(self.application),
             ),
         )
