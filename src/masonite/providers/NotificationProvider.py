@@ -1,11 +1,11 @@
 from .Provider import Provider
 from ..utils.structures import load
 from ..drivers.notification import (
+    BroadcastDriver,
     DatabaseDriver,
     MailDriver,
     SlackDriver,
     VonageDriver,
-    # BroadcastDriver,
 )
 from ..notification import NotificationManager
 from ..notification import MockNotification
@@ -25,7 +25,7 @@ class NotificationProvider(Provider):
         notification_manager.add_driver("vonage", VonageDriver(self.application))
         notification_manager.add_driver("slack", SlackDriver(self.application))
         notification_manager.add_driver("database", DatabaseDriver(self.application))
-        # notification_manager.add_driver("broadcast", BroadcastDriver(self.application))
+        notification_manager.add_driver("broadcast", BroadcastDriver(self.application))
 
         self.application.bind("notification", notification_manager)
         self.application.bind("mock.notification", MockNotification)
