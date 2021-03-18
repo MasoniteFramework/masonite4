@@ -14,6 +14,7 @@ from ..commands import (
     MakeJobCommand,
     MakeMailableCommand,
     MakeNotificationCommand,
+    NotificationTableCommand,
 )
 from ..storage import StorageCapsule
 from ..auth import Sign
@@ -126,5 +127,6 @@ class Kernel:
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
                 MakeNotificationCommand(self.application),
+                NotificationTableCommand(),
             ),
         )

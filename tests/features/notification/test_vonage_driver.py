@@ -1,5 +1,4 @@
 from tests import TestCase
-import pytest
 from unittest.mock import patch
 from src.masonite.notification import Notification, Notifiable, Sms
 from src.masonite.exceptions import NotificationException

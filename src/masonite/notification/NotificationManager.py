@@ -4,13 +4,16 @@ import uuid
 from ..utils.collections import Collection
 from ..exceptions.exceptions import NotificationException
 from ..queues import ShouldQueue
+from .AnonymousNotifiable import AnonymousNotifiable
 
 
 class NotificationManager(object):
     """Notification handler which handle sending/queuing notifications anonymously
     or to notifiables through different channels."""
 
-    called_notifications = []
+    # those classes are use for mock => should we put them only in NotificationMock ?
+    sent_notifications = {}
+    dry_notifications = {}
 
     def __init__(self, application, driver_config=None):
         self.application = application
@@ -35,8 +38,11 @@ class NotificationManager(object):
     def send(
         self, notifiables, notification, drivers=[], dry=False, fail_silently=False
     ):
-        """Send the given notification to the given notifiables immediately."""
+        """Send the given notification to the given notifiables."""
         if not notification.should_send or dry:
+            self.dry_notifications.update(
+                {notification.__class__.__name__: notifiables}
+            )
             return
 
         notifiables = self._format_notifiables(notifiables)
@@ -45,15 +51,13 @@ class NotificationManager(object):
             drivers = drivers if drivers else notification.via(notifiable)
             if not drivers:
                 raise NotificationException(
-                    "No channels have been defined in via() method of {0} class.".format(
+                    "No drivers have been defined in via() method of {0} notification.".format(
                         notification.type()
                     )
                 )
             for driver in drivers:
                 self.options.update(self.get_config_options(driver))
                 driver_instance = self.get_driver(driver).set_options(self.options)
-                from .AnonymousNotifiable import AnonymousNotifiable
-
                 if isinstance(notifiable, AnonymousNotifiable) and driver == "database":
                     # this case is not possible but that should not stop other channels to be used
                     continue
@@ -65,22 +69,22 @@ class NotificationManager(object):
                     else:
                         return driver_instance.send(notifiable, notification)
                 except Exception as e:
-                    if notification.ignore_errors or fail_silently:
-                        pass
-                    else:
+                    if not notification.ignore_errors and not fail_silently:
                         raise e
 
     # def is_custom_channel(self, channel):
     #     return issubclass(channel, BaseDriver)
 
     def _format_notifiables(self, notifiables):
-        if isinstance(notifiables, list) or isinstance(notifiables, Collection):
+        if isinstance(notifiables, (list, tuple, Collection)):
             return notifiables
         else:
             return [notifiables]
 
     def route(self, driver, route):
         """Specify how to send a notification to an anonymous notifiable."""
-        from .AnonymousNotifiable import AnonymousNotifiable
+        return AnonymousNotifiable(self.application).route(driver, route)
 
-        return AnonymousNotifiable().route(driver, route)
+    # TESTING
+    def assertNotificationDried(self, notification_class):
+        assert notification_class.__name__ in self.dry_notifications.keys()

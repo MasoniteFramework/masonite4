@@ -1,11 +1,12 @@
 from tests import TestCase
 
 from src.masonite.notification import Notification, AnonymousNotifiable
+from src.masonite.mail import Mailable
 
 
 class WelcomeNotification(Notification):
     def to_mail(self, notifiable):
-        pass
+        return Mailable().text("Welcome")
 
     def via(self, notifiable):
         return ["mail"]
@@ -13,12 +14,14 @@ class WelcomeNotification(Notification):
 
 class TestAnonymousNotifiable(TestCase):
     def test_one_routing(self):
-        notifiable = AnonymousNotifiable().route("mail", "user@example.com")
+        notifiable = AnonymousNotifiable(self.application).route(
+            "mail", "user@example.com"
+        )
         self.assertDictEqual({"mail": "user@example.com"}, notifiable._routes)
 
     def test_multiple_routing(self):
         notifiable = (
-            AnonymousNotifiable()
+            AnonymousNotifiable(self.application)
             .route("mail", "user@example.com")
             .route("slack", "#general")
         )
@@ -26,14 +29,28 @@ class TestAnonymousNotifiable(TestCase):
             {"mail": "user@example.com", "slack": "#general"}, notifiable._routes
         )
 
+    def test_sending_notification(self):
+        self.application.make("notification").route("mail", "user@example.com").send(
+            WelcomeNotification()
+        )
+
     def test_can_override_dry_when_sending(self):
-        AnonymousNotifiable().route("mail", "user@example.com").send(
+        AnonymousNotifiable(self.application).route("mail", "user@example.com").send(
             WelcomeNotification(), dry=True
         )
-        # TODO: assert it
+        self.application.make("notification").assertNotificationDried(
+            WelcomeNotification
+        )
 
     def test_can_override_fail_silently_when_sending(self):
-        AnonymousNotifiable().route("mail", "user@example.com").send(
-            WelcomeNotification(), fail_silently=True
+        class FailingNotification(Notification):
+            def to_slack(self, notifiable):
+                raise Exception("Error")
+
+            def via(self, notifiable):
+                return ["slack"]
+
+        AnonymousNotifiable(self.application).route("slack", "#general").send(
+            FailingNotification(), fail_silently=True
         )
-        # TODO: assert it
+        # no assertion raised :)

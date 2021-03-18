@@ -1,21 +1,21 @@
 class BaseDriver:
     def send(self, notifiable, notification):
         """Implements sending the notification to notifiables through
-        this channel."""
+        this driver."""
         raise NotImplementedError(
-            "send() method must be implemented for a notification channel."
+            "send() method must be implemented for a notification driver."
         )
 
     def queue(self, notifiable, notification):
         """Implements queuing the notification to be sent later to notifiables through
-        this channel."""
+        this driver."""
         raise NotImplementedError(
-            "queue() method must be implemented for a notification channel."
+            "queue() method must be implemented for a notification driver."
         )
 
-    def get_data(self, channel, notifiable, notification):
+    def get_data(self, driver, notifiable, notification):
         """Get the data for the notification."""
-        method_name = "to_{0}".format(channel)
+        method_name = "to_{0}".format(driver)
         try:
             method = getattr(notification, method_name)
         except AttributeError:

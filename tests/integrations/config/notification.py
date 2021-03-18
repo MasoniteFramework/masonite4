@@ -2,7 +2,11 @@
 import os
 
 DRIVERS = {
-    "slack": {"token": os.getenv("SLACK_TOKEN", "")},
+    "slack": {
+        "token": os.getenv("SLACK_TOKEN", ""),  # used for API mode
+        "webhook": os.getenv("SLACK_WEBHOOK", ""),  # used for webhook mode
+        "mode": os.getenv("SLACK_MODE", "webhook"),  # webhook or api
+    },
     "vonage": {
         "key": os.getenv("VONAGE_KEY", ""),
         "secret": os.getenv("VONAGE_SECRET", ""),

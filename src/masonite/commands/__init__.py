@@ -11,3 +11,4 @@ from .MakeControllerCommand import MakeControllerCommand
 from .MakeJobCommand import MakeJobCommand
 from .MakeMailableCommand import MakeMailableCommand
 from .MakeNotificationCommand import MakeNotificationCommand
+from .NotificationTableCommand import NotificationTableCommand

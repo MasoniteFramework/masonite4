@@ -6,7 +6,7 @@ class Notification:
 
     def __init__(self, *args, **kwargs):
         self.id = None
-        self._run = True
+        self._dry = False
         self._fail_silently = False
 
     def broadcast_on(self):
@@ -19,7 +19,7 @@ class Notification:
 
     @property
     def should_send(self):
-        return self._run
+        return not self._dry
 
     @property
     def ignore_errors(self):
@@ -36,7 +36,7 @@ class Notification:
         Returns:
             self
         """
-        self._run = False
+        self._dry = True
         return self
 
     def fail_silently(self):

@@ -5,7 +5,7 @@ from masoniteorm.models import Model
 
 
 class DatabaseNotification(Model):
-    """DatabaseNotification Model."""
+    """DatabaseNotification Model allowing notifications to be stored in database."""
 
     __fillable__ = ["id", "type", "data", "read_at", "notifiable_id", "notifiable_type"]
     __table__ = "notifications"
