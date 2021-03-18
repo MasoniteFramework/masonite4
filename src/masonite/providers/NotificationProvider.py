@@ -29,3 +29,6 @@ class NotificationProvider(Provider):
 
         self.application.bind("notification", notification_manager)
         self.application.bind("mock.notification", MockNotification)
+
+    def boot(self):
+        pass
