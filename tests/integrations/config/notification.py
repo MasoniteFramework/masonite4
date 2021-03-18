@@ -12,6 +12,10 @@ DRIVERS = {
         "secret": os.getenv("VONAGE_SECRET", ""),
         "sms_from": os.getenv("VONAGE_SMS_FROM", "+33000000000"),
     },
+    "database": {
+        "connection": "sqlite",
+        "table": "notifications",
+    },
 }
 
 DRY = False

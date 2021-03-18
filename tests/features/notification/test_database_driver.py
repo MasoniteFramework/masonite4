@@ -48,11 +48,11 @@ class TestDatabaseDriver(TestCase, DatabaseTransactions):
     def test_database_notification_is_created_correctly(self):
         user = User.find(1)
         notification = user.notify(WelcomeNotification())
-        assert notification.id
-        assert not notification.read_at
-        assert notification.data == '{"data": "Welcome idmann509!"}'
-        assert notification.notifiable_id == user.id
-        assert notification.notifiable_type == "users"
+        assert notification["id"]
+        assert not notification["read_at"]
+        assert notification["data"] == '{"data": "Welcome idmann509!"}'
+        assert notification["notifiable_id"] == user.id
+        assert notification["notifiable_type"] == "users"
 
 
 class TestDatabaseNotification(TestCase, DatabaseTransactions):

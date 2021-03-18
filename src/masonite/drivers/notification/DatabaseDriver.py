@@ -1,7 +1,6 @@
 """Database notification driver."""
 import json
 
-from ...notification import DatabaseNotification
 from .BaseDriver import BaseDriver
 
 
@@ -14,16 +13,23 @@ class DatabaseDriver(BaseDriver):
         self.options = options
         return self
 
+    def get_builder(self):
+        return (
+            self.application.make("builder")
+            .on(self.options.get("connection"))
+            .table(self.options.get("table"))
+        )
+
     def send(self, notifiable, notification):
         """Used to send the email and run the logic for sending emails."""
         data = self.build(notifiable, notification)
-        return DatabaseNotification.create(data)
+        return self.get_builder().new().create(data)
 
     def queue(self, notifiable, notification):
         """Used to queue the database notification creation."""
         data = self.build(notifiable, notification)
         return self.application.make("queue").push(
-            DatabaseNotification.create, args=(data,)
+            self.get_builder().new().create, args=(data,)
         )
 
     def build(self, notifiable, notification):
