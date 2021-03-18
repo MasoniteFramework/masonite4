@@ -42,7 +42,7 @@ class MockMail(Mail):
         ), f"Email count of {self.count} does not match expected {count}"
         return self
 
-    def seeEmailDoesNotContain(self):
+    def seeEmailDoesNotContain(self, contents):
         assert contents not in self.options.get(
             "html_content"
         ) and contents not in self.options.get(
@@ -56,34 +56,40 @@ class MockMail(Mail):
         ), f"Assertion of from address {self.options.get('from')} does not match expected {assertion}"
         return self
 
-    def seeEmailReplyTo(self):
+    def seeEmailReplyTo(self, assertion):
         assert assertion == self.options.get(
             "reply_to"
         ), f"Assertion of reply-to {self.options.get('reply_to')} does not match expected {assertion}"
         return self
 
-    def seeEmailSubjectContains(self):
+    def seeEmailSubjectContains(self, assertion):
         assert assertion in self.options.get(
             "subject"
         ), f"Assertion of subject {self.options.get('subject')} does not contain expected {assertion}"
         return self
 
-    def seeEmailSubjectDoesNotContain(self):
+    def seeEmailSubjectDoesNotContain(self, assertion):
         assert assertion not in self.options.get(
             "subject"
         ), f"Assertion of subject {self.options.get('subject')} does contain expected {assertion}"
         return self
 
-    def seeEmailSubjectEquals(self):
+    def seeEmailSubjectEquals(self, assertion):
         assert assertion == self.options.get(
             "subject"
         ), f"Assertion of subject address {self.options.get('subject')} does not match expected {assertion}"
         return self
 
-    def seeEmailTo(self):
+    def seeEmailTo(self, assertion):
         assert assertion == self.options.get(
             "to"
         ), f"Assertion of to address {self.options.get('to')} does not match expected {assertion}"
+        return self
+
+    def seeEmailPriority(self, assertion):
+        assert assertion == self.options.get(
+            "priority"
+        ), f"Assertion of priority {self.options.get('priority')} does not match expected {assertion}"
         return self
 
     def seeEmailWasNotSent(self):

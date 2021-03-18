@@ -9,6 +9,7 @@ class Mailable:
         self._from = ""
         self._reply_to = ""
         self._subject = ""
+        self._priority = None
         self.text_content = ""
         self.html_content = ""
         self.attachments = []
@@ -57,6 +58,18 @@ class Mailable:
         return self.html(
             self.application.make("view").render(view, data).rendered_template
         )
+
+    def priority(self, priority):
+        self._priority = priority
+        return self
+
+    def high_priority(self):
+        self._priority = 1
+        return self
+
+    def low_priority(self):
+        self._priority = 5
+        return self
 
     def get_response(self):
         self.build()
