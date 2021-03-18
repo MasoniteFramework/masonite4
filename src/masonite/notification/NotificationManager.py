@@ -40,9 +40,7 @@ class NotificationManager(object):
     ):
         """Send the given notification to the given notifiables."""
         if not notification.should_send or dry:
-            self.dry_notifications.update(
-                {notification.__class__.__name__: notifiables}
-            )
+            self.dry_notifications.update({notification.type(): notifiables})
             return
 
         notifiables = self._format_notifiables(notifiables)
