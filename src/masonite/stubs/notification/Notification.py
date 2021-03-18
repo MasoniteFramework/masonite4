@@ -2,7 +2,7 @@ from masonite.notification import Notification
 from masonite.mail import Mailable
 
 
-class Welcome(Notification):
+class __class__(Notification):
     def to_mail(self, notifiable):
         return (
             Mailable()
