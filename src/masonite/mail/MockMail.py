@@ -1,4 +1,4 @@
-from src.masonite.mail import Mail
+from .Mail import Mail
 
 
 class MockMail(Mail):
