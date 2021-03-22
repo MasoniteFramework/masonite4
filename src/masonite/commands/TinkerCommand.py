@@ -16,6 +16,7 @@ class TinkerCommand(Command):
     Run a python shell with the container pre-loaded.
 
     tinker
+        {--i|ipython : Run a IPython shell}
     """
 
     def handle(self):
@@ -26,4 +27,22 @@ class TinkerCommand(Command):
         )
         banner = BANNER.format(version)
 
-        code.interact(banner=banner, local={"app": application})
+        if self.option("ipython"):
+
+            try:
+                import IPython
+            except ImportError:
+                raise ModuleNotFoundError(
+                    "Could not find the 'IPython' library. Run 'pip install ipython' to fix this."
+                )
+            from traitlets.config import Config
+
+            c = Config()
+            # c.InteractiveShellApp.exec_lines = [
+            #     'print("\\nimporting some things\\n")',
+            # ]
+            c.TerminalInteractiveShell.banner1 = banner
+            context = {"app": application}
+            IPython.start_ipython(argv=[], user_ns=context, config=c)
+        else:
+            code.interact(banner=banner, local={"app": application})
