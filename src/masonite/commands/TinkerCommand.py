@@ -19,11 +19,11 @@ class TinkerCommand(Command):
     """
 
     def handle(self):
-        from wsgi import container
+        from wsgi import application
 
         version = "{}.{}.{}".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
         banner = BANNER.format(version)
 
-        code.interact(banner=banner, local={"app": container})
+        code.interact(banner=banner, local={"app": application})
