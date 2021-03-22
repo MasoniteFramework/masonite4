@@ -88,18 +88,17 @@ class TestTestingAssertions(TestCase):
     def test_assert_no_content(self):
         self.get("/test-empty").assertNoContent()
 
-    # def test_assert_cookie(self):
-    #     self.withCookies({"test": "value"}).get("/").assertCookie("test")
+    def test_assert_cookie(self):
+        self.withCookies({"test": "value"}).get("/").assertCookie("test")
 
-    # def test_assert_cookie_value(self):
-    #     self.withCookies({"test": "value"}).get("/").assertCookie("test", "value")
+    def test_assert_cookie_value(self):
+        self.withCookies({"test": "value"}).get("/").assertCookie("test", "value")
 
-    # def test_assert_cookie_missing(self):
-    #     self.get("/").assertCookieMissing("test")
+    def test_assert_cookie_missing(self):
+        self.get("/").assertCookieMissing("test")
 
-    # def test_assert_plain_cookie(self):
-    #     # for now test cookies are not encrypted
-    #     self.withCookies({"test": "value"}).get("/").assertPlainCookie("test")
+    def test_assert_plain_cookie(self):
+        self.withCookies({"test": "value"}).get("/").assertPlainCookie("test")
 
     def test_assert_has_header(self):
         self.get("/test-response-header").assertHasHeader("TEST")
