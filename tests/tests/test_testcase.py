@@ -121,18 +121,18 @@ class TestTestingAssertions(TestCase):
             name="test_params", params={"id": 1}
         )
 
-    # def test_assert_session_has(self):
-    #     self.get("/test-session").assertSessionHas("key")
-    #     self.get("/test-session").assertSessionHas("key", "value")
+    def test_assert_session_has(self):
+        self.get("/test-session").assertSessionHas("key")
+        self.get("/test-session").assertSessionHas("key", "value")
 
-    # def test_assert_session_has_errors(self):
-    #     self.get("/test-session-errors").assertSessionHasErrors()
-    #     self.get("/test-session-errors").assertSessionHasErrors(["email"])
-    #     self.get("/test-session-errors").assertSessionHasErrors(["email", "password"])
+    def test_assert_session_has_errors(self):
+        self.get("/test-session-errors").assertSessionHasErrors()
+        self.get("/test-session-errors").assertSessionHasErrors(["email"])
+        self.get("/test-session-errors").assertSessionHasErrors(["email", "password"])
 
-    # def test_assert_session_has_no_errors(self):
-    #     self.get("/test-session").assertSessionHasNoErrors()
-    #     self.get("/test-session-errors").assertSessionHasNoErrors(["name"])
+    def test_assert_session_has_no_errors(self):
+        self.get("/test-session").assertSessionHasNoErrors()
+        self.get("/test-session-errors").assertSessionHasNoErrors(["name"])
 
     def test_assert_session_missing(self):
         self.get("/").assertSessionMissing("some_test_key")
