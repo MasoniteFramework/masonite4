@@ -107,7 +107,8 @@ class TestCase(TestCase):
 
         route = self.application.make("router").find(route, method)
         if route:
-            return HttpTestResponse(self.application, request, response, route)
+            test_response_class = self.application.make("tests.response")
+            return test_response_class(self.application, request, response, route)
         raise Exception(f"NO route found for {route}")
 
     def mock_start_response(self, *args, **kwargs):

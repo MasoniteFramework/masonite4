@@ -1,3 +1,4 @@
+from src.masonite.tests.HttpTestResponse import HttpTestResponse
 from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
@@ -7,6 +8,11 @@ from src.masonite.authentication import Authenticates
 
 class User(Model, Authenticates):
     pass
+
+
+class CustomTestResponse(HttpTestResponse):
+    def assertCustom(self):
+        assert 1
 
 
 class TestTestCase(TestCase):
@@ -22,6 +28,10 @@ class TestTestCase(TestCase):
             Route.get("/test", "WelcomeController@show").name("test"),
         )
         self.assertEqual(len(self.application.make("router").routes), 2)
+
+    def test_use_custom_test_response(self):
+        self.application.bind("tests.response", CustomTestResponse)
+        self.get("/").assertContains("welcome").assertCustom()
 
 
 class TestTestingAssertions(TestCase):

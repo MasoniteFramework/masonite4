@@ -19,6 +19,7 @@ from ..auth import Sign
 import os
 from ..environment import LoadEnvironment
 from ..utils.structures import load
+from ..tests.HttpTestResponse import HttpTestResponse
 
 
 class Kernel:
@@ -102,6 +103,7 @@ class Kernel:
         self.application.bind("resolver", DB)
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+        self.application.bind("tests.response", HttpTestResponse)
 
     def register_commands(self):
         self.application.bind(
