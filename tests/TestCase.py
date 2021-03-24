@@ -107,8 +107,8 @@ class TestCase(TestCase):
 
         route = self.application.make("router").find(route, method)
         if route:
-            return self.application.make(
-                "tests.response", self.application, request, response, route
+            return self.application.make("tests.response").build(
+                self.application, request, response, route
             )
         raise Exception(f"NO route found for {route}")
 

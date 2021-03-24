@@ -1,3 +1,4 @@
+from src.masonite.tests.TestResponseCapsule import TestResponseCapsule
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
 from ..commands import (
@@ -103,7 +104,9 @@ class Kernel:
         self.application.bind("resolver", DB)
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
-        self.application.bind("tests.response", HttpTestResponse)
+        test_response = TestResponseCapsule()
+        test_response.add(HttpTestResponse)
+        self.application.bind("tests.response", test_response)
 
     def register_commands(self):
         self.application.bind(
