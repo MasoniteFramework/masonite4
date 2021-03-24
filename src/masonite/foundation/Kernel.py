@@ -39,6 +39,9 @@ class Kernel:
         LoadEnvironment()
 
     def set_framework_options(self):
+        self.application.bind(
+            "config.application", "tests.integrations.config.application"
+        )
         self.application.bind("config.mail", "tests.integrations.config.mail")
         self.application.bind("config.session", "tests.integrations.config.session")
         self.application.bind("config.queue", "tests.integrations.config.queue")
@@ -93,11 +96,12 @@ class Kernel:
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
         )
-
         self.application.bind("routes.web", "tests.integrations.web.Route")
-        self.application.bind(
-            "sign", Sign("-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
-        )
+
+        key = load(self.application.make("config.application")).KEY
+        self.application.bind("key", key)
+        self.application.bind("sign", Sign(key))
+
         self.application.bind("base_url", "http://localhost:8000")
         self.application.bind("resolver", DB)
         self.application.bind("jobs.location", "tests/integrations/jobs")
