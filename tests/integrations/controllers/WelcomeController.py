@@ -84,7 +84,6 @@ class WelcomeController(Controller):
         )
 
     def session(self, request: Request):
-        # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", "value")
         return "session"
 

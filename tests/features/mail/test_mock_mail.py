@@ -18,8 +18,8 @@ class TestSMTPDriver(TestCase):
         self.fake("mail")
         welcome_email = self.application.make("mail").mailable(Welcome()).send()
         (
-            welcome_email.seeEmailCc(None)
-            .seeEmailBcc(None)
+            welcome_email.seeEmailCc("")
+            .seeEmailBcc("")
             .seeEmailContains("Hello from Masonite!")
             .seeEmailContains("text from Masonite!")
             .seeEmailFrom("joe@masoniteproject.com")
