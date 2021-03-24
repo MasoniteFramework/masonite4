@@ -2,10 +2,11 @@ from ...request import Request
 
 
 class Resource:
-    def _show(self, request: Request, user_id):
+
+    def single(self, request: Request, user_id):
         return self.to_dict(request, self.show(request, user_id))
 
-    def _index(self, request: Request):
+    def collection(self, request: Request):
         pagination = User.paginate(request.input("limit", 10), request.input("page", 1))
         result = []
         for model in pagination.result:
