@@ -17,7 +17,7 @@ class DatabaseDriver(HasColoredCommands):
     def push(self, *jobs, args=(), **kwargs):
         builder = self.get_builder()
 
-        available_at = parse_human_time(kwargs.get('delay', "now"))
+        available_at = parse_human_time(kwargs.get("delay", "now"))
 
         for job in jobs:
             payload = pickle.dumps(
@@ -41,7 +41,6 @@ class DatabaseDriver(HasColoredCommands):
 
     def consume(self):
         builder = self.get_builder()
-
 
         while True:
             time.sleep(int(self.options.get("poll", 1)))
