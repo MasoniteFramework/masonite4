@@ -1,4 +1,3 @@
-from src.masonite.tests.TestResponseCapsule import TestResponseCapsule
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
 from ..commands import (
@@ -21,6 +20,7 @@ import os
 from ..environment import LoadEnvironment
 from ..utils.structures import load
 from ..tests.HttpTestResponse import HttpTestResponse
+from ..tests.TestResponseCapsule import TestResponseCapsule
 
 
 class Kernel:
