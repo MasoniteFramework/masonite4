@@ -37,6 +37,9 @@ class SMTPDriver:
         if self.options.get("text_content"):
             message.attach(MIMEText(self.options.get("text_content"), "plain"))
 
+        if self.options.get("priority"):
+            message["X-Priority"] = self.options.get("priority")
+
         for attachment in self.options.get("attachments", []):
             with open(attachment.path, "rb") as fil:
                 part = MIMEApplication(fil.read(), Name=attachment.alias)

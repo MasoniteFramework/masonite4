@@ -4,11 +4,12 @@ from .MessageAttachment import MessageAttachment
 class Mailable:
     def __init__(self):
         self._to = ""
-        self._cc = None
-        self._bcc = None
+        self._cc = ""
+        self._bcc = ""
         self._from = ""
         self._reply_to = ""
         self._subject = ""
+        self._priority = None
         self.text_content = ""
         self.html_content = ""
         self.attachments = []
@@ -58,6 +59,18 @@ class Mailable:
             self.application.make("view").render(view, data).rendered_template
         )
 
+    def priority(self, priority):
+        self._priority = priority
+        return self
+
+    def high_priority(self):
+        self.priority(1)
+        return self
+
+    def low_priority(self):
+        self.priority(5)
+        return self
+
     def get_response(self):
         self.build()
         if self.get_options().get("html_content"):
@@ -76,6 +89,7 @@ class Mailable:
             "html_content": self.html_content,
             "reply_to": self._reply_to,
             "attachments": self.attachments,
+            "priority": self._priority,
         }
 
     def build(self, *args, **kwargs):

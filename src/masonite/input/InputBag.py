@@ -83,12 +83,6 @@ class InputBag:
                         self.post_data.update(
                             {name: Input(name, fields.getvalue(name))}
                         )
-
-                    print(
-                        "nn",
-                        name,
-                        type(fields.getvalue(name)),
-                    )
             else:
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))

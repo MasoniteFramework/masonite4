@@ -26,14 +26,12 @@ class Broadcast:
         return driver.set_options(store_config)
 
     def get_store_config(self, name=None):
-        print("ss", self.store_config)
         if name is None or name == "default":
             return self.store_config.get(self.store_config.get("default"))
 
         return self.store_config.get(name)
 
     def get_config_options(self, name=None):
-        print
         if name is None or name == "default":
             return self.store_config.get(self.store_config.get("default"))
 

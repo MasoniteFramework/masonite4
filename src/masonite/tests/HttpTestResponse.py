@@ -83,9 +83,9 @@ class HttpTestResponse:
 
     def assertHasHeader(self, name, value=None):
         header_value = self.response.header(name)
-        assert header_value
+        assert header_value, f"Could not find the header {name}"
         if value:
-            assert value == header_value
+            assert value == header_value, f"Header '{name}' does not equal {value}"
 
     def assertHeaderMissing(self, name):
         assert not self.response.header(name)
@@ -131,10 +131,9 @@ class HttpTestResponse:
         """Assert that session contains the given key with the corresponding value if given.
         The session driver can be specified if necessary."""
         session = self.request.session.driver(driver)
-        session_value = session.get(key)
-        assert session_value
+        assert session.has(key)
         if value is not None:
-            assert session_value == value
+            assert self.application.make("sign").unsign(session.get(key)) == value
         return self
 
     def assertSessionMissing(self, key, driver="cookie"):
@@ -147,9 +146,12 @@ class HttpTestResponse:
         """Assert that session contains errors for the given list of keys (meaning that each given key
         exists in 'errors' dict in session.) If no keys are given this will assert that the
         sessions has errors without checking specific keys."""
-        errors = self.request.session.driver(driver).get("errors")
-        assert errors
+        session = self.request.session.driver(driver)
+        assert session.has("errors")
         if keys:
+            errors = session._get_serialization_value(
+                self.application.make("sign").unsign(session.get("errors"))
+            )
             for key in keys:
                 assert errors.get(key)
         return self
@@ -158,12 +160,14 @@ class HttpTestResponse:
         """Assert that session does not have any errors (meaning that session does not contain an
         'errors' key or 'errors' key is empty. If a list of keys is given, this will check
         that there are no errors for each of those keys."""
-        errors = self.request.session.driver(driver).get("errors")
+        session = self.request.session.driver(driver)
         if not keys:
-            assert not errors
+            assert not session.has("errors")
         else:
+            errors = session._get_serialization_value(
+                self.application.make("sign").unsign(session.get("errors"))
+            )
             for key in keys:
-                print("errors?", errors)
                 assert not errors.get(key)
         return self
 
