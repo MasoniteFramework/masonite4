@@ -83,9 +83,9 @@ class HttpTestResponse:
 
     def assertHasHeader(self, name, value=None):
         header_value = self.response.header(name)
-        assert header_value
+        assert header_value, f"Could not find the header {name}"
         if value:
-            assert value == header_value
+            assert value == header_value, f"Header '{name}' does not equal {value}"
 
     def assertHeaderMissing(self, name):
         assert not self.response.header(name)

@@ -18,7 +18,6 @@ class Cache:
         return self.drivers[name]
 
     def get_store_config(self, name=None):
-        print(self.store_config)
         if name is None or name == "default":
             return self.store_config.get(self.store_config.get("default"))
 
