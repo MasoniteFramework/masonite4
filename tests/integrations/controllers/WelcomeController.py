@@ -5,7 +5,7 @@ from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
 
-from masonite.validation import required
+from masonite.validation import required, Validator
 
 
 class CanBroadcast:
@@ -124,8 +124,13 @@ class WelcomeController(Controller):
         pdb.set_trace()
         return 200
 
-    def validate_manually(self, request: Request, response: Response):
-        bag = request.validate(required("email"))
+    def validate_manually(
+        self, request: Request, response: Response, validator: Validator
+    ):
+        bag = validator.validate(request.all(), required("email"))
+        import pdb
+
+        pdb.set_trace()
         if bag.any():
             return response.redirect("/").with_errors(bag.all())
         return 200
