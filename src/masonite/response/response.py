@@ -240,3 +240,40 @@ class Response:
             string -- The mimetype for use in headers
         """
         return mimetypes.guess_type(path)[0]
+
+    def _get_session(self):
+        # TODO: how to get default driver to avoid hard-coding it
+        return self.app.make("session").driver("cookie")
+
+    def with_errors(self, errors):
+        """Attach errors message to session through the response."""
+        # merge data in session
+        session = self._get_session()
+        all_errors = session.get("errors") or {}
+        all_errors.update(errors)
+
+        session.flash("errors", all_errors)
+        return self
+
+    def with_success(self, success):
+        """Attach success message to session through the response."""
+        self._get_session().flash("success", success)
+        return self
+
+    def with_input(self):
+        """Attach request input data to session through the response."""
+        request_inputs = self.app.make("request").all()
+        for key, value in request_inputs.items():
+            if isinstance(value, bytes):
+                continue
+            self._get_session().flash(key, value)
+        return self
+
+    def with_input_only(self, *inputs):
+        """Attach only given request input data to session through the response."""
+        request_inputs = self.app.make("request").only(*inputs)
+        for key, value in request_inputs.items():
+            if isinstance(value, bytes):
+                continue
+            self._get_session().flash(key, value)
+        return self

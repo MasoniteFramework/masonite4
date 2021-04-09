@@ -20,12 +20,9 @@ class TestRequestValidation(TestCase):
         self.get("/validate").assertSessionHasErrors()
 
     def test_request_validate_with_bag(self):
-        self.get("/validate-bag").assertSessionHasErrors().assertRedirect(
-            "/validate-bag"
-        )
-        # TODO: Check that errors are in specific sub bag of errors
+        self.get("/validate-bag").assertSessionHasErrors(
+            ["users-errors"]
+        ).assertRedirect()
 
     def test_manual_validation_request(self):
-        self.get("/validate-manually").assertSessionHasErrors().assertRedirect(
-            "/validate-manually"
-        )
+        self.get("/validate-manually").assertSessionHasErrors().assertRedirect()

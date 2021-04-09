@@ -118,7 +118,7 @@ class WelcomeController(Controller):
         return 200
 
     def validate_with_specific_bag(self, request: Request):
-        request.validate(required("email"), bag="user")
+        request.validate(required("email"), bag="users-errors")
         import pdb
 
         pdb.set_trace()
@@ -128,9 +128,8 @@ class WelcomeController(Controller):
         self, request: Request, response: Response, validator: Validator
     ):
         bag = validator.validate(request.all(), required("email"))
-        import pdb
-
-        pdb.set_trace()
         if bag.any():
-            return response.redirect("/").with_errors(bag.all())
+            # TODO: here with_errors, with_input ... should be called before view, back or redirect methods
+            # should we fix this ?
+            return response.with_errors(bag.all()).redirect("/")
         return 200
