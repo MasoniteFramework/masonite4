@@ -8,6 +8,7 @@ from ..middleware import (
     VerifyCsrfToken,
     SessionMiddleware,
     EncryptCookies,
+    ValidationMiddleware,
 )
 from ..routes import RouteCapsule, Route
 import pydoc
@@ -15,7 +16,7 @@ import pydoc
 
 class HttpKernel:
 
-    http_middleware = []
+    http_middleware = [ValidationMiddleware]
     route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
 
     def __init__(self, app):

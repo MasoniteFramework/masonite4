@@ -107,6 +107,10 @@ class Kernel:
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
 
+        from masonite.validation import Validator
+
+        self.application.bind("validator", Validator)
+
     def register_commands(self):
         self.application.bind(
             "commands",

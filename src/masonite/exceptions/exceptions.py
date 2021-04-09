@@ -104,3 +104,9 @@ class ProjectProviderHttpError(Exception):
 
 class ProjectTargetNotEmpty(Exception):
     pass
+
+
+class ValidationException(Exception):
+    def __init__(self, errors_bag, bag_name):
+        self.errors_bag = errors_bag
+        self.bag_name = bag_name

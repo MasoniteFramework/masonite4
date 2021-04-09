@@ -96,7 +96,7 @@ class TestCase(TestCase):
             self.application,
             wsgi_request,
             self.mock_start_response,
-            exception_handling=False,
+            exception_handling=True,
         )
         # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():

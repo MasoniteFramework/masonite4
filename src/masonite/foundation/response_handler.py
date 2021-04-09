@@ -79,6 +79,7 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
     except Exception as e:
         if not exception_handling:
             raise e
+        # TODO: here exception is handled but all providers not loaded yet ...
         application.make("exception_handler").handle(e)
 
     """We Are Ready For Launch
@@ -87,7 +88,9 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
     to return a 302 redirection to where ever the user would like go
     to next.
     """
+    import pdb
 
+    pdb.set_trace()
     request, response = application.make("request"), application.make("response")
 
     start_response(

@@ -1,3 +1,4 @@
+from ..exceptions import ValidationException
 from ..cookies import CookieJar
 from ..headers import HeaderBag, Header
 from ..input import InputBag
@@ -94,3 +95,14 @@ class Request:
     def remove_user(self):
         self._user = None
         return self
+
+    def validate(self, *rules, bag=None):
+        from wsgi import application
+
+        validator = application.make("validator")
+        validation_bag = validator.validate(self.all(), *rules)
+
+        if validation_bag.any():
+            raise ValidationException(validation_bag, bag)
+
+        return validation_bag

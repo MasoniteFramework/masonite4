@@ -1,5 +1,6 @@
 from .ExceptionHandler import ExceptionHandler
 from .DumpExceptionHandler import DumpExceptionHandler
+from .ValidationExceptionHandler import ValidationExceptionHandler
 from .DD import DD
 from .exceptions import (
     InvalidRouteCompileException,
@@ -15,4 +16,5 @@ from .exceptions import (
     DumpException,
     InvalidSecretKey,
     InvalidCSRFToken,
+    ValidationException,
 )

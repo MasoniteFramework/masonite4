@@ -5,6 +5,8 @@ from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
 
+from masonite.validation import required
+
 
 class CanBroadcast:
     def broadcast_on(self):
@@ -107,3 +109,23 @@ class WelcomeController(Controller):
     def auth(self, request: Request):
         request.app.make("auth").guard("web").attempt("idmann509@gmail.com", "secret")
         return "logged in"
+
+    def validate(self, request: Request):
+        request.validate(required("email"))
+        import pdb
+
+        pdb.set_trace()
+        return 200
+
+    def validate_with_specific_bag(self, request: Request):
+        request.validate(required("email"), bag="user")
+        import pdb
+
+        pdb.set_trace()
+        return 200
+
+    def validate_manually(self, request: Request, response: Response):
+        bag = request.validate(required("email"))
+        if bag.any():
+            return response.redirect("/").with_errors(bag.all())
+        return 200
