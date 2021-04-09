@@ -73,14 +73,13 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
     # Run all service provider boot methods if the wsgi attribute is true.
     # """
 
-    try:
-        for provider in application.get_providers():
+    for provider in application.get_providers():
+        try:
             application.resolve(provider.boot)
-    except Exception as e:
-        if not exception_handling:
-            raise e
-        # TODO: here exception is handled but all providers not loaded yet ...
-        application.make("exception_handler").handle(e)
+        except Exception as e:
+            if not exception_handling:
+                raise e
+            application.make("exception_handler").handle(e)
 
     """We Are Ready For Launch
     If we have a solid response and not redirecting then we need to return
@@ -88,9 +87,6 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
     to return a 302 redirection to where ever the user would like go
     to next.
     """
-    import pdb
-
-    pdb.set_trace()
     request, response = application.make("request"), application.make("response")
 
     start_response(
