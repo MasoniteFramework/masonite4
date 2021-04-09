@@ -539,3 +539,28 @@ def password(password_string):
     return bytes(
         bcrypt.hashpw(bytes(password_string, "utf-8"), bcrypt.gensalt())
     ).decode("utf-8")
+
+
+def optional(attribute, default=None, is_method=False):
+    """Wrap an object on which any attributes/methods can be called
+    without raising an error if it does not exist. It will return a default value of None instead,
+    which can be overriden.
+
+    If you want to call method on the wrapped object, is_method should be set to True."""
+
+    class OptionalWrapper(object):
+        def __init__(self, obj, default, is_method):
+            self._obj = obj
+            self._default = default
+            self._is_method = is_method
+
+        def __getattr__(self, attr):
+            try:
+                return getattr(self._obj, attr)
+            except AttributeError:
+                if self._is_method:
+                    return lambda: self._default
+                else:
+                    return self._default
+
+    return OptionalWrapper(attribute, default, is_method)
