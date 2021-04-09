@@ -146,9 +146,6 @@ class HttpTestResponse:
         """Assert that session contains errors for the given list of keys (meaning that each given key
         exists in 'errors' dict in session.) If no keys are given this will assert that the
         sessions has errors without checking specific keys."""
-        import pdb
-
-        pdb.set_trace()
         session = self.request.session.driver(driver)
         assert session.has("errors")
         if keys:
