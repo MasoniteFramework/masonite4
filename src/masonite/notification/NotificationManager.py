@@ -40,11 +40,14 @@ class NotificationManager(object):
         self, notifiables, notification, drivers=[], dry=False, fail_silently=False
     ):
         """Send the given notification to the given notifiables."""
-        if not notification.should_send or dry:
-            self.dry_notifications.update({notification.type(): notifiables})
+        notifiables = self._format_notifiables(notifiables)
+        if not notification.should_send or dry or self.options.get("dry"):
+            key = notification.type()
+            self.dry_notifications.update(
+                {key: notifiables + self.dry_notifications.get(key, [])}
+            )
             return
 
-        notifiables = self._format_notifiables(notifiables)
         for notifiable in notifiables:
             # get drivers to use for sending this notification
             drivers = drivers if drivers else notification.via(notifiable)
