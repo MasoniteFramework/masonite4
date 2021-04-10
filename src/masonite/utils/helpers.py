@@ -155,6 +155,9 @@ def parse_human_time(str_time):
     """
     import pendulum
 
+    if str_time == "now":
+        return pendulum.now("GMT")
+
     if str_time != "expired":
         number = int(str_time.split(" ")[0])
         length = str_time.split(" ")[1]

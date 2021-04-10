@@ -22,9 +22,9 @@ class Sign:
         if key:
             self.key = key
         else:
-            from config import application
+            from wsgi import application
 
-            self.key = application.KEY
+            self.key = application.make("key")
 
         if not self.key:
             raise InvalidSecretKey(

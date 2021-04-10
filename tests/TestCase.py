@@ -100,7 +100,7 @@ class TestCase(TestCase):
         )
         # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():
-            request.cookie(name, value, encrypt=False)
+            request.cookie(name, value)
         # add eventual headers added inside the test
         for name, value in self._test_headers.items():
             request.header(name, value)
