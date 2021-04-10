@@ -12,6 +12,7 @@ class WelcomeToSlack(SlackMessage):
             .unfurl_links()
             .without_markdown()
             .can_reply()
+            .mode(2)  # API MODE
         )
 
 

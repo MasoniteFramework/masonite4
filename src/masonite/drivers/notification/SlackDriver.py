@@ -23,9 +23,8 @@ class SlackDriver(BaseDriver):
 
     def send(self, notifiable, notification):
         """Used to send the notification to slack."""
-        self.mode = self.get_sending_mode()
         slack_message = self.build(notifiable, notification)
-        if self.mode == self.WEBHOOK_MODE:
+        if slack_message._mode == self.WEBHOOK_MODE:
             self.send_via_webhook(slack_message)
         else:
             self.send_via_api(slack_message)
@@ -39,16 +38,18 @@ class SlackDriver(BaseDriver):
     def build(self, notifiable, notification):
         """Build Slack message payload sent to Slack API or through Slack webhook."""
         slack_message = self.get_data("slack", notifiable, notification)
-        if self.mode == self.WEBHOOK_MODE and not slack_message._webhook:
-            webhooks = self.get_recipients(notifiable)
-            slack_message = slack_message.webhook(webhooks)
-        elif self.mode == self.API_MODE:
-            if not slack_message._channel:
-                channels = self.get_recipients(notifiable)
-                slack_message = slack_message.channel(channels)
+        recipients = self.get_recipients(notifiable)
+        mode = self.get_sending_mode(recipients)
+        slack_message = slack_message.mode(mode)
+
+        if mode == self.WEBHOOK_MODE:  # and not slack_message._webhook:
+            slack_message = slack_message.to(recipients)
+        elif mode == self.API_MODE:
+            # if not slack_message._channel:
+            slack_message = slack_message.to(recipients)
             if not slack_message._token:
                 slack_message = slack_message.token(self.options.get("token"))
-        return slack_message.build().get_options()
+        return slack_message
 
     def get_recipients(self, notifiable):
         recipients = notifiable.route_notification_for("slack")
@@ -56,22 +57,24 @@ class SlackDriver(BaseDriver):
             recipients = [recipients]
         return recipients
 
-    def get_sending_mode(self):
-        # if recipient.startswith("https://hooks.slack.com"):
-        #     return self.WEBHOOK_MODE
-        # else:
-        #     return self.API_MODE
-        mode = self.options.get("mode", "webhook")
-        if mode == "webhook":
-            return self.WEBHOOK_MODE
-        else:
-            return self.API_MODE
+    def get_sending_mode(self, recipients):
+        modes = []
+        for recipient in recipients:
+            if recipient.startswith("https://hooks.slack.com"):
+                modes.append(self.WEBHOOK_MODE)
+            else:
+                modes.append(self.API_MODE)
+        if len(set(modes)) > 1:
+            raise NotificationException("Slack sending mode cannot be mixed.")
+        return modes[0]
 
     def send_via_webhook(self, slack_message):
-        for webhook_url in slack_message._webhook:
+        webhook_urls = slack_message._to
+        payload = slack_message.build().get_options()
+        for webhook_url in webhook_urls:
             response = requests.post(
                 webhook_url,
-                data=slack_message,
+                payload,
                 headers={"Content-Type": "application/json"},
             )
             if response.status_code != 200:
@@ -82,12 +85,13 @@ class SlackDriver(BaseDriver):
     def send_via_api(self, slack_message):
         """Send Slack notification with Slack Web API as documented
         here https://api.slack.com/methods/chat.postMessage"""
-        # TODO: how to get channels
-
-        for channel in slack_message._channel:
+        channels = slack_message._to
+        for channel in channels:
             channel = self.convert_channel(channel, slack_message._token)
+            # set only one recipient at a time
             slack_message.to(channel)
-            response = requests.post(self.send_url, slack_message).json()
+            payload = slack_message.build().get_options()
+            response = requests.post(self.send_url, payload).json()
             if not response["ok"]:
                 raise NotificationException(
                     "{}. Check Slack API docs.".format(response["error"])

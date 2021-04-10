@@ -23,13 +23,14 @@ class NotificationManager(object):
 
     def add_driver(self, name, driver):
         self.drivers.update({name: driver})
+        self.get_driver(name).set_options(self.get_config_options(name))
 
     def get_driver(self, name):
         return self.drivers[name]
 
     def set_configuration(self, config):
         self.driver_config = config.DRIVERS
-        self.options = {"dry": config.DRY}
+        self.options.update({"dry": config.DRY})
         return self
 
     def get_config_options(self, driver):
@@ -54,8 +55,7 @@ class NotificationManager(object):
                     )
                 )
             for driver in drivers:
-                self.options.update(self.get_config_options(driver))
-                driver_instance = self.get_driver(driver).set_options(self.options)
+                driver_instance = self.get_driver(driver)
                 if isinstance(notifiable, AnonymousNotifiable) and driver == "database":
                     # this case is not possible but that should not stop other channels to be used
                     continue

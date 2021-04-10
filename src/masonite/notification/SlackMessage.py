@@ -3,12 +3,14 @@ import json
 
 
 class SlackMessage:
+    WEBHOOK_MODE = 1
+    API_MODE = 2
+
     def __init__(self):
         self._text = ""
         self._username = "masonite-bot"
         self._icon_emoji = ""
         self._icon_url = ""
-        self._channel = ""
         self._text = ""
         self._mrkdwn = True
         self._as_current_user = False
@@ -23,6 +25,7 @@ class SlackMessage:
 
         self._token = ""
         self._webhook = ""
+        self._mode = None
 
     def from_(self, username, icon=None, url=None):
         """Set a custom username and optional emoji icon for the Slack message."""
@@ -93,10 +96,8 @@ class SlackMessage:
         return self
 
     def get_options(self):
-        return {
+        options = {
             "text": self._text,
-            # this one is overriden when using api mode
-            "channel": self._channel,
             # optional
             "link_names": self._link_names,
             "unfurl_links": self._unfurl_links,
@@ -109,6 +110,9 @@ class SlackMessage:
             "reply_broadcast": self._reply_broadcast,
             "blocks": json.dumps([block._resolve() for block in self._blocks]),
         }
+        if self._mode == self.API_MODE:
+            options.update({"channel": self._to, "token": self._token})
+        return options
 
     def token(self, token):
         """[API_MODE only] Specifies the token to use for Slack authentication.
@@ -155,4 +159,8 @@ class SlackMessage:
         if not isinstance(block_instance, Block):
             raise Exception("Blocks should be imported from 'slackblocks' package.")
         self._blocks.append(block_instance)
+        return self
+
+    def mode(self, mode):
+        self._mode = mode
         return self

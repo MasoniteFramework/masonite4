@@ -92,7 +92,8 @@ class TestVonageDriver(TestCase):
             user.notify(WelcomeNotification())
 
     def test_global_send_from_is_used_when_not_specified(self):
-        self.notification.route("vonage", "+33123456789").send(OtherNotification())
-        import pdb
-
-        pdb.set_trace()
+        notifiable = self.notification.route("vonage", "+33123456789")
+        sms = self.notification.get_driver("vonage").build(
+            notifiable, OtherNotification()
+        )
+        self.assertEqual(sms.get("from"), "+33000000000")
