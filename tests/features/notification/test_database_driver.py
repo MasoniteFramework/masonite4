@@ -54,6 +54,13 @@ class TestDatabaseDriver(TestCase, DatabaseTransactions):
         assert notification["notifiable_id"] == user.id
         assert notification["notifiable_type"] == "users"
 
+    def test_notify_multiple_users(self):
+        User.create({"name": "sam", "email": "sam@test.com", "password": "secret"})
+        users = User.all()  # == 2 users
+        self.notification.send(users, WelcomeNotification())
+        assert users[0].notifications.count() == 1
+        assert users[1].notifications.count() == 1
+
 
 class TestDatabaseNotification(TestCase, DatabaseTransactions):
     connection = None

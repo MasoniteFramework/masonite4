@@ -46,7 +46,7 @@ DRY = True
 
 class TestNotificationManager(TestCase):
     def test_dry_mode(self):
-        # when sending to anonymous or notifiable
+        # locally when sending to anonymous or notifiable
         self.assertEqual(
             self.application.make("notification")
             .route("mail", "test@mail.com")

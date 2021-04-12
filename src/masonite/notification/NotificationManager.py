@@ -1,7 +1,6 @@
 """Notification handler class"""
 import uuid
 
-from ..utils.collections import Collection
 from ..exceptions.exceptions import NotificationException
 from ..queues import ShouldQueue
 from .AnonymousNotifiable import AnonymousNotifiable
@@ -57,18 +56,17 @@ class NotificationManager(object):
                         notification.type()
                     )
                 )
+            notification.id = uuid.uuid4()
             for driver in drivers:
                 driver_instance = self.get_driver(driver)
                 if isinstance(notifiable, AnonymousNotifiable) and driver == "database":
                     # this case is not possible but that should not stop other channels to be used
                     continue
-                if not notification.id:
-                    notification.id = uuid.uuid4()
                 try:
                     if isinstance(notification, ShouldQueue):
-                        return driver_instance.queue(notifiable, notification)
+                        driver_instance.queue(notifiable, notification)
                     else:
-                        return driver_instance.send(notifiable, notification)
+                        driver_instance.send(notifiable, notification)
                 except Exception as e:
                     if not notification.ignore_errors and not fail_silently:
                         raise e
@@ -77,6 +75,8 @@ class NotificationManager(object):
     #     return issubclass(channel, BaseDriver)
 
     def _format_notifiables(self, notifiables):
+        from masoniteorm.collection import Collection
+
         if isinstance(notifiables, (list, tuple, Collection)):
             return notifiables
         else:
