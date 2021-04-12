@@ -541,26 +541,35 @@ def password(password_string):
     ).decode("utf-8")
 
 
-def optional(attribute, default=None, is_method=False):
-    """Wrap an object on which any attributes/methods can be called
-    without raising an error if it does not exist. It will return a default value of None instead,
-    which can be overriden.
+class DefaultType:
+    def __init__(self, value):
+        self.value = value
 
-    If you want to call method on the wrapped object, is_method should be set to True."""
+    def __getattr__(self, attr):
+        return self.value
 
-    class OptionalWrapper(object):
-        def __init__(self, obj, default, is_method):
-            self._obj = obj
-            self._default = default
-            self._is_method = is_method
+    def __call__(self, *args, **kwargs):
+        return self.value
 
-        def __getattr__(self, attr):
-            try:
-                return getattr(self._obj, attr)
-            except AttributeError:
-                if self._is_method:
-                    return lambda: self._default
-                else:
-                    return self._default
+    def __eq__(self, other):
+        if self.value is None:
+            return other is self.value
+        else:
+            return other == self.value
 
-    return OptionalWrapper(attribute, default, is_method)
+
+class Optional:
+    def __init__(self, obj, default=None):
+        self.obj = obj
+        self.default = default
+
+    def __getattr__(self, attr):
+        if hasattr(self.obj, attr):
+            return getattr(self.obj, attr)
+        return DefaultType(self.default)
+
+    def __call__(self, *args, **kwargs):
+        return DefaultType(self.default)
+
+    def instance(self):
+        return self.obj
