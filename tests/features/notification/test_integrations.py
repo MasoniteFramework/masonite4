@@ -57,29 +57,26 @@ class TestIntegrationsNotifications(TestCase):
         super().tearDown()
         self.restore("notification")
 
-    # def test_all_drivers_with_anonymous(self):
-    #     notif = (
-    #         self.application.make("notification")
-    #         .route("mail", "user@example.com")
-    #         .route("slack", "#general")
-    #         .route("broadcast", "all")
-    #         .route("vonage", "+33456789012")
-    #     )
-    #     notif.send(WelcomeNotification()).assertSentTo(
-    #         "user@example.com", WelcomeNotification
-    #     ).assertSentTo("#general", WelcomeNotification).assertSentTo(
-    #         "all", WelcomeNotification
-    #     ).assertSentTo(
-    #         "+33456789012", WelcomeNotification
-    #     )
+    def test_all_drivers_with_anonymous(self):
+        notif = (
+            self.application.make("notification")
+            .route("mail", "user@example.com")
+            .route("slack", "#general")
+            .route("broadcast", "all")
+            .route("vonage", "+33456789012")
+        )
+        notif.send(WelcomeNotification()).assertSentTo(
+            "user@example.com", WelcomeNotification
+        ).assertSentTo("#general", WelcomeNotification).assertSentTo(
+            "all", WelcomeNotification
+        ).assertSentTo(
+            "+33456789012", WelcomeNotification
+        )
 
     def test_all_drivers_with_notifiable(self):
         self.application.make("notification").assertNothingSent()
         user = User.find(1)
         user.notify(WelcomeNotification())
-        import pdb
-
-        pdb.set_trace()
         self.application.make("notification").assertSentTo(
             "user@example.com", WelcomeNotification
         ).assertSentTo("#general", WelcomeNotification).assertSentTo(
@@ -87,6 +84,3 @@ class TestIntegrationsNotifications(TestCase):
         ).assertSentTo(
             "+33456789012", WelcomeNotification
         )
-        import pdb
-
-        pdb.set_trace()

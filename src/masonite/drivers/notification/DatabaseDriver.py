@@ -23,9 +23,6 @@ class DatabaseDriver(BaseDriver):
     def send(self, notifiable, notification):
         """Used to send the email and run the logic for sending emails."""
         data = self.build(notifiable, notification)
-        import pdb
-
-        pdb.set_trace()
         return self.get_builder().new().create(data)
 
     def queue(self, notifiable, notification):

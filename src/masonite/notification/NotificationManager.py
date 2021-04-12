@@ -47,6 +47,7 @@ class NotificationManager(object):
             )
             return
 
+        results = []
         for notifiable in notifiables:
             # get drivers to use for sending this notification
             drivers = drivers if drivers else notification.via(notifiable)
@@ -64,12 +65,14 @@ class NotificationManager(object):
                     continue
                 try:
                     if isinstance(notification, ShouldQueue):
-                        driver_instance.queue(notifiable, notification)
+                        results.append(driver_instance.queue(notifiable, notification))
                     else:
-                        driver_instance.send(notifiable, notification)
+                        results.append(driver_instance.send(notifiable, notification))
                 except Exception as e:
                     if not notification.ignore_errors and not fail_silently:
                         raise e
+
+        return results[0] if len(results) == 1 else results
 
     # def is_custom_channel(self, channel):
     #     return issubclass(channel, BaseDriver)
