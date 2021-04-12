@@ -42,6 +42,10 @@ class TestMockNotification(TestCase):
         super().setUp()
         self.fake("notification")
 
+    def tearDown(self):
+        super().tearDown()
+        self.restore("notification")
+
     def test_assert_nothing_sent(self):
         notification = self.application.make("notification")
         notification.assertNothingSent()

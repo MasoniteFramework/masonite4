@@ -54,10 +54,6 @@ class TestNotificationManager(TestCase):
             None,
         )
 
-        import pdb
-
-        pdb.set_trace()
-
         user = User.find(1)
         user.notify(WelcomeNotification(), dry=True)
 
