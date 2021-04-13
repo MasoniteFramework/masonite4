@@ -49,3 +49,29 @@ class Application(Container):
 
     def __call__(self, *args, **kwargs):
         return self.response_handler(*args, **kwargs)
+
+    def is_dev(self):
+        """Check if app is running in development mode."""
+        import os
+
+        return os.getenv("APP_ENV") == "development"
+
+    def is_production(self):
+        """Check if app is running in development mode."""
+        import os
+
+        return os.getenv("APP_ENV") == "production"
+
+    def is_running_tests(self):
+        import sys
+
+        return "pytest" in sys.modules
+        # return os.getenv("APP_ENV") == "testing"
+
+    def is_running_in_console(self):
+        # TODO: I would like to have that to avoid loading some providers logic
+        # in some cases ...
+
+        # but cannot make my mind around this. we are always runnning the app through console.
+        # how to distinguish python craft tinker from the production server started
+        # should we check that it's running through gunicorn ? should we check sys.modules sys.argv ?
