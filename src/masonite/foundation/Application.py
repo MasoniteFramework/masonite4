@@ -57,12 +57,14 @@ class Application(Container):
         return os.getenv("APP_ENV") == "development"
 
     def is_production(self):
-        """Check if app is running in development mode."""
+        """Check if app is running in production mode."""
         import os
 
         return os.getenv("APP_ENV") == "production"
 
     def is_running_tests(self):
+        """Check if app is running tests."""
+
         import sys
 
         return "pytest" in sys.modules
