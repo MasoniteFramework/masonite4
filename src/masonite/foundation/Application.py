@@ -75,3 +75,4 @@ class Application(Container):
         # but cannot make my mind around this. we are always runnning the app through console.
         # how to distinguish python craft tinker from the production server started
         # should we check that it's running through gunicorn ? should we check sys.modules sys.argv ?
+        pass
