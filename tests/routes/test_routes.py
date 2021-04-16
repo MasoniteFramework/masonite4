@@ -8,12 +8,10 @@ class TestRoutes(TestCase):
         pass
 
     def test_can_add_routes(self):
-        router = RouteCapsule(
-            Route.get("/home", "WelcomeController"),
-            Route.post("/login", "WelcomeController"),
-        )
+        Route.get("/home", "WelcomeController"),
+        Route.post("/login", "WelcomeController")
 
-        self.assertEqual(len(router.routes), 2)
+        self.assertEqual(len(Route.routes), 2)
 
     def test_can_find_route(self):
         router = RouteCapsule(Route.get("/home", "WelcomeController"))

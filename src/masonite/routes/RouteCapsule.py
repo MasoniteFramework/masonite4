@@ -7,6 +7,7 @@ class RouteCapsule:
         self.routes = flatten(routes)
 
     def find(self, path, request_method, subdomain=None):
+
         for route in self.routes:
             if route.match(path, request_method, subdomain=subdomain):
                 return route
@@ -32,4 +33,5 @@ class RouteCapsule:
         return self
 
     def add(self, *routes):
-        self.routes.append(*routes)
+        self.routes.append(flatten(*routes))
+        self.routes = flatten(self.routes)
