@@ -1,5 +1,6 @@
 import json
 import io
+import pendulum
 
 from src.masonite.tests import TestCase
 from src.masonite.routes import Route, RouteCapsule
@@ -144,3 +145,37 @@ class TestCase(TestCase):
         """Restore the service previously mocked to the original one."""
         original = self.original_class_mocks.get(binding)
         self.application.bind(binding, original)
+
+    def fakeTime(self, pendulum_datetime):
+        """Set a given pendulum instance to be returned when a "now" (or "today", "tomorrow",
+        "yesterday") instance is created. It's really useful during tests to check
+        timestamps logic."""
+        pendulum.set_test_now(pendulum_datetime)
+
+    def fakeTimeTomorrow(self):
+        """Set the mocked time as tomorrow."""
+        self.fakeTime(pendulum.tomorrow())
+
+    def fakeTimeYesterday(self):
+        """Set the mocked time as yesterday."""
+        self.fakeTime(pendulum.yesterday())
+
+    def fakeTimeInFuture(self, offset, unit="days"):
+        """Set the mocked time as an offset of days in the future. Unit can be specified
+        among pendulum units: seconds, minutes, hours, days, weeks, months, years."""
+        self.restoreTime()
+        datetime = pendulum.now().add(**{unit: offset})
+        self.fakeTime(datetime)
+
+    def fakeTimeInPast(self, offset, unit="days"):
+        """Set the mocked time as an offset of days in the past. Unit can be specified
+        among pendulum units: seconds, minutes, hours, days, weeks, months, years."""
+        self.restoreTime()
+        datetime = pendulum.now().subtract(**{unit: offset})
+        self.fakeTime(datetime)
+
+    def restoreTime(self):
+        """Restore time to correct one, so that pendulum new "now" instance are corrects.
+        This method will be typically called in tearDown() method of a test class."""
+        # this will clear the mock
+        pendulum.set_test_now()
