@@ -1,5 +1,6 @@
 import json
 import io
+from src.masonite.tests.TestCommand import TestCommand
 
 from src.masonite.tests import TestCase
 from src.masonite.routes import Route, RouteCapsule
@@ -144,3 +145,10 @@ class TestCase(TestCase):
         """Restore the service previously mocked to the original one."""
         original = self.original_class_mocks.get(binding)
         self.application.bind(binding, original)
+
+    def craft(self, command, arguments_str=""):
+        """Run a given command in tests and obtain a TestCommand instance to assert command
+        outputs.
+        self.craft("controller", "Welcome").assertSuccess()
+        """
+        return TestCommand(self.application).run(command, arguments_str)
