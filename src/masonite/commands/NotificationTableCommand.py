@@ -8,7 +8,7 @@ import datetime
 
 class NotificationTableCommand(Command):
     """
-    Creates the notifications table needed for storing notifications in database.
+    Creates the notifications table needed for storing notifications in the database.
 
     notification:table
         {--d|--directory=database/migrations : Specifies the directory to create the migration in}

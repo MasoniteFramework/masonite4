@@ -7,7 +7,7 @@ class BaseDriver:
         )
 
     def queue(self, notifiable, notification):
-        """Implements queuing the notification to be sent later to notifiables through
+        """Implements queueing the notification to be sent later 
         this driver."""
         raise NotImplementedError(
             "queue() method must be implemented for a notification driver."
@@ -15,7 +15,7 @@ class BaseDriver:
 
     def get_data(self, driver, notifiable, notification):
         """Get the data for the notification."""
-        method_name = "to_{0}".format(driver)
+        method_name = f"to_{driver}"
         try:
             method = getattr(notification, method_name)
         except AttributeError:
