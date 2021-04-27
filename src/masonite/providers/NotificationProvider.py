@@ -1,6 +1,6 @@
 from .Provider import Provider
 from ..utils.structures import load
-from ..drivers.notification import (
+from ..notification.drivers import (
     BroadcastDriver,
     DatabaseDriver,
     MailDriver,
