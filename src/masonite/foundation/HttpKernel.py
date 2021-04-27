@@ -38,13 +38,26 @@ class HttpKernel:
 
         self.application.bind(
             "router",
-            RouteCapsule(Route.group(*pydoc.locate(self.application.make("routes.web")).routes, middleware="web")),
+            RouteCapsule(
+                Route.group(
+                    *pydoc.locate(self.application.make("routes.web")).routes,
+                    middleware="web"
+                )
+            ),
         )
 
-        self.application.make('router').add(
-            Route.group(Route.get('/test', 'WelcomeController@api'), prefix="/api", middleware="api") 
+        self.application.make("router").add(
+            Route.group(
+                Route.get("/test", "WelcomeController@api"),
+                prefix="/api",
+                middleware="api",
+            )
         )
 
-        self.application.make('router').add(
-            Route.group(load_routes(self.application.make("routes.api")), middleware="api", prefix="/api")
+        self.application.make("router").add(
+            Route.group(
+                load_routes(self.application.make("routes.api")),
+                middleware="api",
+                prefix="/api",
+            )
         )

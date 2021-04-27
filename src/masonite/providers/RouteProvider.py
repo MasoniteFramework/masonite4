@@ -31,7 +31,9 @@ class RouteProvider(Provider):
                 handler="before",
             )
             Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(route.list_middleware),
+                self.application.make("middleware").get_route_middleware(
+                    route.list_middleware
+                ),
                 handler="before",
             )
 

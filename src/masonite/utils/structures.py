@@ -219,6 +219,7 @@ def load(path, default=""):
     """
     return Dot().locate(path, default)
 
+
 def load_routes(path):
     """Used to fetch a value from a configuration file
 
