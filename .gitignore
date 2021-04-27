@@ -5,3 +5,4 @@ venv
 .env
 storage/framework/cache
 storage/framework/filesystem
+src/masonite.egg-info/*
