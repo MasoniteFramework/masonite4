@@ -8,7 +8,7 @@ class __class__(Notification):
             Mailable()
             .to(notifiable.email)
             .subject("Masonite 4")
-            .from_("sam@masoniteproject.com")
+            .from_("hello@email.com")
             .text(f"Hello {notifiable.name}")
         )
 
