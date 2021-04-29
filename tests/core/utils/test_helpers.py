@@ -1,4 +1,4 @@
-from tests import TestCase
+from src.masonite.tests import TestCase
 
 from src.masonite.utils import optional
 

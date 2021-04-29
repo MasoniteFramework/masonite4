@@ -1,6 +1,6 @@
 from src.masonite.essentials.middleware import HashIDMiddleware
 from src.masonite.essentials.helpers.hashid import hashid
-from tests import TestCase
+from src.masonite.tests import TestCase
 
 
 class TestHashID(TestCase):

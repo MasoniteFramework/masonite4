@@ -1,6 +1,6 @@
 from src.masonite.middleware import MiddlewareCapsule
 import os
-from tests import TestCase
+from src.masonite.tests import TestCase
 
 
 class MockMiddleware:
