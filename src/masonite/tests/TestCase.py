@@ -3,7 +3,7 @@ import io
 import unittest
 
 from ..routes import Route, RouteCapsule
-from ..tests import HttpTestResponse
+from .HttpTestResponse import HttpTestResponse
 from ..foundation.response_handler import testcase_handler
 from ..utils.helpers import generate_wsgi
 from ..request import Request
