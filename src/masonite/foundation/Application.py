@@ -49,3 +49,13 @@ class Application(Container):
 
     def __call__(self, *args, **kwargs):
         return self.response_handler(*args, **kwargs)
+
+    def is_running_in_console(self):
+        """Check if application is running in console. This is useful to only run some providers
+        logic when used in console. We can differenciate if the application is being served or
+        if an application command is ran in console."""
+        import sys
+
+        if len(sys.argv) > 1:
+            return sys.argv[1] != "serve"
+        return True
