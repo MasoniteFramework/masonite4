@@ -1,5 +1,5 @@
 from .response_handler import response_handler
-from cleo import Application as CommandApplication
+from cleo.application import Application as CommandApplication
 from ..commands import (
     TinkerCommand,
     CommandCapsule,

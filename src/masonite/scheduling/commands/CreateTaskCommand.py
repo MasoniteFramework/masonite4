@@ -1,7 +1,7 @@
 """ A CreateTask Command """
 import os
 
-from cleo import Command
+from cleo.commands.command import Command
 import inflection
 from ...utils.filesystem import make_directory
 import os

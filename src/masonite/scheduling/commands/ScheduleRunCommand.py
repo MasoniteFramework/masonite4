@@ -1,7 +1,7 @@
 """ A ScheduleRunCommand Command """
 import pendulum
 import inspect
-from cleo import Command
+from cleo.commands.command import Command
 
 from ..Task import Task
 

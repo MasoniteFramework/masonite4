@@ -4,7 +4,7 @@ import sys
 
 import hupper
 import waitress
-from cleo import Command
+from cleo.commands.command import Command
 
 
 class ServeCommand(Command):

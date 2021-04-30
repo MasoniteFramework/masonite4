@@ -5,7 +5,7 @@ import pkgutil
 import importlib
 import inspect
 import os
-from cleo import Command
+from cleo.commands.command import Command
 
 from ..utils.collections import Collection
 from ..utils.structures import load

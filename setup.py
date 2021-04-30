@@ -33,7 +33,7 @@ setup(
         "exceptionite>=1.0<1.1",
         "pendulum>=2,<3",
         "jinja2>=2.11<2.12",
-        "cleo>=0.8.1,<0.9",
+        "cleo>=1.0.0",
         "hupper>=1.10,<1.11",
         "waitress>=1.4,<1.5",
         "bcrypt>=3.2,<3.3",
