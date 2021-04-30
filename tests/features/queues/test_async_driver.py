@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.queues import Queueable
 import os
 import time

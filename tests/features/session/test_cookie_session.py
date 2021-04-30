@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 
 
 class TestCookieSession(TestCase):

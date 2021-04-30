@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from tests.integrations.app.User import User
 from src.masonite.tests import DatabaseTransactions
 

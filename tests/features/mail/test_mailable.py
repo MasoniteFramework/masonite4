@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.mail import Mailable
 from src.masonite.drivers.mail.Recipient import Recipient
 import os

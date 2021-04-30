@@ -3,7 +3,7 @@ import time
 import pytest
 
 from src.masonite.events import Event
-from src.masonite.tests import TestCase
+from tests import TestCase
 
 
 class UserAddedEvent(Event):

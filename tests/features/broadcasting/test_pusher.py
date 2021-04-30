@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 import os
 import time
 from src.masonite.broadcasting import Channel, PrivateChannel

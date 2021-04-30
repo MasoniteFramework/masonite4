@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
 from src.masonite.routes import Route

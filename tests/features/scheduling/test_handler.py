@@ -1,7 +1,7 @@
 import pytest
 import pendulum
 from src.masonite.scheduling import TaskHandler, Task
-from src.masonite.tests import TestCase
+from tests import TestCase
 
 
 class MockTask1(Task):

@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase, MockInput
+from tests import TestCase, MockInput
 from src.masonite.input import InputBag
 import json, io
 
