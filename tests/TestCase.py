@@ -179,3 +179,34 @@ class TestCase(TestCase):
         This method will be typically called in tearDown() method of a test class."""
         # this will clear the mock
         pendulum.set_test_now()
+
+    def assertDatabaseCount(self, table, count):
+        self.assertEqual(self.application.make("builder").table(table).count(), count)
+
+    def assertDatabaseHas(self, table, query_dict):
+        self.assertGreaterEqual(
+            self.application.make("builder").table(table).where(query_dict).count(), 1
+        )
+
+    def assertDatabaseMissing(self, table, query_dict):
+        self.assertEqual(
+            self.application.make("builder").table(table).where(query_dict).count(), 0
+        )
+
+    def assertDeleted(self, instance):
+        self.assertFalse(
+            self.application.make("builder")
+            .table(instance.get_table_name())
+            .where(instance.get_primary_key(), instance.get_primary_key_value())
+            .get()
+        )
+
+    def assertSoftDeleted(self, instance):
+        deleted_at_column = instance.get_deleted_at_column()
+        self.assertTrue(
+            self.application.make("builder")
+            .table(instance.get_table_name())
+            .where(instance.get_primary_key(), instance.get_primary_key_value())
+            .where_not_null(deleted_at_column)
+            .get()
+        )
