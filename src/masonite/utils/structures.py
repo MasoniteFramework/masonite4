@@ -232,4 +232,4 @@ def load_routes(path):
     Returns:
         mixed
     """
-    return pydoc.locate(path).routes
+    return pydoc.locate(path).ROUTES

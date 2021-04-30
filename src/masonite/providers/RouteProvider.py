@@ -1,5 +1,5 @@
 from .Provider import Provider
-from ..routes import RouteCapsule, Route
+from ..routes import Router, Route
 from ..pipeline import Pipeline
 
 # from ..middleware.route import VerifyCsrfToken

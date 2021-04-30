@@ -96,8 +96,8 @@ class Kernel:
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
         )
-        self.application.bind("routes.web", "tests.integrations.web.Route")
-        self.application.bind("routes.api", "tests.integrations.api.Route")
+        self.application.bind("routes.web", "tests.integrations.web")
+        self.application.bind("routes.api", "tests.integrations.api")
 
         key = load(self.application.make("config.application")).KEY
         self.application.bind("key", key)

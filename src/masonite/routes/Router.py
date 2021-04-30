@@ -2,7 +2,7 @@ from ..utils.helpers import flatten
 from ..exceptions import RouteNotFoundException
 
 
-class RouteCapsule:
+class Router:
     def __init__(self, *routes, module_location=None):
         self.routes = flatten(routes)
 
