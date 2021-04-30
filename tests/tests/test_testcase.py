@@ -245,3 +245,14 @@ class TestTestingAssertions(TestCase):
                 },
             }
         )
+
+    def test_assert_database_count(self):
+        self.assertDatabaseCount("users", 1)
+
+    def test_assert_database_has(self):
+        self.assertDatabaseHas("users", {"name": "Joe"})
+
+    def test_assert_database_missing(self):
+        self.assertDatabaseMissing(
+            "users", {"name": "John", "email": "john@example.com"}
+        )
