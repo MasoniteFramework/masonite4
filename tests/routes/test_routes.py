@@ -8,17 +8,17 @@ class TestRoutes(TestCase):
         pass
 
     def test_can_add_routes(self):
-        routes = Route.group([
-            Route.get("/home", "WelcomeController"),
-            Route.post("/login", "WelcomeController")
-        ])
+        routes = Route.group(
+            [
+                Route.get("/home", "WelcomeController"),
+                Route.post("/login", "WelcomeController"),
+            ]
+        )
 
         self.assertEqual(len(routes), 2)
 
     def test_can_find_route(self):
-        router = Router([
-            Route.get("/home", "WelcomeController")
-        ])
+        router = Router([Route.get("/home", "WelcomeController")])
 
         route = router.find("/home/", "GET")
         self.assertTrue(route)
@@ -32,9 +32,7 @@ class TestRoutes(TestCase):
         self.assertTrue(route)
 
     def test_can_find_route_with_parameter(self):
-        router = Router([
-            Route.get("/home/@id", "WelcomeController")
-        ])
+        router = Router([Route.get("/home/@id", "WelcomeController")])
 
         route = router.find("/home/1", "GET")
         self.assertTrue(route)

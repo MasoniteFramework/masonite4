@@ -36,16 +36,14 @@ class HttpKernel:
             self.application.make("controller.location")
         )
 
-
         self.application.bind(
             "router",
             Router(
                 Route.group(
-                    load_routes(self.application.make("routes.web")),
-                    middleware="web"
-                    ),
-                )
-            )
+                    load_routes(self.application.make("routes.web")), middleware="web"
+                ),
+            ),
+        )
 
         self.application.make("router").add(
             Route.group(
