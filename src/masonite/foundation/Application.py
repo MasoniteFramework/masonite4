@@ -71,10 +71,11 @@ class Application(Container):
         # return os.getenv("APP_ENV") == "testing"
 
     def is_running_in_console(self):
-        # TODO: I would like to have that to avoid loading some providers logic
-        # in some cases ...
+        """Check if application is running in console. This is useful to only run some providers
+        logic when used in console. We can differenciate if the application is being served or
+        if an application command is ran in console."""
+        import sys
 
-        # but cannot make my mind around this. we are always runnning the app through console.
-        # how to distinguish python craft tinker from the production server started
-        # should we check that it's running through gunicorn ? should we check sys.modules sys.argv ?
-        pass
+        if len(sys.argv) > 1:
+            return sys.argv[1] != "serve"
+        return True
