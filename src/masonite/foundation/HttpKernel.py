@@ -9,8 +9,9 @@ from ..middleware import (
     SessionMiddleware,
     EncryptCookies,
 )
-from ..routes import RouteCapsule, Route
+from ..routes import Router, Route
 import pydoc
+from ..utils.structures import load_routes
 
 
 class HttpKernel:
@@ -37,5 +38,25 @@ class HttpKernel:
 
         self.application.bind(
             "router",
-            RouteCapsule(*pydoc.locate(self.application.make("routes.web")).routes),
+            Router(
+                Route.group(
+                    load_routes(self.application.make("routes.web")), middleware="web"
+                ),
+            ),
+        )
+
+        self.application.make("router").add(
+            Route.group(
+                Route.get("/test", "WelcomeController@api"),
+                prefix="/api",
+                middleware="api",
+            )
+        )
+
+        self.application.make("router").add(
+            Route.group(
+                load_routes(self.application.make("routes.api")),
+                middleware="api",
+                prefix="/api",
+            )
         )

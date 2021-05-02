@@ -3,7 +3,7 @@ import io
 import pendulum
 
 from src.masonite.tests import TestCase
-from src.masonite.routes import Route, RouteCapsule
+from src.masonite.routes import Route, Router
 from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
@@ -21,7 +21,7 @@ class TestCase(TestCase):
 
         self.application.bind(
             "router",
-            RouteCapsule(
+            Router(
                 Route.set_controller_module_location(
                     "tests.integrations.controllers"
                 ).get("/", "WelcomeController@show"),
@@ -43,7 +43,7 @@ class TestCase(TestCase):
     def setRoutes(self, *routes):
         self.application.bind(
             "router",
-            RouteCapsule(*routes),
+            Router(*routes),
         )
         return self
 

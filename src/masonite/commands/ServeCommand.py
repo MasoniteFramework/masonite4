@@ -51,7 +51,7 @@ class ServeCommand(Command):
             )
             return
 
-        reloader = hupper.start_reloader("masonite.commands.ServeCommand.main")
+        reloader = hupper.start_reloader("src.masonite.commands.ServeCommand.main")
 
         # monitor an extra file
         reloader.watch_files([".env", application.get_storage_path()])
