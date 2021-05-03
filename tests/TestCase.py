@@ -1,15 +1,15 @@
 import json
 import io
-from src.masonite.tests.TestCommand import TestCommand
+import pendulum
 
+from src.masonite.tests.TestCommand import TestCommand
 from src.masonite.tests import TestCase
-from src.masonite.routes import Route, RouteCapsule
+from src.masonite.routes import Route, Router
 from src.masonite.tests import HttpTestResponse
 from src.masonite.foundation.response_handler import testcase_handler
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.request import Request
 from src.masonite.environment import LoadEnvironment
-from unittest.mock import MagicMock
 
 
 class TestCase(TestCase):
@@ -21,7 +21,7 @@ class TestCase(TestCase):
 
         self.application.bind(
             "router",
-            RouteCapsule(
+            Router(
                 Route.set_controller_module_location(
                     "tests.integrations.controllers"
                 ).get("/", "WelcomeController@show"),
@@ -43,7 +43,7 @@ class TestCase(TestCase):
     def setRoutes(self, *routes):
         self.application.bind(
             "router",
-            RouteCapsule(*routes),
+            Router(*routes),
         )
         return self
 
@@ -152,3 +152,68 @@ class TestCase(TestCase):
         self.craft("controller", "Welcome").assertSuccess()
         """
         return TestCommand(self.application).run(command, arguments_str)
+
+    def fakeTime(self, pendulum_datetime):
+        """Set a given pendulum instance to be returned when a "now" (or "today", "tomorrow",
+        "yesterday") instance is created. It's really useful during tests to check
+        timestamps logic."""
+        pendulum.set_test_now(pendulum_datetime)
+
+    def fakeTimeTomorrow(self):
+        """Set the mocked time as tomorrow."""
+        self.fakeTime(pendulum.tomorrow())
+
+    def fakeTimeYesterday(self):
+        """Set the mocked time as yesterday."""
+        self.fakeTime(pendulum.yesterday())
+
+    def fakeTimeInFuture(self, offset, unit="days"):
+        """Set the mocked time as an offset of days in the future. Unit can be specified
+        among pendulum units: seconds, minutes, hours, days, weeks, months, years."""
+        self.restoreTime()
+        datetime = pendulum.now().add(**{unit: offset})
+        self.fakeTime(datetime)
+
+    def fakeTimeInPast(self, offset, unit="days"):
+        """Set the mocked time as an offset of days in the past. Unit can be specified
+        among pendulum units: seconds, minutes, hours, days, weeks, months, years."""
+        self.restoreTime()
+        datetime = pendulum.now().subtract(**{unit: offset})
+        self.fakeTime(datetime)
+
+    def restoreTime(self):
+        """Restore time to correct one, so that pendulum new "now" instance are corrects.
+        This method will be typically called in tearDown() method of a test class."""
+        # this will clear the mock
+        pendulum.set_test_now()
+
+    def assertDatabaseCount(self, table, count):
+        self.assertEqual(self.application.make("builder").table(table).count(), count)
+
+    def assertDatabaseHas(self, table, query_dict):
+        self.assertGreaterEqual(
+            self.application.make("builder").table(table).where(query_dict).count(), 1
+        )
+
+    def assertDatabaseMissing(self, table, query_dict):
+        self.assertEqual(
+            self.application.make("builder").table(table).where(query_dict).count(), 0
+        )
+
+    def assertDeleted(self, instance):
+        self.assertFalse(
+            self.application.make("builder")
+            .table(instance.get_table_name())
+            .where(instance.get_primary_key(), instance.get_primary_key_value())
+            .get()
+        )
+
+    def assertSoftDeleted(self, instance):
+        deleted_at_column = instance.get_deleted_at_column()
+        self.assertTrue(
+            self.application.make("builder")
+            .table(instance.get_table_name())
+            .where(instance.get_primary_key(), instance.get_primary_key_value())
+            .where_not_null(deleted_at_column)
+            .get()
+        )

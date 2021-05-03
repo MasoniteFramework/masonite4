@@ -13,20 +13,12 @@ class Route:
         "signed": r"([\w\-=]+)",
     }
 
-    controller_module_location = "app.http.controllers"
-
-    def __init__(self, routes=[]):
-        if routes:
-            self.routes = routes
-
-    @classmethod
-    def add(self, route):
-        self.routes.append(route)
-        return self
+    def __init__(self):
+        pass
 
     @classmethod
     def get(self, url, controller, module_location=None, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=["get"],
@@ -34,12 +26,10 @@ class Route:
             module_location=module_location or self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def post(self, url, controller, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=["post"],
@@ -52,21 +42,18 @@ class Route:
 
     @classmethod
     def put(self, url, controller, **options):
-        self.routes.append(
-            HTTPRoute(
-                url,
-                controller,
-                request_method=["put"],
-                compilers=self.compilers,
-                module_location=self.controller_module_location,
-                **options
-            )
+        return HTTPRoute(
+            url,
+            controller,
+            request_method=["put"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            **options
         )
-        return self
 
     @classmethod
     def patch(self, url, controller, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=["patch"],
@@ -74,12 +61,10 @@ class Route:
             module_location=self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def delete(self, url, controller, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=["delete"],
@@ -87,12 +72,10 @@ class Route:
             module_location=self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def option(self, url, controller, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=["options"],
@@ -100,8 +83,6 @@ class Route:
             module_location=self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def default(self, url, controller, **options):
@@ -109,15 +90,13 @@ class Route:
 
     @classmethod
     def match(self, request_methods, url, controller, **options):
-        route = HTTPRoute(
+        return HTTPRoute(
             url,
             controller,
             request_method=request_methods,
             compilers=self.compilers,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def group(self, *routes, **options):
