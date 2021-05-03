@@ -1,5 +1,5 @@
 from src.masonite.tests import TestCase
-from src.masonite.routes import Route, RouteCapsule
+from src.masonite.routes import Route, Router
 
 
 class TestCase(TestCase):
@@ -7,7 +7,7 @@ class TestCase(TestCase):
         super().setUp()
         self.application.bind(
             "router",
-            RouteCapsule(
+            Router(
                 Route.set_controller_module_location(
                     "tests.integrations.controllers"
                 ).get("/", "WelcomeController@show"),

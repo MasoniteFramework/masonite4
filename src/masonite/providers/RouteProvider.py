@@ -1,5 +1,5 @@
 from .Provider import Provider
-from ..routes import RouteCapsule, Route
+from ..routes import Router, Route
 from ..pipeline import Pipeline
 
 # from ..middleware.route import VerifyCsrfToken
@@ -31,7 +31,9 @@ class RouteProvider(Provider):
                 handler="before",
             )
             Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(["web"]),
+                self.application.make("middleware").get_route_middleware(
+                    route.list_middleware
+                ),
                 handler="before",
             )
 

@@ -3,7 +3,7 @@ import io
 import unittest
 import pendulum
 
-from ..routes import RouteCapsule
+from ..routes import Router
 from .HttpTestResponse import HttpTestResponse
 from ..foundation.response_handler import testcase_handler
 from ..utils.helpers import generate_wsgi
@@ -30,7 +30,7 @@ class TestCase(unittest.TestCase):
     def setRoutes(self, *routes):
         self.application.bind(
             "router",
-            RouteCapsule(*routes),
+            Router(*routes),
         )
         return self
 
@@ -96,7 +96,7 @@ class TestCase(unittest.TestCase):
         route = self.application.make("router").find(route, method)
         if route:
             return HttpTestResponse(self.application, request, response, route)
-        raise Exception(f"NO route found for {route}")
+        raise Exception(f"No route found for {route}")
 
     def mock_start_response(self, *args, **kwargs):
         pass
