@@ -31,7 +31,6 @@ class Kernel:
         self.register_controllers()
         self.register_templates()
         self.register_storage()
-        self.register_testing()
 
     def load_environment(self):
         LoadEnvironment()
