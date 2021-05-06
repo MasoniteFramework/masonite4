@@ -1,7 +1,7 @@
 import json
-from src.masonite.views import View
-from src.masonite.controllers import Controller
-from src.masonite.utils.structures import Dot
+from ..views import View
+from ..controllers import Controller
+from ..utils.structures import Dot
 
 
 class HttpTestResponse:
