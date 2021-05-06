@@ -1,6 +1,6 @@
 init:
 	pip install -r requirements.txt
-	pip install .
+	pip install '.[test]'
 	# Create MySQL Database
 	# Create Postgres Database
 test:

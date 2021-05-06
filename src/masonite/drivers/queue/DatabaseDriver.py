@@ -2,6 +2,7 @@ import pickle
 import pendulum
 import inspect
 from ...utils.helpers import HasColoredCommands
+from ...utils.helpers import parse_human_time
 import time
 
 
@@ -15,6 +16,8 @@ class DatabaseDriver(HasColoredCommands):
 
     def push(self, *jobs, args=(), **kwargs):
         builder = self.get_builder()
+
+        available_at = parse_human_time(kwargs.get("delay", "now"))
 
         for job in jobs:
             payload = pickle.dumps(
@@ -30,7 +33,7 @@ class DatabaseDriver(HasColoredCommands):
                 {
                     "name": str(job),
                     "payload": payload,
-                    "available_at": pendulum.now().to_datetime_string(),
+                    "available_at": available_at.to_datetime_string(),
                     "attempts": 0,
                     "queue": self.options.get("queue", "default"),
                 }
@@ -38,8 +41,6 @@ class DatabaseDriver(HasColoredCommands):
 
     def consume(self):
         builder = self.get_builder()
-
-        print(self.options.get("attempts"))
 
         while True:
             time.sleep(int(self.options.get("poll", 1)))

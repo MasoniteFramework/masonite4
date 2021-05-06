@@ -29,6 +29,9 @@ class WelcomeController(Controller):
     def test(self):
         return 2 / 0
 
+    def api(self):
+        return {"key": "value"}
+
     def emit(self, broadcast: Broadcast):
         broadcast.channel("private-orders", OrderProcessed())
         return "emitted"
@@ -84,7 +87,6 @@ class WelcomeController(Controller):
         )
 
     def session(self, request: Request):
-        # request.session.flash("key", "value")
         request.app.make("session").driver("cookie").flash("key", "value")
         return "session"
 

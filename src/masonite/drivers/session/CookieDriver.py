@@ -120,8 +120,6 @@ class CookieDriver:
             cookies.update({key: self.get(key)})
         return cookies
 
-        return cookies
-
     def flash(self, key, value):
         """Add temporary data to the session.
 

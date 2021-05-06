@@ -70,16 +70,33 @@ setup(
     packages=[
         "masonite",
         "masonite.auth",
+        "masonite.authentication",
+        "masonite.authentication.models",
+        "masonite.authentication.guards",
+        "masonite.broadcasting",
+        "masonite.broadcasting.drivers",
+        "masonite.broadcasting.providers",
+        "masonite.cache",
+        "masonite.cache.drivers",
         "masonite.commands",
         "masonite.container",
         "masonite.controllers",
         "masonite.cookies",
         "masonite.drivers",
+        "masonite.drivers.mail",
+        "masonite.drivers.queue",
         "masonite.drivers.session",
+        "masonite.environment",
+        "masonite.events",
+        "masonite.events.providers",
         "masonite.exceptions",
+        "masonite.filesystem",
+        "masonite.filesystem.drivers",
+        "masonite.filesystem.providers",
         "masonite.foundation",
         "masonite.headers",
         "masonite.input",
+        "masonite.mail",
         "masonite.middleware",
         "masonite.middleware.route",
         "masonite.pipeline",
@@ -89,10 +106,11 @@ setup(
         "masonite.request",
         "masonite.response",
         "masonite.routes",
+        "masonite.sessions",
+        "masonite.storage",
         "masonite.tests",
         "masonite.utils",
         "masonite.views",
-
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
@@ -100,7 +118,14 @@ setup(
     # $ pip install -e .[dev,test]
     # $ pip install your-package[dev,test]
     extras_require={
-        "test": ["coverage", "pytest"],
+        "test": [
+            "coverage",
+            "pytest",
+            "redis",
+            "boto3",
+            "pusher",
+            "pymemcache",
+        ],
     },
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these

@@ -26,6 +26,8 @@ class MailgunDriver:
             data.update({"cc", self.options.get("cc")})
         if self.options.get("bcc"):
             data.update({"bcc", self.options.get("bcc")})
+        if self.options.get("priority"):
+            data.update({"h:X-Priority", self.options.get("priority")})
 
         return data
 

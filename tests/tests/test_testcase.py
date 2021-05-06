@@ -1,3 +1,5 @@
+import pendulum
+
 from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
@@ -28,6 +30,10 @@ class TestTestCase(TestCase):
             Route.get("/", "WelcomeController@show").name("home"),
         )
 
+    def tearDown(self):
+        super().tearDown()
+        self.restoreTime()
+
     def test_add_routes(self):
         self.assertEqual(len(self.application.make("router").routes), 1)
         self.addRoutes(
@@ -41,6 +47,41 @@ class TestTestCase(TestCase):
         )
         # can use default assertions and custom from different classes
         self.get("/").assertContains("welcome").assertCustom().assertOtherCustom()
+
+    def test_fake_time(self):
+        given_date = pendulum.datetime(2015, 2, 5)
+        self.fakeTime(given_date)
+        self.assertEqual(pendulum.now(), given_date)
+        self.restoreTime()
+        self.assertNotEqual(pendulum.now(), given_date)
+
+    def test_fake_time_tomorrow(self):
+        tomorrow = pendulum.tomorrow()
+        self.fakeTimeTomorrow()
+        self.assertEqual(pendulum.now(), tomorrow)
+
+    def test_fake_time_yesterday(self):
+        yesterday = pendulum.yesterday()
+        self.fakeTimeYesterday()
+        self.assertEqual(pendulum.now(), yesterday)
+
+    def test_fake_time_in_future(self):
+        real_now = pendulum.now()
+        self.fakeTimeInFuture(10)
+        self.assertEqual(pendulum.now().diff(real_now).in_days(), 10)
+        self.assertGreater(pendulum.now(), real_now)
+
+        self.fakeTimeInFuture(1, "months")
+        self.assertEqual(pendulum.now().diff(real_now).in_months(), 1)
+
+    # def test_fake_time_in_past(self):
+    #     real_now = pendulum.now()
+    #     self.fakeTimeInPast(10)
+    #     self.assertEqual(pendulum.now().diff(real_now).in_days(), 10)
+    #     self.assertLess(pendulum.now(), real_now)
+
+    #     self.fakeTimeInPast(3, "hours")
+    #     self.assertEqual(real_now.hour - pendulum.now().hour, 3)
 
 
 class TestTestingAssertions(TestCase):
@@ -107,18 +148,17 @@ class TestTestingAssertions(TestCase):
     def test_assert_no_content(self):
         self.get("/test-empty").assertNoContent()
 
-    # def test_assert_cookie(self):
-    #     self.withCookies({"test": "value"}).get("/").assertCookie("test")
+    def test_assert_cookie(self):
+        self.withCookies({"test": "value"}).get("/").assertCookie("test")
 
-    # def test_assert_cookie_value(self):
-    #     self.withCookies({"test": "value"}).get("/").assertCookie("test", "value")
+    def test_assert_cookie_value(self):
+        self.withCookies({"test": "value"}).get("/").assertCookie("test", "value")
 
-    # def test_assert_cookie_missing(self):
-    #     self.get("/").assertCookieMissing("test")
+    def test_assert_cookie_missing(self):
+        self.get("/").assertCookieMissing("test")
 
-    # def test_assert_plain_cookie(self):
-    #     # for now test cookies are not encrypted
-    #     self.withCookies({"test": "value"}).get("/").assertPlainCookie("test")
+    def test_assert_plain_cookie(self):
+        self.withCookies({"test": "value"}).get("/").assertPlainCookie("test")
 
     def test_assert_has_header(self):
         self.get("/test-response-header").assertHasHeader("TEST")
@@ -140,18 +180,18 @@ class TestTestingAssertions(TestCase):
             name="test_params", params={"id": 1}
         )
 
-    # def test_assert_session_has(self):
-    #     self.get("/test-session").assertSessionHas("key")
-    #     self.get("/test-session").assertSessionHas("key", "value")
+    def test_assert_session_has(self):
+        self.get("/test-session").assertSessionHas("key")
+        self.get("/test-session").assertSessionHas("key", "value")
 
-    # def test_assert_session_has_errors(self):
-    #     self.get("/test-session-errors").assertSessionHasErrors()
-    #     self.get("/test-session-errors").assertSessionHasErrors(["email"])
-    #     self.get("/test-session-errors").assertSessionHasErrors(["email", "password"])
+    def test_assert_session_has_errors(self):
+        self.get("/test-session-errors").assertSessionHasErrors()
+        self.get("/test-session-errors").assertSessionHasErrors(["email"])
+        self.get("/test-session-errors").assertSessionHasErrors(["email", "password"])
 
-    # def test_assert_session_has_no_errors(self):
-    #     self.get("/test-session").assertSessionHasNoErrors()
-    #     self.get("/test-session-errors").assertSessionHasNoErrors(["name"])
+    def test_assert_session_has_no_errors(self):
+        self.get("/test-session").assertSessionHasNoErrors()
+        self.get("/test-session-errors").assertSessionHasNoErrors(["name"])
 
     def test_assert_session_missing(self):
         self.get("/").assertSessionMissing("some_test_key")
@@ -264,4 +304,15 @@ class TestTestingAssertions(TestCase):
                     "nested_again": {"a": 1, "b": 2},
                 },
             }
+        )
+
+    def test_assert_database_count(self):
+        self.assertDatabaseCount("users", 1)
+
+    def test_assert_database_has(self):
+        self.assertDatabaseHas("users", {"name": "Joe"})
+
+    def test_assert_database_missing(self):
+        self.assertDatabaseMissing(
+            "users", {"name": "John", "email": "john@example.com"}
         )

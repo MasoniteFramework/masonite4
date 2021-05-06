@@ -2,11 +2,12 @@ from ..utils.helpers import flatten
 from ..exceptions import RouteNotFoundException
 
 
-class RouteCapsule:
+class Router:
     def __init__(self, *routes, module_location=None):
         self.routes = flatten(routes)
 
     def find(self, path, request_method, subdomain=None):
+
         for route in self.routes:
             if route.match(path, request_method, subdomain=subdomain):
                 return route
@@ -33,3 +34,4 @@ class RouteCapsule:
 
     def add(self, *routes):
         self.routes.append(*routes)
+        self.routes = flatten(self.routes)

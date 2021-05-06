@@ -1,9 +1,9 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.foundation import Application
 import os
 from src.masonite.response import Response
-from src.masonite.routes import RouteCapsule, Route
+from src.masonite.routes import Router, Route
 
 
 class TestResponseRedirect(TestCase):

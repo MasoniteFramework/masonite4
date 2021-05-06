@@ -9,11 +9,12 @@ from ..middleware import (
     SessionMiddleware,
     EncryptCookies,
 )
-from ..routes import RouteCapsule, Route
+from ..routes import Router, Route
 import pydoc
+from ..utils.structures import load_routes
 
 
-class HttpKernel:
+class HttpKernel: 
 
     http_middleware = []
     route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
@@ -23,12 +24,6 @@ class HttpKernel:
 
     def register(self):
         self.register_routes()
-        self.register_middleware()
-
-    def register_middleware(self):
-        middleware = MiddlewareCapsule()
-        middleware.add(self.route_middleware).add(self.http_middleware)
-        self.application.bind("middleware", middleware)
 
     def register_routes(self):
         Route.set_controller_module_location(
@@ -37,5 +32,9 @@ class HttpKernel:
 
         self.application.bind(
             "router",
-            RouteCapsule(*pydoc.locate(self.application.make("routes.web")).routes),
+            Router(
+                Route.group(
+                    load_routes(self.application.make("routes.web")), middleware="web"
+                ),
+            ),
         )

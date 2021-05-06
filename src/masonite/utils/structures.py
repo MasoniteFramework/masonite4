@@ -220,7 +220,7 @@ def load(path, default=""):
     return Dot().locate(path, default)
 
 
-def load(path, default=""):
+def load_routes(path):
     """Used to fetch a value from a configuration file
 
     Arguments:
@@ -232,4 +232,4 @@ def load(path, default=""):
     Returns:
         mixed
     """
-    return Dot().locate(path, default)
+    return pydoc.locate(path).ROUTES

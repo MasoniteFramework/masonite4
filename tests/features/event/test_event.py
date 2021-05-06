@@ -29,13 +29,11 @@ class SendEmailListener:
 
 class UpdateAdminListener:
     def handle(self, event, user):
-        print("update", user)
         pass
 
 
 class SendAlert:
     def handle(self, event):
-        print("eee", event)
         pass
 
 

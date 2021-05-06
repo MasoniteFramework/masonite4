@@ -1,15 +1,15 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.foundation import Application
 import os
 from src.masonite.response import Response
-from src.masonite.routes import RouteCapsule, Route
+from src.masonite.routes import Router, Route
 
 
 class TestResponseRedirect(TestCase):
     def setUp(self):
         application = Application(os.getcwd())
-        application.bind("router", RouteCapsule(Route.get("/", None).name("home")))
+        application.bind("router", Router(Route.get("/", None).name("home")))
         self.response = Response(application)
 
     def test_redirect(self):

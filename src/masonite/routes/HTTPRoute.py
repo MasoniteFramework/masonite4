@@ -160,7 +160,6 @@ class HTTPRoute:
 
     def get_response(self, app=None):
         # Resolve Controller Constructor
-        print("getting response for", self.controller_class, self.controller_method)
         if self.e:
             print(
                 "\033[93mCannot find controller {}. Did you create this one?".format(
@@ -172,11 +171,10 @@ class HTTPRoute:
 
         if app:
             controller = app.resolve(self.controller_class)
+            # resolve route parameters
+            params = self.extract_parameters(app.make("request").get_path()).values()
             # Resolve Controller Method
-            response = app.resolve(
-                getattr(controller, self.controller_method),
-                # *self.request.url_params.values() TODO
-            )
+            response = app.resolve(getattr(controller, self.controller_method), *params)
             return response
 
         return getattr(self.controller_class(), self.controller_method)()

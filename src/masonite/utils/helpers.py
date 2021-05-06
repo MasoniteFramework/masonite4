@@ -155,6 +155,9 @@ def parse_human_time(str_time):
     """
     import pendulum
 
+    if str_time == "now":
+        return pendulum.now("GMT")
+
     if str_time != "expired":
         number = int(str_time.split(" ")[0])
         length = str_time.split(" ")[1]
@@ -536,3 +539,37 @@ def password(password_string):
     return bytes(
         bcrypt.hashpw(bytes(password_string, "utf-8"), bcrypt.gensalt())
     ).decode("utf-8")
+
+
+class DefaultType:
+    def __init__(self, value):
+        self.value = value
+
+    def __getattr__(self, attr):
+        return self.value
+
+    def __call__(self, *args, **kwargs):
+        return self.value
+
+    def __eq__(self, other):
+        if self.value is None:
+            return other is self.value
+        else:
+            return other == self.value
+
+
+class Optional:
+    def __init__(self, obj, default=None):
+        self.obj = obj
+        self.default = default
+
+    def __getattr__(self, attr):
+        if hasattr(self.obj, attr):
+            return getattr(self.obj, attr)
+        return DefaultType(self.default)
+
+    def __call__(self, *args, **kwargs):
+        return DefaultType(self.default)
+
+    def instance(self):
+        return self.obj
