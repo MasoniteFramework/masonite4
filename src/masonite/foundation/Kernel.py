@@ -18,6 +18,7 @@ import os
 from ..environment import LoadEnvironment
 
 from ..middleware import MiddlewareCapsule
+from ..routes import Router
 
 
 class Kernel:
@@ -50,6 +51,11 @@ class Kernel:
         self.application.bind("routes.api", "tests.integrations.api")
 
         self.application.bind("base_url", "http://localhost:8000")
+
+        self.application.bind(
+            "router",
+            Router(),
+        )
 
     def register_commands(self):
         self.application.bind(

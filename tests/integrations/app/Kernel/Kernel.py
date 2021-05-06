@@ -13,6 +13,8 @@ from src.masonite.middleware import (
 )
 from src.masonite.tests.HttpTestResponse import HttpTestResponse
 from src.masonite.tests.TestResponseCapsule import TestResponseCapsule
+from src.masonite.routes import Route
+from src.masonite.utils.structures import load_routes
 
 
 class Kernel:
@@ -39,8 +41,17 @@ class Kernel:
         LoadEnvironment()
 
     def register_routes(self):
+        Route.set_controller_module_location(
+            self.application.make("controller.location")
+        )
+
         self.application.bind("routes.web", "tests.integrations.web")
-        self.application.bind("routes.api", "tests.integrations.api")
+
+        self.application.make('router').add(
+            Route.group(
+                load_routes(self.application.make("routes.web")), middleware="web"
+            )
+        )
 
     def register_middleware(self):
         self.application.make("middleware").add(self.route_middleware).add(
