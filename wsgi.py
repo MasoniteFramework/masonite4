@@ -1,4 +1,4 @@
-from src.masonite.foundation import Application, Kernel, HttpKernel
+from src.masonite.foundation import Application, Kernel
 from tests.integrations.config.providers import PROVIDERS
 from tests.integrations.app.Kernel import Kernel as ApplicationKernel
 import os
@@ -13,7 +13,6 @@ application = Application(os.getcwd())
 application.register_providers(
     Kernel,
     ApplicationKernel,
-    HttpKernel
 )
 
 application.add_providers(*PROVIDERS)
