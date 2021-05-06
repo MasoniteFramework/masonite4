@@ -37,6 +37,7 @@ class Kernel:
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
+        
 
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
@@ -58,7 +59,7 @@ class Kernel:
             CommandCapsule(CommandApplication("Masonite Version:", "4.0")).add(
                 TinkerCommand(),
                 KeyCommand(),
-                ServeCommand(),
+                ServeCommand(self.application),
                 QueueWorkCommand(self.application),
                 QueueRetryCommand(self.application),
                 QueueFailedCommand(),

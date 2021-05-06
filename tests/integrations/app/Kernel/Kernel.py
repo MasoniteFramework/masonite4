@@ -12,6 +12,7 @@ from src.masonite.middleware import (
     EncryptCookies,
 )
 
+
 class Kernel:
 
     http_middleware = []
@@ -39,7 +40,9 @@ class Kernel:
         self.application.bind("routes.api", "tests.integrations.api")
 
     def register_middleware(self):
-        self.application.make('middleware').add(self.route_middleware).add(self.http_middleware)
+        self.application.make("middleware").add(self.route_middleware).add(
+            self.http_middleware
+        )
 
     def register_configurations(self):
         self.application.bind(
@@ -61,6 +64,9 @@ class Kernel:
 
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+        self.application.bind(
+            "server.runner", "src.masonite.commands.ServeCommand.main"
+        )
 
         key = load(self.application.make("config.application")).KEY
         self.application.bind("key", key)
