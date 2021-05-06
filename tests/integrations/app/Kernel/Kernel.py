@@ -11,8 +11,6 @@ from src.masonite.middleware import (
     SessionMiddleware,
     EncryptCookies,
 )
-from src.masonite.tests.HttpTestResponse import HttpTestResponse
-from src.masonite.tests.TestResponseCapsule import TestResponseCapsule
 from src.masonite.routes import Route
 from src.masonite.utils.structures import load_routes
 
@@ -35,7 +33,6 @@ class Kernel:
         self.register_controllers()
         self.register_templates()
         self.register_storage()
-        self.register_testing()
 
     def load_environment(self):
         LoadEnvironment()
@@ -143,7 +140,3 @@ class Kernel:
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
         )
-
-    def register_testing(self):
-        test_response = TestResponseCapsule(HttpTestResponse)
-        self.application.bind("tests.response", test_response)

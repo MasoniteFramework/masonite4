@@ -20,6 +20,9 @@ from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
 from ..routes import Router
 
+from ..tests.HttpTestResponse import HttpTestResponse
+from ..tests.TestResponseCapsule import TestResponseCapsule
+
 
 class Kernel:
     def __init__(self, app):
@@ -31,6 +34,7 @@ class Kernel:
         self.register_commands()
         self.register_controllers()
         self.register_templates()
+        self.register_testing()
 
     def load_environment(self):
         LoadEnvironment()
@@ -74,3 +78,7 @@ class Kernel:
                 MakeMailableCommand(self.application),
             ),
         )
+
+    def register_testing(self):
+        test_response = TestResponseCapsule(HttpTestResponse)
+        self.application.bind("tests.response", test_response)
