@@ -1,3 +1,5 @@
+import os
+import sys
 from ..container import Container
 
 
@@ -7,10 +9,7 @@ class Application(Container):
         self.storage_path = None
         self.response_handler = None
         self.providers = []
-        self.routes = []
 
-    def load_routes(self, routes):
-        self.routes = routes
 
     def set_response_handler(self, response_handler):
         self.response_handler = response_handler
@@ -49,3 +48,24 @@ class Application(Container):
 
     def __call__(self, *args, **kwargs):
         return self.response_handler(*args, **kwargs)
+
+    def is_dev(self):
+        """Check if app is running in development mode."""
+        return os.getenv("APP_ENV") == "development"
+
+    def is_production(self):
+        """Check if app is running in production mode."""
+        return os.getenv("APP_ENV") == "production"
+
+    def is_running_tests(self):
+        """Check if app is running tests."""
+
+        return "pytest" in sys.modules
+
+    def is_running_in_console(self):
+        """Check if application is running in console. This is useful to only run some providers
+        logic when used in console. We can differenciate if the application is being served or
+        if an application command is ran in console."""
+        if len(sys.argv) > 1:
+            return sys.argv[1] != "serve"
+        return True
