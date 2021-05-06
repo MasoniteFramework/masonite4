@@ -19,7 +19,7 @@ from ..auth import Sign
 import os
 from ..environment import LoadEnvironment
 from ..utils.structures import load
-
+from ..middleware import MiddlewareCapsule
 
 class Kernel:
     def __init__(self, app):
@@ -46,6 +46,7 @@ class Kernel:
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
         )
+        self.application.bind("middleware", MiddlewareCapsule())
         self.application.bind("routes.web", "tests.integrations.web")
         self.application.bind("routes.api", "tests.integrations.api")
 

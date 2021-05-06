@@ -14,7 +14,7 @@ import pydoc
 from ..utils.structures import load_routes
 
 
-class HttpKernel:
+class HttpKernel: 
 
     http_middleware = []
     route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
@@ -24,10 +24,6 @@ class HttpKernel:
 
     def register(self):
         self.register_routes()
-        self.register_middleware()
-
-    def register_middleware(self):
-        self.application.bind("middleware", MiddlewareCapsule())
 
     def register_routes(self):
         Route.set_controller_module_location(

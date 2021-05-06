@@ -5,9 +5,18 @@ from src.masonite.auth import Sign
 import os
 from src.masonite.environment import LoadEnvironment
 from src.masonite.utils.structures import load
-
+from src.masonite.middleware import (
+    MiddlewareCapsule,
+    VerifyCsrfToken,
+    SessionMiddleware,
+    EncryptCookies,
+)
 
 class Kernel:
+
+    http_middleware = []
+    route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
+
     def __init__(self, app):
         self.application = app
 
@@ -16,6 +25,7 @@ class Kernel:
         self.load_environment()
         self.register_configurations()
         self.register_routes()
+        self.register_middleware()
         self.register_database()
         self.register_controllers()
         self.register_templates()
@@ -27,6 +37,9 @@ class Kernel:
     def register_routes(self):
         self.application.bind("routes.web", "tests.integrations.web")
         self.application.bind("routes.api", "tests.integrations.api")
+
+    def register_middleware(self):
+        self.application.make('middleware').add(self.route_middleware).add(self.http_middleware)
 
     def register_configurations(self):
         self.application.bind(
