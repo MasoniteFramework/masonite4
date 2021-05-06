@@ -9,6 +9,7 @@ from ..foundation.response_handler import testcase_handler
 from ..utils.helpers import generate_wsgi
 from ..request import Request
 from ..environment import LoadEnvironment
+from .TestCommand import TestCommand
 
 
 class TestCase(unittest.TestCase):
@@ -100,6 +101,13 @@ class TestCase(unittest.TestCase):
 
     def mock_start_response(self, *args, **kwargs):
         pass
+
+    def craft(self, command, arguments_str=""):
+        """Run a given command in tests and obtain a TestCommand instance to assert command
+        outputs.
+        self.craft("controller", "Welcome").assertSuccess()
+        """
+        return TestCommand(self.application).run(command, arguments_str)
 
     def fake(self, binding):
         """Mock a service with its mocked implementation or with a given custom
