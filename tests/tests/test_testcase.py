@@ -11,6 +11,18 @@ class User(Model, Authenticates):
     pass
 
 
+class CustomTestResponse:
+    def assertCustom(self):
+        assert 1
+        return self
+
+
+class OtherCustomTestResponse:
+    def assertOtherCustom(self):
+        assert 2
+        return self
+
+
 class TestTestCase(TestCase):
     def setUp(self):
         super().setUp()
@@ -28,6 +40,13 @@ class TestTestCase(TestCase):
             Route.get("/test", "WelcomeController@show").name("test"),
         )
         self.assertEqual(len(self.application.make("router").routes), 2)
+
+    def test_use_custom_test_response(self):
+        self.application.make("tests.response").add(
+            CustomTestResponse, OtherCustomTestResponse
+        )
+        # can use default assertions and custom from different classes
+        self.get("/").assertContains("welcome").assertCustom().assertOtherCustom()
 
     def test_fake_time(self):
         given_date = pendulum.datetime(2015, 2, 5)
