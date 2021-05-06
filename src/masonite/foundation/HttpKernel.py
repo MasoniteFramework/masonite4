@@ -27,9 +27,7 @@ class HttpKernel:
         self.register_middleware()
 
     def register_middleware(self):
-        middleware = MiddlewareCapsule()
-        middleware.add(self.route_middleware).add(self.http_middleware)
-        self.application.bind("middleware", middleware)
+        self.application.bind("middleware", MiddlewareCapsule())
 
     def register_routes(self):
         Route.set_controller_module_location(
@@ -43,20 +41,4 @@ class HttpKernel:
                     load_routes(self.application.make("routes.web")), middleware="web"
                 ),
             ),
-        )
-
-        self.application.make("router").add(
-            Route.group(
-                Route.get("/test", "WelcomeController@api"),
-                prefix="/api",
-                middleware="api",
-            )
-        )
-
-        self.application.make("router").add(
-            Route.group(
-                load_routes(self.application.make("routes.api")),
-                middleware="api",
-                prefix="/api",
-            )
         )
