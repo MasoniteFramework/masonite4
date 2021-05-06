@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.utils.helpers import generate_wsgi
 from src.masonite.foundation import Application
 import os
