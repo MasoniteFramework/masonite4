@@ -10,7 +10,6 @@ class Application(Container):
         self.response_handler = None
         self.providers = []
 
-
     def set_response_handler(self, response_handler):
         self.response_handler = response_handler
 

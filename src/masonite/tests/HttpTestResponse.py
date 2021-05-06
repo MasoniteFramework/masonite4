@@ -18,16 +18,24 @@ class HttpTestResponse:
         self.content = self.response.get_response_content()
         return self
 
+    def get_content(self):
+        """Take care of decoding content if bytes and returns str."""
+        return (
+            self.content.decode("utf-8")
+            if isinstance(self.content, bytes)
+            else str(self.content)
+        )
+
     def assertContains(self, content):
-        assert content in str(self.content), f"{content} not found."
+        assert content in self.get_content(), f"{content} not found."
         return self
 
     def assertNotContains(self, content):
-        assert content not in str(self.content)
+        assert content not in self.get_content()
         return self
 
     def assertContainsInOrder(self, *content):
-        response_content = str(self.content)
+        response_content = self.get_content()
         index = 0
         for content_string in content:
             found_at_index = response_content.find(content_string, index)
@@ -72,7 +80,7 @@ class HttpTestResponse:
         return self
 
     def assertNoContent(self, status=204):
-        assert not self.content.decode("utf-8")
+        assert not self.get_content()
         return self.assertIsStatus(status)
 
     def assertUnauthorized(self):
@@ -96,7 +104,7 @@ class HttpTestResponse:
     def assertRedirect(self, url=None, name=None, params={}):
         # we could assert 301 or 302 code => what if user uses another status code in redirect()
         # here we are sure
-        assert self.content.decode("utf-8") == "Redirecting ..."
+        assert self.get_content() == "Redirecting ..."
         if url:
             self.assertLocation(url)
         elif name:
