@@ -14,7 +14,7 @@ import pydoc
 from ..utils.structures import load_routes
 
 
-class HttpKernel: 
+class HttpKernel:
 
     http_middleware = []
     route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
