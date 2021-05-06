@@ -54,7 +54,7 @@ class ServeCommand(Command):
             )
             return
 
-        reloader = hupper.start_reloader(self.app.make('server.runner'))
+        reloader = hupper.start_reloader(self.app.make("server.runner"))
 
         # monitor an extra file
         reloader.watch_files([".env", application.get_storage_path()])
