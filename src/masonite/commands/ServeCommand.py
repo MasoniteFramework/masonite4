@@ -20,6 +20,10 @@ class ServeCommand(Command):
         {--l|live-reload : Make the server automatically refresh your web browser}
     """
 
+    def __init__(self, application):
+        super().__init__()
+        self.app = application
+
     def handle(self):
         if self.option("live-reload"):
             try:
@@ -29,10 +33,9 @@ class ServeCommand(Command):
                     "Could not find the livereload library. Install it by running 'pip install livereload==2.5.1'"
                 )
 
-            from wsgi import application
             import glob
 
-            server = Server(application)
+            server = Server(self.app)
             for filepath in glob.glob("resources/templates/**/*/"):
                 server.watch(filepath)
 
@@ -46,12 +49,12 @@ class ServeCommand(Command):
                 port=self.option("port"),
                 restart_delay=self.option("reload-interval"),
                 liveport=5500,
-                root=application.base_path,
+                root=self.app.base_path,
                 debug=True,
             )
             return
 
-        reloader = hupper.start_reloader("masonite.commands.ServeCommand.main")
+        reloader = hupper.start_reloader(self.app.make("server.runner"))
 
         # monitor an extra file
         reloader.watch_files([".env", application.get_storage_path()])

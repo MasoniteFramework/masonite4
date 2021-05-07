@@ -31,6 +31,9 @@ class WelcomeController(Controller):
     def test(self):
         return 2 / 0
 
+    def api(self):
+        return {"key": "value"}
+
     def emit(self, broadcast: Broadcast):
         broadcast.channel("private-orders", OrderProcessed())
         return "emitted"
