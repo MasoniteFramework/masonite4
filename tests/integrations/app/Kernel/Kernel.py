@@ -44,7 +44,7 @@ class Kernel:
 
         self.application.bind("routes.web", "tests.integrations.web")
 
-        self.application.make('router').add(
+        self.application.make("router").add(
             Route.group(
                 load_routes(self.application.make("routes.web")), middleware="web"
             )
@@ -93,7 +93,7 @@ class Kernel:
         storage = StorageCapsule(self.application.base_path)
         storage.add_storage_assets(
             {
-                # folder          # template alias
+                # folder                             # template alias
                 "tests/integrations/storage/static": "static/",
                 "tests/integrations/storage/compiled": "static/",
                 "tests/integrations/storage/uploads": "static/",

@@ -1,3 +1,7 @@
+import os
+from .structures import load
+
+
 def flatten(routes):
     """Flatten the grouped lists of lists into a single list.
 
@@ -16,6 +20,42 @@ def flatten(routes):
             route_collection.append(route)
 
     return route_collection
+
+
+class AssetHelper:
+    def __init__(self, app):
+        self.app = app
+
+    def asset(self, alias, file_name):
+        disks = load(self.app.make("config.filesystem")).DISKS
+
+        if "." in alias:
+            alias = alias.split(".")
+            location = disks[alias[0]]["path"][alias[1]]
+            if location.endswith("/"):
+                location = location[:-1]
+
+            return "{}/{}".format(location, file_name)
+
+        location = disks[alias]["path"]
+        if isinstance(location, dict):
+            location = list(location.values())[0]
+            if location.endswith("/"):
+                location = location[:-1]
+
+        return "{}/{}".format(location, file_name)
+
+
+class UrlHelper:
+    def __init__(self, app):
+        self.app = app
+
+    def url(self, url):
+        base_url = self.app.make("base_url").rstrip(
+            "/"
+        )  # just ensure that no slash is appended to the url
+
+        return f"{base_url}/{url}"
 
 
 """Helper Functions for working with Status Codes."""
