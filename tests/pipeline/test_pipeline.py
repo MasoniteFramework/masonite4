@@ -1,4 +1,4 @@
-from src.masonite.tests import TestCase
+from tests import TestCase
 from src.masonite.pipeline import Pipeline
 from src.masonite.request import Request
 import os
