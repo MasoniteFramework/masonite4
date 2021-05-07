@@ -1,5 +1,6 @@
 import builtins
 from ..providers import Provider
+from ..utils.helpers import AssetHelper
 
 
 class HelpersProvider(Provider):
@@ -18,6 +19,7 @@ class HelpersProvider(Provider):
                 "auth": request.user,
                 "route": self.application.make("router").route,
                 "cookie": request.cookie,
+                "asset": AssetHelper(self.application).asset,
                 "url": lambda name, params={}: (
                     self.application.make("base_url")
                     + self.application.make("router").route(name, params)
