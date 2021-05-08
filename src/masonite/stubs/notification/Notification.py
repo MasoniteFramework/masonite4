@@ -2,10 +2,10 @@ from masonite.notification import Notification
 from masonite.mail import Mailable
 
 
-class __class__(Notification):
+class __class__(Notification, Mailable):
     def to_mail(self, notifiable):
         return (
-            Mailable()
+            self
             .to(notifiable.email)
             .subject("Masonite 4")
             .from_("hello@email.com")
