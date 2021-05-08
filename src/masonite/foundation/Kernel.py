@@ -80,7 +80,6 @@ class Kernel:
                 MakeControllerCommand(self.application),
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
-
             ),
         )
 

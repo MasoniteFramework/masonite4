@@ -12,7 +12,6 @@ from ..MockNotification import MockNotification
 from ..commands import MakeNotificationCommand, NotificationTableCommand
 
 
-
 class NotificationProvider(Provider):
     """Notifications Provider"""
 
@@ -31,7 +30,7 @@ class NotificationProvider(Provider):
 
         self.application.bind("notification", notification_manager)
         self.application.bind("mock.notification", MockNotification)
-        self.application.make('commands').add(
+        self.application.make("commands").add(
             MakeNotificationCommand(self.application),
             NotificationTableCommand(),
         )

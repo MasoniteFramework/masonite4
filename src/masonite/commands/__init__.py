@@ -10,4 +10,3 @@ from .QueueFailedCommand import QueueFailedCommand
 from .MakeControllerCommand import MakeControllerCommand
 from .MakeJobCommand import MakeJobCommand
 from .MakeMailableCommand import MakeMailableCommand
-
