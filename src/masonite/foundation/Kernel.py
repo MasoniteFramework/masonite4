@@ -13,8 +13,6 @@ from ..commands import (
     MakeControllerCommand,
     MakeJobCommand,
     MakeMailableCommand,
-    MakeNotificationCommand,
-    NotificationTableCommand,
 )
 import os
 from ..environment import LoadEnvironment
@@ -82,8 +80,7 @@ class Kernel:
                 MakeControllerCommand(self.application),
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
-                MakeNotificationCommand(self.application),
-                NotificationTableCommand(),
+
             ),
         )
 

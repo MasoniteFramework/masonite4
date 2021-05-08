@@ -1,6 +1,6 @@
 """Notification Table Command."""
 from cleo import Command
-from ..utils.filesystem import make_directory
+from ...utils.filesystem import make_directory
 import os
 import pathlib
 import datetime

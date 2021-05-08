@@ -5,7 +5,6 @@ from src.masonite.providers import (
     WhitenoiseProvider,
     ExceptionProvider,
     MailProvider,
-    NotificationProvider,
     SessionProvider,
     QueueProvider,
     CacheProvider,
@@ -17,7 +16,7 @@ from src.masonite.providers import (
 )
 
 from src.masonite.scheduling.providers import ScheduleProvider
-
+from src.masonite.notification.providers import NotificationProvider
 
 PROVIDERS = [
     FrameworkProvider,

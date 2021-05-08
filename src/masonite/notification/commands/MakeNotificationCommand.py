@@ -1,6 +1,6 @@
 """MakeNotificationCommand Class"""
 from cleo import Command
-from ..utils.filesystem import make_directory
+from ...utils.filesystem import make_directory
 import inflection
 import os
 

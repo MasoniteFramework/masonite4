@@ -1,14 +1,16 @@
-from .Provider import Provider
-from ..utils.structures import load
-from ..notification.drivers import (
+from ...providers import Provider
+from ...utils.structures import load
+from ..drivers import (
     BroadcastDriver,
     DatabaseDriver,
     MailDriver,
     SlackDriver,
     VonageDriver,
 )
-from ..notification import NotificationManager
-from ..notification import MockNotification
+from ..NotificationManager import NotificationManager
+from ..MockNotification import MockNotification
+from ..commands import MakeNotificationCommand, NotificationTableCommand
+
 
 
 class NotificationProvider(Provider):
@@ -29,6 +31,10 @@ class NotificationProvider(Provider):
 
         self.application.bind("notification", notification_manager)
         self.application.bind("mock.notification", MockNotification)
+        self.application.make('commands').add(
+            MakeNotificationCommand(self.application),
+            NotificationTableCommand(),
+        )
 
     def boot(self):
         pass
