@@ -6,3 +6,4 @@ from .Notifiable import Notifiable
 from .AnonymousNotifiable import AnonymousNotifiable
 from .Sms import Sms
 from .SlackMessage import SlackMessage
+from .Textable import Textable

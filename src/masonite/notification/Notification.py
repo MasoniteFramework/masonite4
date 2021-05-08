@@ -1,29 +1,18 @@
 """Base Notification facade."""
 
 
+
 class Notification:
-    """Notification class representing a notification."""
-
-    def __init__(self, *args, **kwargs):
-        self.id = None
-        self._dry = False
-        self._fail_silently = False
-
-    def broadcast_on(self):
-        """Get the channels the event should broadcast on."""
-        return []
 
     def via(self, notifiable):
         """Defines the notification's delivery channels."""
         raise NotImplementedError("via() method should be implemented.")
 
-    @property
     def should_send(self):
-        return not self._dry
+        return True
 
-    @property
     def ignore_errors(self):
-        return self._fail_silently
+        return False
 
     @classmethod
     def type(cls):
@@ -47,3 +36,6 @@ class Notification:
         """
         self._fail_silently = True
         return self
+    
+    def text(self, text):
+        return Sms().text(text)

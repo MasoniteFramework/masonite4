@@ -6,7 +6,7 @@ from ..queues import ShouldQueue
 from .AnonymousNotifiable import AnonymousNotifiable
 
 
-class NotificationManager(object):
+class NotificationManager:
     """Notification handler which handle sending/queuing notifications anonymously
     or to notifiables through different channels."""
 
@@ -40,13 +40,12 @@ class NotificationManager(object):
     ):
         """Send the given notification to the given notifiables."""
         notifiables = self._format_notifiables(notifiables)
-        if not notification.should_send or dry or self.options.get("dry"):
+        if not notification.should_send() or dry or self.options.get("dry"):
             key = notification.type()
             self.dry_notifications.update(
                 {key: notifiables + self.dry_notifications.get(key, [])}
             )
             return
-
         results = []
         for notifiable in notifiables:
             # get drivers to use for sending this notification
@@ -69,7 +68,7 @@ class NotificationManager(object):
                     else:
                         results.append(driver_instance.send(notifiable, notification))
                 except Exception as e:
-                    if not notification.ignore_errors and not fail_silently:
+                    if not notification.ignore_errors() and not fail_silently:
                         raise e
 
         return results[0] if len(results) == 1 else results
