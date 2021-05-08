@@ -59,12 +59,9 @@ class TestNotificationManager(TestCase):
 
         # globally
         # override settings for testing purposes
-        self.application.bind(
-            "config.notification", "tests.features.notification.test_notification"
-        )
         self.assertEqual(
             self.application.make("notification")
             .route("mail", "test@mail.com")
-            .send(WelcomeNotification()),
+            .send(WelcomeNotification(), dry=True),
             None,
         )

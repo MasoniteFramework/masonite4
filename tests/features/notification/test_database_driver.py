@@ -50,7 +50,7 @@ class TestDatabaseDriver(TestCase, DatabaseTransactions):
         notification = user.notify(WelcomeNotification())
         assert notification["id"]
         assert not notification["read_at"]
-        assert notification["data"] == '{"data": "Welcome idmann509!"}'
+        assert notification["data"] == '{"data": "Welcome Joe!"}'
         assert notification["notifiable_id"] == user.id
         assert notification["notifiable_type"] == "users"
 

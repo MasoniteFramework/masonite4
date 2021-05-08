@@ -5,4 +5,5 @@ masonite-orm
 python-dotenv
 waitress
 responses
+slackblocks
 hashids
