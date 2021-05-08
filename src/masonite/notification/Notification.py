@@ -1,9 +1,7 @@
 """Base Notification facade."""
 
 
-
 class Notification:
-
     def via(self, notifiable):
         """Defines the notification's delivery channels."""
         raise NotImplementedError("via() method should be implemented.")
@@ -15,7 +13,7 @@ class Notification:
         return False
 
     def broadcast_on(self):
-        return 'broadcast'
+        return "broadcast"
 
     @classmethod
     def type(cls):
@@ -39,6 +37,6 @@ class Notification:
         """
         self._fail_silently = True
         return self
-    
+
     def text(self, text):
         return Sms().text(text)

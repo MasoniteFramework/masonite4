@@ -1,6 +1,6 @@
 from .Sms import Sms
 
-class Textable:
 
+class Textable:
     def text_message(self, message):
         return Sms().text(message)
