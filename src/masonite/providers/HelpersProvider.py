@@ -17,7 +17,6 @@ class HelpersProvider(Provider):
             {
                 "request": lambda: request,
                 "auth": request.user,
-                "route": self.application.make("router").route,
                 "cookie": request.cookie,
                 "asset": AssetHelper(self.application).asset,
                 "url": UrlHelper(self.application).url,
