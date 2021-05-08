@@ -132,7 +132,9 @@ class TestSlackAPIDriver(TestCase):
         self.assertTrue(responses.assert_call_count(self.url, 1))
 
     @responses.activate
-    @pytest.mark.skip(reason="Failing because user defined routing takes precedence. What should be the behaviour ?")
+    @pytest.mark.skip(
+        reason="Failing because user defined routing takes precedence. What should be the behaviour ?"
+    )
     def test_sending_to_multiple_channels(self):
         user = User.find(1)
         responses.add(
