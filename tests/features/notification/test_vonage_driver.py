@@ -66,7 +66,7 @@ class TestVonageDriver(TestCase):
                 WelcomeNotification()
             )
         error_message = str(e.exception)
-        self.assertIn("Code [29]", error_message)
+        self.assertIn("Code [2]", error_message)
 
     def test_send_to_anonymous(self):
         with patch("vonage.sms.Sms") as MockSmsClass:
