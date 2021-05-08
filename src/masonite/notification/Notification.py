@@ -14,6 +14,9 @@ class Notification:
     def ignore_errors(self):
         return False
 
+    def broadcast_on(self):
+        return 'broadcast'
+
     @classmethod
     def type(cls):
         """Get notification type defined with class name."""

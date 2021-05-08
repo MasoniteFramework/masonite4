@@ -1,6 +1,6 @@
 from tests import TestCase
 from unittest.mock import patch
-from src.masonite.notification import Notification, Notifiable, Sms
+from src.masonite.notification import Notification, Notifiable, Sms, Textable
 from src.masonite.exceptions import NotificationException
 
 from masoniteorm.models import Model
@@ -15,9 +15,9 @@ class User(Model, Notifiable):
         return "+33123456789"
 
 
-class WelcomeUserNotification(Notification):
+class WelcomeUserNotification(Notification, Textable):
     def to_vonage(self, notifiable):
-        return Sms().to(notifiable.phone).text("Welcome !").from_("123456")
+        return self.text_message("Welcome !").from_("123456")
 
     def via(self, notifiable):
         return ["vonage"]
@@ -29,6 +29,9 @@ class WelcomeNotification(Notification):
 
     def via(self, notifiable):
         return ["vonage"]
+
+    def should_send(self):
+        return True
 
 
 class OtherNotification(Notification):
@@ -63,8 +66,7 @@ class TestVonageDriver(TestCase):
                 WelcomeNotification()
             )
         error_message = str(e.exception)
-        self.assertIn("Code [2]", error_message)
-        self.assertIn("api_key", error_message)
+        self.assertIn("Code [29]", error_message)
 
     def test_send_to_anonymous(self):
         with patch("vonage.sms.Sms") as MockSmsClass:
