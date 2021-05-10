@@ -9,3 +9,6 @@ class FacadesProvider(Provider):
     def register(self):
         for facade_name, container_name in self.application.make("facades").items():
             setattr(builtins, facade_name, self.application.make(container_name))
+
+    def boot(self):
+        pass
