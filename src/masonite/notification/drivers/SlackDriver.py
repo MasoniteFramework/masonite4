@@ -36,10 +36,9 @@ class SlackDriver(BaseDriver):
         mode = self.get_sending_mode(recipients)
         slack_message = slack_message.mode(mode)
 
-        if mode == self.WEBHOOK_MODE:  # and not slack_message._webhook:
+        if mode == self.WEBHOOK_MODE:
             slack_message = slack_message.to(recipients)
         elif mode == self.API_MODE:
-            # if not slack_message._channel:
             slack_message = slack_message.to(recipients)
             if not slack_message._token:
                 slack_message = slack_message.token(self.options.get("token"))

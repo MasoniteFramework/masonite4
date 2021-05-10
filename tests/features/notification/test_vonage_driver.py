@@ -98,4 +98,4 @@ class TestVonageDriver(TestCase):
         sms = self.notification.get_driver("vonage").build(
             notifiable, OtherNotification()
         )
-        self.assertEqual(sms.get("from"), "+33000000000")
+        self.assertEqual(sms._from, "+33000000000")

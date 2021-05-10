@@ -20,7 +20,7 @@ class VonageDriver(BaseDriver):
         if not sms._to:
             recipients = notifiable.route_notification_for("vonage")
             sms = sms.to(recipients)
-        return sms.build().get_options()
+        return sms
 
     def get_sms_client(self):
         try:
@@ -39,9 +39,11 @@ class VonageDriver(BaseDriver):
         """Used to send the SMS."""
         sms = self.build(notifiable, notification)
         client = self.get_sms_client()
-        # TODO: here if multiple recipients are defined in Sms it won't work ? check with Vonage API
-        response = client.send_message(sms)
-        self._handle_errors(response)
+        recipients = sms._to
+        for recipient in recipients:
+            payload = sms.to(recipient).build().get_options()
+            response = client.send_message(payload)
+            self._handle_errors(response)
         return response
 
     def _handle_errors(self, response):
