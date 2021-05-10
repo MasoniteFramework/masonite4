@@ -33,6 +33,7 @@ class Kernel:
         self.register_controllers()
         self.register_templates()
         self.register_storage()
+        self.register_facades()
 
     def load_environment(self):
         LoadEnvironment()
@@ -139,4 +140,10 @@ class Kernel:
         self.application.set_response_handler(response_handler)
         self.application.use_storage_path(
             os.path.join(self.application.base_path, "storage")
+        )
+
+    def register_facades(self):
+        self.application.bind(
+            "facades",
+            {"Mail": "mail", "Storage": "storage"},
         )
