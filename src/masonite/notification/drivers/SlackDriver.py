@@ -29,12 +29,6 @@ class SlackDriver(BaseDriver):
         else:
             self.send_via_api(slack_message)
 
-    # def queue(self, notifiable, notification):
-    # TODO
-    #     """Used to queue the notification to be sent to slack."""
-    #     method, payload = self.prepare(notifiable, notification)
-    #     return self.application.make("queue").push(method, args=payload)
-
     def build(self, notifiable, notification):
         """Build Slack message payload sent to Slack API or through Slack webhook."""
         slack_message = self.get_data("slack", notifiable, notification)

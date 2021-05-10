@@ -25,13 +25,6 @@ class DatabaseDriver(BaseDriver):
         data = self.build(notifiable, notification)
         return self.get_builder().new().create(data)
 
-    def queue(self, notifiable, notification):
-        """Used to queue the database notification creation."""
-        data = self.build(notifiable, notification)
-        return self.application.make("queue").push(
-            self.get_builder().new().create, args=(data,)
-        )
-
     def build(self, notifiable, notification):
         """Build an array payload for the DatabaseNotification Model."""
         return {

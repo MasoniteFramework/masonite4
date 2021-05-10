@@ -62,10 +62,10 @@ class NotificationManager:
                     # this case is not possible but that should not stop other channels to be used
                     continue
                 try:
-                    if isinstance(notification, ShouldQueue):
-                        results.append(driver_instance.queue(notifiable, notification))
-                    else:
-                        results.append(driver_instance.send(notifiable, notification))
+                    # if isinstance(notification, ShouldQueue):
+                    #     results.append(driver_instance.queue(notifiable, notification))
+                    # else:
+                    results.append(driver_instance.send(notifiable, notification))
                 except Exception as e:
                     if not notification.ignore_errors() and not fail_silently:
                         raise e

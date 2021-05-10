@@ -44,12 +44,6 @@ class VonageDriver(BaseDriver):
         self._handle_errors(response)
         return response
 
-    def queue(self, notifiable, notification):
-        """Used to queue the SMS notification to be send."""
-        sms = self.build(notifiable, notification)
-        client = self.get_sms_client()
-        self.application.make("queue").push(client.send_message, args=(sms,))
-
     def _handle_errors(self, response):
         """Handle errors of Vonage API. Raises VonageAPIError if request does
         not succeed.

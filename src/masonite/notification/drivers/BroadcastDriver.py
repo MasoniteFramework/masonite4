@@ -20,12 +20,3 @@ class BroadcastDriver(BaseDriver):
         )
         event = notification.type()
         self.application.make("broadcast").channel(channels, event, data)
-
-    def queue(self, notifiable, notification):
-        """Used to queue the notification to be broadcasted."""
-        # Makes sense ??????
-        # data = self.get_data("broadcast", notifiable, notification)
-        # channels = notification.broadcast_on() or notifiable.route_notification_for(
-        #     "broadcast"
-        # )
-        # self.application.make("queue").push(driver.channel, args=(channel, data))

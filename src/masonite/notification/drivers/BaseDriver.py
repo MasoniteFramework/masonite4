@@ -6,13 +6,6 @@ class BaseDriver:
             "send() method must be implemented for a notification driver."
         )
 
-    def queue(self, notifiable, notification):
-        """Implements queueing the notification to be sent later
-        this driver."""
-        raise NotImplementedError(
-            "queue() method must be implemented for a notification driver."
-        )
-
     def get_data(self, driver, notifiable, notification):
         """Get the data for the notification."""
         method_name = f"to_{driver}"
