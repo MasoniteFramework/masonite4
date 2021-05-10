@@ -37,6 +37,3 @@ class Notification:
         """
         self._fail_silently = True
         return self
-
-    def text(self, text):
-        return Sms().text(text)
