@@ -10,7 +10,6 @@ class NotificationManager:
     """Notification handler which handle sending/queuing notifications anonymously
     or to notifiables through different channels."""
 
-    # those classes are use for mock => should we put them only in NotificationMock ?
     sent_notifications = {}
     dry_notifications = {}
 
@@ -73,9 +72,6 @@ class NotificationManager:
 
         return results[0] if len(results) == 1 else results
 
-    # def is_custom_channel(self, channel):
-    #     return issubclass(channel, BaseDriver)
-
     def _format_notifiables(self, notifiables):
         from masoniteorm.collection import Collection
 
@@ -87,7 +83,3 @@ class NotificationManager:
     def route(self, driver, route):
         """Specify how to send a notification to an anonymous notifiable."""
         return AnonymousNotifiable(self.application).route(driver, route)
-
-    # TESTING
-    def assertNotificationDried(self, notification_class):
-        assert notification_class.__name__ in self.dry_notifications.keys()
