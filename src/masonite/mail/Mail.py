@@ -28,5 +28,6 @@ class Mail:
         return self
 
     def send(self, driver=None):
-        self.options.update(self.get_config_options(driver))
-        return self.get_driver(driver).set_options(self.options).send()
+        selected_driver = driver or self.options.get("driver", None)
+        self.options.update(self.get_config_options(selected_driver))
+        return self.get_driver(selected_driver).set_options(self.options).send()

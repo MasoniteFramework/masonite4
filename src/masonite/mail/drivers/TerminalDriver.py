@@ -1,5 +1,4 @@
-import requests
-from .Recipient import Recipient
+from ..Recipient import Recipient
 
 
 class TerminalDriver:
