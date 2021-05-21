@@ -1,7 +1,7 @@
 from ..response import Response
 
-class RedirectController:
 
+class RedirectController:
     def __init__(self, url, status):
         self.url = url
         self.status = status

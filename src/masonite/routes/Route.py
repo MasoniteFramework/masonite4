@@ -97,7 +97,7 @@ class Route:
             request_method=["get"],
             compilers=self.compilers,
             module_location=self.controller_module_location,
-            controller_bindings=[new_url, options.get('status', 302)],
+            controller_bindings=[new_url, options.get("status", 302)],
             **options
         )
 

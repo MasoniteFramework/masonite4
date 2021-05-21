@@ -16,8 +16,8 @@ class HTTPRoute:
         controller_bindings=[],
         **options
     ):
-        if not url.startswith('/'):
-            url = '/' + url
+        if not url.startswith("/"):
+            url = "/" + url
 
         self.url = url
         self.module_location = module_location
