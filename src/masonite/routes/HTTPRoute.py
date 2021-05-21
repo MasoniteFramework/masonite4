@@ -13,7 +13,12 @@ class HTTPRoute:
         name=None,
         compilers=None,
         module_location="app.http.controllers",
+        controller_bindings=[],
+        **options
     ):
+        if not url.startswith('/'):
+            url = '/' + url
+
         self.url = url
         self.module_location = module_location
         self.controller = controller
@@ -26,6 +31,7 @@ class HTTPRoute:
         self.e = None
         self.compilers = compilers or {}
         self._find_controller(controller, self.module_location)
+        self.controller_bindings = controller_bindings
         self.compile_route_to_regex()
 
     def match(self, path, request_method, subdomain=None):
@@ -170,7 +176,7 @@ class HTTPRoute:
             raise SyntaxError(str(self.e))
 
         if app:
-            controller = app.resolve(self.controller_class)
+            controller = app.resolve(self.controller_class, *self.controller_bindings)
             # resolve route parameters
             params = self.extract_parameters(app.make("request").get_path()).values()
             # Resolve Controller Method

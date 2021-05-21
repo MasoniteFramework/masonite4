@@ -1,5 +1,6 @@
 from .HTTPRoute import HTTPRoute
 from ..utils.helpers import flatten
+from ..controllers import RedirectController
 
 
 class Route:
@@ -87,6 +88,30 @@ class Route:
     @classmethod
     def default(self, url, controller, **options):
         return self
+
+    @classmethod
+    def redirect(self, url, new_url, **options):
+        return HTTPRoute(
+            url,
+            RedirectController.redirect,
+            request_method=["get"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            controller_bindings=[new_url, options.get('status', 302)],
+            **options
+        )
+
+    @classmethod
+    def permanent_redirect(self, url, new_url, **options):
+        return HTTPRoute(
+            url,
+            RedirectController.redirect,
+            request_method=["get"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            controller_bindings=[new_url, 301],
+            **options
+        )
 
     @classmethod
     def match(self, request_methods, url, controller, **options):
