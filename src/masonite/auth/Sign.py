@@ -1,9 +1,9 @@
 """Cryptographic Signing Module."""
 import binascii
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken as CryptographyInvalidToken
 
-from ..exceptions import InvalidSecretKey
+from ..exceptions import InvalidSecretKey, InvalidToken
 
 
 class Sign:
@@ -70,4 +70,8 @@ class Sign:
 
         if not value:
             return f.decrypt(self.encryption).decode("utf-8")
-        return f.decrypt(bytes(str(value), "utf-8")).decode("utf-8")
+        try:
+            return f.decrypt(bytes(str(value), "utf-8")).decode("utf-8")
+        except CryptographyInvalidToken as e:
+            raise InvalidToken("Invalid Cryptographic Token") from e
+

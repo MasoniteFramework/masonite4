@@ -1,6 +1,5 @@
 from ...providers import Provider
 from ..Event import Event
-from ...utils.structures import config, load
 
 
 class EventProvider(Provider):

@@ -38,8 +38,6 @@ class Route:
             module_location=self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def put(self, url, controller, **options):
@@ -75,7 +73,7 @@ class Route:
         )
 
     @classmethod
-    def option(self, url, controller, **options):
+    def options(self, url, controller, **options):
         return HTTPRoute(
             url,
             controller,
@@ -133,6 +131,10 @@ class Route:
 
             if options.get("name"):
                 route._name = options.get("name") + route._name
+
+            if options.get("middleware"):
+                # route.list_middleware += options.get("middleware", [])
+                route.middleware(*options.get("middleware", []))
 
             inner.append(route)
         self.routes = inner

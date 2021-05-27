@@ -110,7 +110,7 @@ class AMQPDriver(HasColoredCommands):
 
     def retry(self):
         builder = (
-            self.application.make("builder")
+            self.application.make("builder").new()
             .on(self.options.get("connection"))
             .table(self.options.get("failed_table", "failed_jobs"))
         )
@@ -160,7 +160,7 @@ class AMQPDriver(HasColoredCommands):
             getattr(obj, "failed")(job, str(e))
 
             self.add_to_failed_queue_table(
-                self.application.make("builder"), str(job["obj"]), body, str(e)
+                self.application.make("builder").new(), str(job["obj"]), body, str(e)
             )
 
         ch.basic_ack(delivery_tag=method.delivery_tag)

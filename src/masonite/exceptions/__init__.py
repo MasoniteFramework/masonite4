@@ -15,4 +15,5 @@ from .exceptions import (
     DumpException,
     InvalidSecretKey,
     InvalidCSRFToken,
+    InvalidToken,
 )

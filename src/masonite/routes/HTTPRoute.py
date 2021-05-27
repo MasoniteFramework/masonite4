@@ -35,6 +35,7 @@ class HTTPRoute:
         self.compile_route_to_regex()
 
     def match(self, path, request_method, subdomain=None):
+
         route_math = (
             re.match(self._compiled_regex, path)
             or re.match(self._compiled_regex_end, path)
@@ -192,52 +193,10 @@ class HTTPRoute:
             self
         """
         for arg in args:
-            if arg not in self.list_middleware:
+            if arg and arg not in self.list_middleware:
                 self.list_middleware.append(arg)
 
         return self
-
-    def run_middleware(self, type_of_middleware, middleware_list=None):
-        """Run route middleware.
-
-        Arguments:
-            type_of_middleware {string} -- Type of middleware to be ran (before|after)
-
-        Raises:
-            RouteMiddlewareNotFound -- Thrown when the middleware could not be found.
-        """
-        # Get the list of middleware to run for a route.
-        if middleware_list is None:
-            middleware_list = []
-
-        for arg in self.list_middleware:
-            if ":" in arg:
-                middleware_to_run, arguments = arg.split(":")
-                # Splits "name:value1,value2" into ['value1', 'value2']
-                arguments = arguments.split(",")
-                for index, argument in enumerate(arguments):
-                    if argument.startswith("@"):
-                        _, argument = argument.split("@")
-                        arguments[index] = self.request.param(argument)
-            else:
-                middleware_to_run = arg
-                arguments = []
-
-            middleware_to_run = self.request.app().make("RouteMiddleware")[
-                middleware_to_run
-            ]
-            if not isinstance(middleware_to_run, list):
-                middleware_to_run = [middleware_to_run]
-
-            try:
-                for middleware in middleware_to_run:
-                    located_middleware = self.request.app().resolve(middleware)
-                    if hasattr(located_middleware, type_of_middleware):
-                        getattr(located_middleware, type_of_middleware)(*arguments)
-            except KeyError:
-                raise RouteMiddlewareNotFound(
-                    "Could not find the '{0}' route middleware".format(arg)
-                )
 
     def compile_route_to_regex(self):
         """Compile the given route to a regex string.
