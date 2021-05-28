@@ -1,7 +1,6 @@
 """Password Helper Module."""
 import bcrypt
 import uuid
-from ...utils.helpers import password as bcrypt_password
 
 
 class Authenticates:
@@ -18,16 +17,40 @@ class Authenticates:
         record_password = getattr(record, self.get_password_column())
         if not isinstance(record_password, bytes):
             record_password = bytes(record_password or "", "utf-8")
-        if bcrypt.checkpw(bytes(password, "utf-8"), record_password):
+        if self.verify_password(password, record_password):
             record.set_remember_token().save()
             return record
 
         return False
 
+    def verify_password(self, password, record_password):
+        if hasher == "bcrypt":
+            return bcrypt.checkpw(bytes(password, "utf-8"), record_password)
+        elif hasher == "argon2":
+            from argon2 import PasswordHasher
+
+            ph = PasswordHasher()
+            return ph.verify(record_password, password)
+        else:
+            raise Exception("No password_hasher defined !")
+
+    def hash_password(self, password):
+        if hasher == "bcrypt":
+            from ...utils.helpers import password as bcrypt_password
+
+            return str(bcrypt_password(password))
+        elif hasher == "argon2":
+            from argon2 import PasswordHasher
+
+            ph = PasswordHasher()
+            return str(ph.hash(password))
+        else:
+            raise Exception("No password_hasher defined !")
+
     def register(self, dictionary):
         dictionary.update(
             {
-                self.get_password_column(): bcrypt_password(
+                self.get_password_column(): self.hash_password(
                     dictionary.get("password", "")
                 )
             }
@@ -58,7 +81,7 @@ class Authenticates:
     def reset_password(self, username, password):
         """Attempts to login using a username and password"""
         self.where(self.get_username_column(), username).update(
-            {self.get_password_column(): str(bcrypt_password(password))}
+            {self.get_password_column(): self.hash_password(password)}
         )
         return self
 
