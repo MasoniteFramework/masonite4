@@ -13,7 +13,7 @@ from ..commands import (
     MakeControllerCommand,
     MakeJobCommand,
     MakeMailableCommand,
-    MakeProviderCommand
+    MakeProviderCommand,
 )
 import os
 from ..environment import LoadEnvironment

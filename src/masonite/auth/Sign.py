@@ -74,4 +74,3 @@ class Sign:
             return f.decrypt(bytes(str(value), "utf-8")).decode("utf-8")
         except CryptographyInvalidToken as e:
             raise InvalidToken("Invalid Cryptographic Token") from e
-

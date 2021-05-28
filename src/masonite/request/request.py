@@ -97,9 +97,9 @@ class Request:
         return self
 
     def contains(self, route):
-        if not route.startswith('/'):
-            route = '/' + route
+        if not route.startswith("/"):
+            route = "/" + route
 
-        regex = re.compile(route.replace('*', '[a-zA-Z0-9_]+'))
+        regex = re.compile(route.replace("*", "[a-zA-Z0-9_]+"))
 
         return regex.match(self.get_path())

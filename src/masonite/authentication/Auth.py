@@ -111,7 +111,8 @@ class Auth:
         """
 
         reset_record = (
-            self.application.make("builder").new()
+            self.application.make("builder")
+            .new()
             .table(self.guard_config.get("password_reset_table"))
             .where("token", token)
             .first()
@@ -124,7 +125,8 @@ class Auth:
         )
 
         (
-            self.application.make("builder").new()
+            self.application.make("builder")
+            .new()
             .table(self.guard_config.get("password_reset_table"))
             .where("token", token)
             .delete()

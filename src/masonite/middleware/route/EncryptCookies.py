@@ -1,5 +1,6 @@
 from ...exceptions import InvalidToken
 
+
 class EncryptCookies:
     def before(self, request, response):
         invalid_cookies = []
@@ -8,7 +9,7 @@ class EncryptCookies:
                 cookie.value = request.app.make("sign").unsign(cookie.value)
             except InvalidToken:
                 invalid_cookies.append(key)
-        
+
         self.delete_invalid_cookies(request, invalid_cookies)
         return request
 
