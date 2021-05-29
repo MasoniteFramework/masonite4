@@ -136,7 +136,6 @@ class Route:
                 route.domain(options.get("domain"))
 
             if options.get("middleware"):
-                # route.list_middleware += options.get("middleware", [])
                 route.middleware(*options.get("middleware", []))
 
             inner.append(route)
