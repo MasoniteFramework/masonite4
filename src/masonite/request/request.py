@@ -2,6 +2,7 @@ from ..cookies import CookieJar
 from ..headers import HeaderBag, Header
 from ..input import InputBag
 import re
+import tldextract
 
 
 class Request:
@@ -103,3 +104,13 @@ class Request:
         regex = re.compile(route.replace("*", "[a-zA-Z0-9_]+"))
 
         return regex.match(self.get_path())
+
+    def get_subdomain(self, exclude_www=True):
+        url = tldextract.extract(self.get_host())
+        if url.subdomain == "" or (url.subdomain and exclude_www and url.subdomain == "www"):
+            return None
+        
+        return url.subdomain
+
+    def get_host(self):
+        return self.environ.get('HTTP_HOST')

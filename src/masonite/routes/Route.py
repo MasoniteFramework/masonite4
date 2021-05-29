@@ -132,6 +132,9 @@ class Route:
             if options.get("name"):
                 route._name = options.get("name") + route._name
 
+            if options.get("domain"):
+                route.domain(options.get("domain"))
+
             if options.get("middleware"):
                 # route.list_middleware += options.get("middleware", [])
                 route.middleware(*options.get("middleware", []))

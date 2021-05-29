@@ -41,6 +41,7 @@ setup(
         "python-dotenv>=0.15,<0.16",
         "hashids>=1.3,<1.4",
         "cryptography>=3.3.1,<4.0",
+        "tldextract>=2.2,<2.3",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
