@@ -10,7 +10,7 @@ class QueueWorkCommand(Command):
         {--c|--connection : Specifies the database connection if using database driver.}
         {--queue=default : The queue to listen to}
         {--d|driver=None : Specify the driver you would like to use}
-        {--p|poll=1 : Specify the seconds a worker should wait before fetching new jobs}
+        {--p|poll=? : Specify the seconds a worker should wait before fetching new jobs}
         {--attempts=None : Specify the number of times a job should be retried before it fails}
     """
 
@@ -23,10 +23,13 @@ class QueueWorkCommand(Command):
         driver = None if self.option("driver") == "None" else self.option("driver")
 
         options.update({"driver": driver})
-        if self.option("poll") != "None":
+        if self.option("poll"):
             options.update({"poll": self.option("poll")})
 
         attempts = self.option("attempts")
+        if self.option("verbose"):
+            options.update({"verbosity": "v" + self.option("verbose")})
+
         if attempts == "None":
             attempts = None
         else:

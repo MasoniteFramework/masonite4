@@ -11,7 +11,7 @@ class QueueTableCommand(Command):
     Creates the jobs table
 
     queue:table
-        {--d|--directory=database/migrations : Specifies the directory to create the migration in}
+        {--d|--directory=databases/migrations : Specifies the directory to create the migration in}
     """
 
     def handle(self):

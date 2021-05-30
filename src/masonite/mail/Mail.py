@@ -27,6 +27,9 @@ class Mail:
         self.options = mailable.set_application(self.application).build().get_options()
         return self
 
-    def send(self, driver=None):
+    def send(self, mailable=None, driver=None):
+        if mailable:
+            self.mailable(mailable)
+
         self.options.update(self.get_config_options(driver))
         return self.get_driver(driver).set_options(self.options).send()

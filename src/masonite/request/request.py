@@ -107,10 +107,12 @@ class Request:
 
     def get_subdomain(self, exclude_www=True):
         url = tldextract.extract(self.get_host())
-        if url.subdomain == "" or (url.subdomain and exclude_www and url.subdomain == "www"):
+        if url.subdomain == "" or (
+            url.subdomain and exclude_www and url.subdomain == "www"
+        ):
             return None
-        
+
         return url.subdomain
 
     def get_host(self):
-        return self.environ.get('HTTP_HOST')
+        return self.environ.get("HTTP_HOST")
