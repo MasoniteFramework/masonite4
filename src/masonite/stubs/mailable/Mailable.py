@@ -1,7 +1,7 @@
 from masonite.mail import Mailable
 
 
-class Welcome(Mailable):
+class __class__(Mailable):
     def build(self):
         return (
             self.to("user@gmail.com")

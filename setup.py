@@ -40,6 +40,7 @@ setup(
         "whitenoise>=5.2,<5.3",
         "python-dotenv>=0.15,<0.16",
         "hashids>=1.3,<1.4",
+        "cryptography>=3.3.1,<4.0",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[

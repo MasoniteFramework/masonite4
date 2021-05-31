@@ -133,6 +133,7 @@ class DatabaseDriver(HasColoredCommands):
     def get_builder(self):
         return (
             self.application.make("builder")
+            .new()
             .on(self.options.get("connection"))
             .table(self.options.get("table"))
         )

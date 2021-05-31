@@ -25,11 +25,11 @@ class RouteProvider(Provider):
 
         # Run before middleware
 
+        Pipeline(request, response).through(
+            self.application.make("middleware").get_http_middleware(),
+            handler="before",
+        )
         if route:
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_http_middleware(),
-                handler="before",
-            )
             Pipeline(request, response).through(
                 self.application.make("middleware").get_route_middleware(
                     route.list_middleware
@@ -40,12 +40,16 @@ class RouteProvider(Provider):
             response.view(route.get_response(self.application))
 
             Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(["web"]),
+                self.application.make("middleware").get_route_middleware(
+                    route.list_middleware
+                ),
                 handler="after",
             )
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_http_middleware(),
-                handler="after",
-            )
+
         else:
             response.view("route not found", status=404)
+
+        Pipeline(request, response).through(
+            self.application.make("middleware").get_http_middleware(),
+            handler="after",
+        )

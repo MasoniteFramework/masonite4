@@ -16,6 +16,8 @@
             </h2>
 
             <form class="mt-10" method="POST" action="{{ route('login.store') }}">
+                
+                {{ csrf_field }}
                 <!-- Email Input -->
                 <label for="email" class="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                 <input id="email" type="email" name="username" placeholder="e-mail address" autocomplete="email"
@@ -44,7 +46,7 @@
 
                 <!-- Another Auth Routes -->
                 <div class="sm:flex sm:flex-wrap mt-8 sm:mb-4 text-sm text-center">
-                    <a href="forgot-password" class="flex-2 underline">
+                    <a href="password_reset" class="flex-2 underline">
                         Forgot password?
                     </a>
 
