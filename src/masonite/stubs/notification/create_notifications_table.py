@@ -5,7 +5,7 @@ class CreateNotificationsTable(Migration):
     def up(self):
         """Run the migrations."""
         with self.schema.create("notifications") as table:
-            table.string("id", 36).primary()
+            table.big_increments("id").primary()
             table.string("type")
             table.text("data")
             table.morphs("notifiable")
