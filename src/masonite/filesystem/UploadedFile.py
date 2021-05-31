@@ -10,6 +10,7 @@ class UploadedFile:
     def extension(self):
         return os.path.splitext(self.filename)[1]
 
+    @property
     def name(self):
         return self.filename
 
@@ -24,3 +25,6 @@ class UploadedFile:
 
     def hash_name(self):
         return hashlib.sha1(bytes(self.name(), "utf-8")).hexdigest()
+
+    def get_content(self):
+        return self.content
