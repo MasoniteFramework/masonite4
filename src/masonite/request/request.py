@@ -19,6 +19,7 @@ class Request:
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
         self.input_bag = InputBag()
+        self._user = None
         self.load()
 
     def load(self):

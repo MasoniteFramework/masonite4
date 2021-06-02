@@ -48,6 +48,7 @@ class Broadcast:
             value = event.broadcast_with()
             if not isinstance(channels, list):
                 channels = [channels]
+            
             for channel in channels:
                 if not channel.authorized(self.application):
                     continue
@@ -56,11 +57,18 @@ class Broadcast:
                 driver.set_options(store_config).channel(
                     channel.name, event_class, value
                 )
+        else:
+            if not isinstance(channels, list):
+                channels = [channels]
+            for channel in channels:
+                driver.set_options(store_config).channel(
+                        channel, event, value
+                    ) 
 
     @classmethod
-    def routes(self):
+    def routes(self, auth_route="/broadcasting/authorize"):
         from .controllers import BroadcastingController
 
-        Route.post("/broadcasting/authorize", BroadcastingController.authorize).name(
+        return [Route.post(auth_route, BroadcastingController.authorize).name(
             "broadcasting.authorize"
-        )
+        )]

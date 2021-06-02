@@ -8,9 +8,10 @@ class EncryptCookies:
             try:
                 cookie.value = request.app.make("sign").unsign(cookie.value)
             except InvalidToken:
+                pass
                 invalid_cookies.append(key)
 
-        self.delete_invalid_cookies(request, invalid_cookies)
+        # self.delete_invalid_cookies(request, invalid_cookies)
         return request
 
     def after(self, request, response):

@@ -4,7 +4,7 @@ from .. import Middleware
 class SessionMiddleware(Middleware):
     def before(self, request, response):
         if not request.cookie("SESSID"):
-            request.cookie("SESSID", request.app.make("sign").sign("cookie"))
+            request.cookie("SESSID", "cookie")
 
         return request
 

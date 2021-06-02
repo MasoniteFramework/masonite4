@@ -23,11 +23,13 @@ class LocalDriver:
         extension = os.path.splitext(path)[1]
         return f"{alias}{extension}"
 
-    def put(self, file_path, content, name=None):
-        if isinstance(content, str):
-            file_name = self.get_name(file_path, name or str(uuid.uuid4()))
-        elif hasattr(content, name):
-            file_name = self.get_name(content.name, name or str(uuid.uuid4()))
+    def put(self, file_path, content):
+        with open(self.get_path(os.path.join(file_path)), "w") as f:
+            f.write(content)
+        return content
+
+    def put_file(self, file_path, content, name=None):
+        file_name = self.get_name(content.name, name or str(uuid.uuid4()))
 
         if hasattr(content, 'get_content'):
             content = content.get_content()
