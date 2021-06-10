@@ -26,3 +26,45 @@ class Session:
             return self.driver_config[self.driver_config.get("default")]
 
         return self.driver_config.get(driver, {})
+
+    def set(self, key, value, driver=None):
+        return self.get_driver(name=driver).set(key, value)
+
+    def get(self, key, driver=None):
+        return self.get_driver(name=driver).get(key)
+
+    def flash(self, key, value, driver=None):
+        """Add temporary data to the session.
+
+        Arguments:
+            key {string} -- The key to set as the session key.
+            value {string} -- The value to set in the session.
+        """
+        return self.get_driver(name=driver).flash(key, value)
+
+    def reset(self, driver=None, flash_only=False):
+        """Delete all session data.
+
+        Keyword Arguments:
+            flash_only {bool} -- If only flash data should be deleted. (default: {False})
+        """
+        return self.get_driver(name=driver).reset(flash_only=flash_only)
+
+    def has(self, key, driver=None):
+        """Check if a key exists in the session.
+
+        Arguments:
+            key {string} -- The key to check for in the session.
+
+        Returns:
+            bool
+        """
+        return self.get_driver(name=driver).has(key)
+
+    def all(self, flash_only=False, driver=None):
+        """Get all session data.
+
+        Returns:
+            dict
+        """
+        return self.get_driver(name=driver).all(flash_only=flash_only)

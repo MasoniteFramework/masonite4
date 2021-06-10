@@ -54,7 +54,7 @@ class CookieDriver:
 
         request = self.get_request()
 
-        request.cookie("s_{0}".format(key), value)
+        request.cookie("s_{0}".format(key), str(value))
 
     def has(self, key):
         """Check if a key exists in the session.
@@ -133,7 +133,7 @@ class CookieDriver:
         request = self.get_request()
         request.cookie(
             "f_{0}".format(key),
-            value,
+            str(value),
         )
 
     def get_error_messages(self):

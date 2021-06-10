@@ -47,7 +47,7 @@ class AmazonS3Driver:
     def put_file(self, file_path, content, name=None):
         file_name = self.get_name(content.name, name or str(uuid.uuid4()))
 
-        if hasattr(content, 'get_content'):
+        if hasattr(content, "get_content"):
             content = content.get_content()
 
         self.get_connection().resource("s3").Bucket(self.get_bucket()).put_object(

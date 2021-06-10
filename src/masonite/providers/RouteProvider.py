@@ -32,6 +32,7 @@ class RouteProvider(Provider):
             handler="before",
         )
         if route:
+            request.load_params(route.extract_parameters(request.get_path()))
             Pipeline(request, response).through(
                 self.application.make("middleware").get_route_middleware(
                     route.list_middleware

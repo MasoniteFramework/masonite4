@@ -16,12 +16,12 @@ class FileDriver:
             make_full_directory(options.get("location"))
         return self
 
-    def add(self, key, value):
-        if self.has(key):
-            return self.get(key)
+    def add(self, key, value, seconds=None):
+        exists = self.get(key)
+        if exists:
+            return exists
 
-        self.put(key, value)
-        return value
+        return self.put(key, str(value), seconds=seconds)
 
     def get(self, key, default=None, **options):
         if not self.has(key):
@@ -49,6 +49,8 @@ class FileDriver:
 
         with open(os.path.join(self._get_directory(), key), "w") as f:
             f.write(f"{time}:{value}")
+
+        return value
 
     def has(self, key):
         return Path(os.path.join(self._get_directory(), key)).exists()

@@ -26,7 +26,7 @@ class Queue:
     def push(self, *jobs, **options):
         driver = self.get_driver(options.get("driver"))
         config_options = self.get_config_options(options.get("driver"))
-        config_options.update({'queue': options.get('queue', 'default')})
+        config_options.update({"queue": options.get("queue", "default")})
         driver.set_options(config_options)
         driver.push(*jobs)
 

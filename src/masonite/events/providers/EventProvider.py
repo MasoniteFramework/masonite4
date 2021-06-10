@@ -9,9 +9,7 @@ class EventProvider(Provider):
 
     def register(self):
         event = Event(self.application)
-        self.application.make('commands').add(
-            MakeListenerCommand(self.application)
-        )
+        self.application.make("commands").add(MakeListenerCommand(self.application))
         self.application.bind("event", event)
 
     def boot(self):

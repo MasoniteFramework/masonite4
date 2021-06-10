@@ -8,6 +8,7 @@ class HashIDMiddleware(Middleware):
         request.input_bag.query_string = hashid(
             request.input_bag.query_string, decode=True
         )
+        request.params = hashid(request.params, decode=True)
         request.input_bag.post_data = hashid(request.input_bag.post_data, decode=True)
         return request
 

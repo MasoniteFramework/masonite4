@@ -31,11 +31,11 @@ class LocalDriver:
     def put_file(self, file_path, content, name=None):
         file_name = self.get_name(content.name, name or str(uuid.uuid4()))
 
-        if hasattr(content, 'get_content'):
+        if hasattr(content, "get_content"):
             content = content.get_content()
 
         if isinstance(content, str):
-            content = bytes(content, 'utf-8')
+            content = bytes(content, "utf-8")
 
         with open(self.get_path(os.path.join(file_path, file_name)), "wb") as f:
             f.write(content)

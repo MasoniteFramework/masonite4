@@ -21,12 +21,11 @@ class QueueWorkCommand(Command):
     def handle(self):
         options = {}
         options.update({"driver": self.option("driver")})
-        options.update({"poll": self.option("poll") or '1'})
-        options.update({"attempts": self.option("attempts") or '3'})
+        options.update({"poll": self.option("poll") or "1"})
+        options.update({"attempts": self.option("attempts") or "3"})
         options.update({"queue": self.option("queue") or "default"})
 
         if self.option("verbose"):
             options.update({"verbosity": "v" + self.option("verbose")})
-
 
         return self.app.make("queue").consume(options)

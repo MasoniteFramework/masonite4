@@ -19,6 +19,7 @@ class Request:
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
         self.input_bag = InputBag()
+        self.params = {}
         self._user = None
         self.load()
 
@@ -26,6 +27,15 @@ class Request:
         self.cookie_jar.load(self.environ.get("HTTP_COOKIE", ""))
         self.header_bag.load(self.environ)
         self.input_bag.load(self.environ)
+
+    def load_params(self, params=None):
+        if not params:
+            params = {}
+
+        self.params.update(params)
+
+    def param(self, param, default=""):
+        return self.params.get(param, default)
 
     def get_path(self):
         return self.environ.get("PATH_INFO")
