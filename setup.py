@@ -109,6 +109,7 @@ setup(
         "masonite.request",
         "masonite.response",
         "masonite.routes",
+        "masonite.scheduling",
         "masonite.sessions",
         "masonite.storage",
         "masonite.tests",
