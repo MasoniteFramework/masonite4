@@ -89,6 +89,8 @@ setup(
         "masonite.drivers.queue",
         "masonite.drivers.session",
         "masonite.environment",
+        "masonite.essentials",
+        "masonite.essentials.providers",
         "masonite.events",
         "masonite.events.commands",
         "masonite.events.providers",
