@@ -90,6 +90,7 @@ setup(
         "masonite.drivers.session",
         "masonite.environment",
         "masonite.events",
+        "masonite.events.commands",
         "masonite.events.providers",
         "masonite.exceptions",
         "masonite.filesystem",
