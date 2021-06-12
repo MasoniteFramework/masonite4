@@ -65,7 +65,7 @@ class VerifyCsrfToken(Middleware):
 
     def get_token(self, request):
         return (
-            request.header("X-CSRF-TOKEN")
-            or request.header("X-XSRF-TOKEN")
+            request.header("X-CSRF-TOKEN").value
+            or request.header("X-XSRF-TOKEN").value
             or request.input("__token")
         )
