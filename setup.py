@@ -85,7 +85,6 @@ setup(
         "masonite.controllers",
         "masonite.cookies",
         "masonite.drivers",
-        "masonite.drivers.mail",
         "masonite.drivers.queue",
         "masonite.drivers.session",
         "masonite.environment",

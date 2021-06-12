@@ -10,6 +10,7 @@ class Mailable:
         self._reply_to = ""
         self._subject = ""
         self._priority = None
+        self._driver = None
         self.text_content = ""
         self.html_content = ""
         self.attachments = []
@@ -71,6 +72,10 @@ class Mailable:
         self.priority(5)
         return self
 
+    def driver(self, driver):
+        self._driver = driver
+        return self
+
     def get_response(self):
         self.build()
         if self.get_options().get("html_content"):
@@ -90,6 +95,7 @@ class Mailable:
             "reply_to": self._reply_to,
             "attachments": self.attachments,
             "priority": self._priority,
+            "driver": self._driver,
         }
 
     def build(self, *args, **kwargs):
