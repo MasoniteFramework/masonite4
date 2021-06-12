@@ -74,7 +74,7 @@ class Response:
                 return
             return cookie.value
 
-        return self.cookie_jar.add(name, value)
+        return self.cookie_jar.add(name, value, secure=True)
 
     def get_response_content(self):
         return self.data()

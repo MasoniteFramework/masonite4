@@ -40,7 +40,9 @@ def response_handler(environ, start_response):
     print("response code", request.get_path(), response.get_status_code())
     start_response(
         response.get_status_code(),
-        response.get_headers() + response.cookie_jar.render_response(),
+        response.get_headers()
+        + request.cookie_jar.render_response()
+        + response.cookie_jar.render_response(),
     )
 
     """Final Step
@@ -93,7 +95,9 @@ def testcase_handler(application, environ, start_response, exception_handling=Tr
 
     start_response(
         response.get_status_code(),
-        response.get_headers() + response.cookie_jar.render_response(),
+        response.get_headers()
+        + request.cookie_jar.render_response()
+        + response.cookie_jar.render_response(),
     )
 
     """Final Step
