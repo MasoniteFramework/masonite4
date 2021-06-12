@@ -269,9 +269,11 @@ class HTTPRoute:
         return regex
 
     def extract_parameters(self, path):
+        if not self.url_list:
+            return {}
+
         if (not path.endswith("/")) or path == "/":
             matching_regex = self._compiled_regex
         else:
             matching_regex = self._compiled_regex_end
-
         return dict(zip(self.url_list, matching_regex.match(path).groups()))
