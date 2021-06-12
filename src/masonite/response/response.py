@@ -67,14 +67,14 @@ class Response:
     def get_headers(self):
         return self.header_bag.render()
 
-    def cookie(self, name, value=None):
+    def cookie(self, name, value=None, **options):
         if value is None:
             cookie = self.cookie_jar.get(name)
             if not cookie:
                 return
             return cookie.value
 
-        return self.cookie_jar.add(name, value, secure=True)
+        return self.cookie_jar.add(name, value, **options)
 
     def get_response_content(self):
         return self.data()
