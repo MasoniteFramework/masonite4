@@ -102,6 +102,7 @@ setup(
         "masonite.headers",
         "masonite.input",
         "masonite.mail",
+        "masonite.mail.drivers",
         "masonite.middleware",
         "masonite.middleware.route",
         "masonite.pipeline",
