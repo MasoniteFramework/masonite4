@@ -169,7 +169,7 @@ class TestTestingAssertions(TestCase):
 
     def test_assert_request_with_headers(self):
         request = self.withHeaders({"X-TEST": "value"}).get("/").request
-        assert request.header("X-Test").value == "value"
+        assert request.header("X-Test") == "value"
 
     def test_assert_redirect_to_url(self):
         self.get("/test-redirect-1").assertRedirect("/")

@@ -76,7 +76,10 @@ class Request:
 
     def header(self, name, value=None):
         if value is None:
-            return self.header_bag.get(name)
+            header = self.header_bag.get(name)
+            if not header:
+                return
+            return header.value
         else:
             return self.header_bag.add(Header(name, value))
 
