@@ -1,5 +1,5 @@
-from src.masonite.controllers import Controller
-from src.masonite.views import View
+from masonite.controllers import Controller
+from masonite.views import View
 
 
 class HomeController(Controller):

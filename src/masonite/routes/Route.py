@@ -1,5 +1,6 @@
 from .HTTPRoute import HTTPRoute
 from ..utils.helpers import flatten
+from ..controllers import RedirectController
 
 
 class Route:
@@ -37,8 +38,6 @@ class Route:
             module_location=self.controller_module_location,
             **options
         )
-        self.routes.append(route)
-        return route
 
     @classmethod
     def put(self, url, controller, **options):
@@ -74,7 +73,7 @@ class Route:
         )
 
     @classmethod
-    def option(self, url, controller, **options):
+    def options(self, url, controller, **options):
         return HTTPRoute(
             url,
             controller,
@@ -87,6 +86,30 @@ class Route:
     @classmethod
     def default(self, url, controller, **options):
         return self
+
+    @classmethod
+    def redirect(self, url, new_url, **options):
+        return HTTPRoute(
+            url,
+            RedirectController.redirect,
+            request_method=["get"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            controller_bindings=[new_url, options.get("status", 302)],
+            **options
+        )
+
+    @classmethod
+    def permanent_redirect(self, url, new_url, **options):
+        return HTTPRoute(
+            url,
+            RedirectController.redirect,
+            request_method=["get"],
+            compilers=self.compilers,
+            module_location=self.controller_module_location,
+            controller_bindings=[new_url, 301],
+            **options
+        )
 
     @classmethod
     def match(self, request_methods, url, controller, **options):
@@ -108,6 +131,10 @@ class Route:
 
             if options.get("name"):
                 route._name = options.get("name") + route._name
+
+            if options.get("middleware"):
+                # route.list_middleware += options.get("middleware", [])
+                route.middleware(*options.get("middleware", []))
 
             inner.append(route)
         self.routes = inner

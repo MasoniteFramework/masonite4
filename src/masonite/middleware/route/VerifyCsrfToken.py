@@ -11,7 +11,6 @@ class VerifyCsrfToken(Middleware):
     exempt = []
 
     def before(self, request, response):
-
         self.verify_token(request, self.get_token(request))
 
         token = self.create_token(request)
@@ -35,7 +34,12 @@ class VerifyCsrfToken(Middleware):
         return request.cookie("SESSID")
 
     def verify_token(self, request, token):
-        if request.is_not_safe() and not self.in_exempt():
+
+        if self.in_exempt(request):
+            return True
+        if request.is_not_safe() and not token:
+            raise InvalidCSRFToken("Missing CSRF Token")
+        if request.is_not_safe():
             if request.cookie("csrf_token") and (
                 compare_digest(
                     request.cookie("csrf_token"),
@@ -47,19 +51,15 @@ class VerifyCsrfToken(Middleware):
             raise InvalidCSRFToken("Invalid CSRF token.")
         return True
 
-    def in_exempt(self):
+    def in_exempt(self, request):
         """Determine if the request has a URI that should pass through CSRF verification.
 
         Returns:
             bool
         """
-        return False
-        if not self.exempt:
-            return False
-
         for route in self.exempt:
-            # if self.request.contains(route):
-            return True
+            if request.contains(route):
+                return True
 
         return False
 

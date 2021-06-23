@@ -19,7 +19,7 @@ class DumpExceptionHandler:
 
         return self.application.make("response").view(
             self.application.make("view").render(
-                "/src/masonite/templates/dump",
+                "/masonite/templates/dump",
                 {
                     "objs": dump_objs,
                     "type": type,

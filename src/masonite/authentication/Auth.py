@@ -83,7 +83,7 @@ class Auth:
         """
         token = str(uuid.uuid4())
         try:
-            self.application.make("builder").table(
+            self.application.make("builder").new().table(
                 self.guard_config.get("password_reset_table")
             ).create(
                 {
@@ -112,6 +112,7 @@ class Auth:
 
         reset_record = (
             self.application.make("builder")
+            .new()
             .table(self.guard_config.get("password_reset_table"))
             .where("token", token)
             .first()
@@ -125,6 +126,7 @@ class Auth:
 
         (
             self.application.make("builder")
+            .new()
             .table(self.guard_config.get("password_reset_table"))
             .where("token", token)
             .delete()

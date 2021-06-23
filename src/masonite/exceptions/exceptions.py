@@ -54,6 +54,10 @@ class InvalidSecretKey(Exception):
     pass
 
 
+class InvalidToken(Exception):
+    pass
+
+
 class StrictContainerException(Exception):
     pass
 

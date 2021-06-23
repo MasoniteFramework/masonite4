@@ -1,9 +1,8 @@
-from src.masonite.controllers import Controller
-from src.masonite.views import View
-from tests.integrations.app.User import User
-from src.masonite.request import Request
-from src.masonite.response import Response
-from src.masonite.authentication import Auth
+from masonite.controllers import Controller
+from masonite.views import View
+from masonite.request import Request
+from masonite.response import Response
+from masonite.authentication import Auth
 
 
 class LoginController:
