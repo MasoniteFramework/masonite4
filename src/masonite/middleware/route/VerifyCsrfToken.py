@@ -27,7 +27,7 @@ class VerifyCsrfToken(Middleware):
         return request
 
     def after(self, request, response):
-        request.cookie("csrf_token", request.cookie("SESSID"))
+        response.cookie("csrf_token", request.cookie("SESSID"))
         return request
 
     def create_token(self, request):

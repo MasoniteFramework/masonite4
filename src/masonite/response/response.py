@@ -7,6 +7,7 @@ from pathlib import Path
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
 from ..utils.helpers import response_statuses, compile_route_to_url
+from ..cookies import CookieJar
 
 
 class Response:
@@ -22,6 +23,7 @@ class Response:
         self._status = None
         self.statuses = response_statuses()
         self.header_bag = HeaderBag()
+        self.cookie_jar = CookieJar()
         self.original = None
 
     def json(self, payload, status=200):
@@ -64,6 +66,15 @@ class Response:
 
     def get_headers(self):
         return self.header_bag.render()
+
+    def cookie(self, name, value=None, **options):
+        if value is None:
+            cookie = self.cookie_jar.get(name)
+            if not cookie:
+                return
+            return cookie.value
+
+        return self.cookie_jar.add(name, value, **options)
 
     def get_response_content(self):
         return self.data()
