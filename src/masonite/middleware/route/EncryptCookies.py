@@ -11,7 +11,6 @@ class EncryptCookies:
                 pass
                 invalid_cookies.append(key)
 
-        # self.delete_invalid_cookies(request, invalid_cookies)
         return request
 
     def after(self, request, response):

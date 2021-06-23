@@ -41,7 +41,6 @@ def response_handler(environ, start_response):
     start_response(
         response.get_status_code(),
         response.get_headers()
-        + request.cookie_jar.render_response()
         + response.cookie_jar.render_response(),
     )
 

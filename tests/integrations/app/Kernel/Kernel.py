@@ -18,7 +18,7 @@ from src.masonite.utils.structures import load_routes
 class Kernel:
 
     http_middleware = []
-    route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
+    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken]}
 
     def __init__(self, app):
         self.application = app
@@ -46,7 +46,7 @@ class Kernel:
 
         self.application.make("router").add(
             Route.group(
-                load_routes(self.application.make("routes.web")), middleware="web"
+                load_routes(self.application.make("routes.web")), middleware=["web"]
             )
         )
 
