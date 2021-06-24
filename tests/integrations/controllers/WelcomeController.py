@@ -4,7 +4,6 @@ from src.masonite.response.response import Response
 from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
-from src.masonite.facades import Request
 
 
 class CanBroadcast:
@@ -24,8 +23,8 @@ class OrderProcessed(CanBroadcast):
 
 
 class WelcomeController(Controller):
-    def show(self):
-        hello = Request.input('message')
+    def show(self, request: Request):
+        hello = request.input("message")
         return "hello"
 
     def test(self):
