@@ -141,7 +141,7 @@ class HttpTestResponse:
         session = self.request.session.driver(driver)
         assert session.has(key)
         if value is not None:
-            assert self.application.make("sign").unsign(session.get(key)) == value
+            assert session.get(key) == value
         return self
 
     def assertSessionMissing(self, key, driver="cookie"):
@@ -158,7 +158,7 @@ class HttpTestResponse:
         assert session.has("errors")
         if keys:
             errors = session._get_serialization_value(
-                self.application.make("sign").unsign(session.get("errors"))
+                session.get("errors")
             )
             for key in keys:
                 assert errors.get(key)
@@ -173,7 +173,7 @@ class HttpTestResponse:
             assert not session.has("errors")
         else:
             errors = session._get_serialization_value(
-                self.application.make("sign").unsign(session.get("errors"))
+                session.get("errors")
             )
             for key in keys:
                 assert not errors.get(key)

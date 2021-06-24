@@ -39,7 +39,7 @@ class CookieDriver:
     def _get_serialization_value(self, value):
         try:
             return json.loads(value)
-        except ValueError:
+        except (ValueError, TypeError):
             return value
 
     def set(self, key, value):
