@@ -157,9 +157,7 @@ class HttpTestResponse:
         session = self.request.session.driver(driver)
         assert session.has("errors")
         if keys:
-            errors = session._get_serialization_value(
-                session.get("errors")
-            )
+            errors = session._get_serialization_value(session.get("errors"))
             for key in keys:
                 assert errors.get(key)
         return self
@@ -172,9 +170,7 @@ class HttpTestResponse:
         if not keys:
             assert not session.has("errors")
         else:
-            errors = session._get_serialization_value(
-                session.get("errors")
-            )
+            errors = session._get_serialization_value(session.get("errors"))
             for key in keys:
                 assert not errors.get(key)
         return self
