@@ -125,6 +125,8 @@ setup(
             "boto3",
             "pusher",
             "pymemcache",
+            "vonage",
+            "slackblocks",
         ],
     },
     # If there are data files included in your packages that need to be
