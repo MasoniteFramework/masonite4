@@ -46,7 +46,7 @@ class Kernel:
 
         self.application.make("router").add(
             Route.group(
-                load_routes(self.application.make("routes.web")), middleware="web"
+                load_routes(self.application.make("routes.web")), middleware=["web"]
             )
         )
 
