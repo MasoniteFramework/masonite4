@@ -8,7 +8,6 @@ from .Provider import Provider
 from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider
 from .HelpersProvider import HelpersProvider
-from .FacadesProvider import FacadesProvider
 from .QueueProvider import QueueProvider
 from .CacheProvider import CacheProvider
 from ..events.providers import EventProvider
