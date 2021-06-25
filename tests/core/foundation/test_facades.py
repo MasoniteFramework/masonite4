@@ -1,9 +1,8 @@
 from tests import TestCase
+from src.masonite.facades import Mail
 
 
 class TestFacades(TestCase):
     def test_mail_facade(self):
-        assert self.application.make("mail") == Mail
-        assert self.application.make("storage") == Storage
+        self.assertIsNone(Mail.get_config_options("mailgun")['domain'])
 
-        Mail.get_config_options("mailgun")
