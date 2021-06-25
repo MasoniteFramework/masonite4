@@ -2,7 +2,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
-from .Recipient import Recipient
+from ..Recipient import Recipient
 import ssl
 
 

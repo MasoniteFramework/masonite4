@@ -1,7 +1,6 @@
 from tests import TestCase
 from src.masonite.mail import Mailable
-from src.masonite.drivers.mail.Recipient import Recipient
-import os
+from src.masonite.mail.Recipient import Recipient
 
 
 class Welcome(Mailable):
@@ -12,6 +11,7 @@ class Welcome(Mailable):
             .from_("joe@masoniteproject.com")
             .text("Hello from Masonite!")
             .html("<h1>Hello from Masonite!</h1>")
+            .driver("smtp")
         )
 
 
@@ -37,6 +37,7 @@ class TestMailable(TestCase):
         self.assertEqual(mailable.get("text_content"), "Hello from Masonite!")
         self.assertEqual(mailable.get("html_content"), "<h1>Hello from Masonite!</h1>")
         self.assertEqual(mailable.get("reply_to"), "")
+        self.assertEqual(mailable.get("driver"), "smtp")
 
     def test_build_mailable_view(self):
         mailable = (
