@@ -310,3 +310,10 @@ class HttpTestResponse:
             response_count == count
         ), f"JSON response count is {response_count}. Asserted {count}."
         return self
+
+    def assertJsonMissing(self, path):
+        """Assert that JSON response is JSON and does not contain given path.
+        The path can be a dotted path"""
+        response_data = self._ensure_response_is_json()
+        assert not Dot().dot(path, response_data)
+        return self

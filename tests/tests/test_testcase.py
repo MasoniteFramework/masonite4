@@ -306,6 +306,12 @@ class TestTestingAssertions(TestCase):
             }
         )
 
+    def test_assert_json_missing(self):
+        self.get("/test-json").assertJsonMissing("key3")
+        self.get("/test-json").assertJsonMissing("some_key.nested")
+        with self.assertRaises(AssertionError):
+            self.get("/test-json").assertJsonMissing("other_key.nested")
+
     def test_assert_database_count(self):
         self.assertDatabaseCount("users", 1)
 
