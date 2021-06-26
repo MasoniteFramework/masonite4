@@ -120,8 +120,8 @@ class TestTestingAssertions(TestCase):
         )
 
     def test_assert_contains(self):
-        self.get("/").assertContains("welcome")
-        self.get("/").assertNotContains("welcome1")
+        self.get("/").assertContains("hello")
+        self.get("/").assertNotContains("welcome")
 
     def test_assert_is_named(self):
         self.get("/test").assertIsNamed("test")
@@ -203,6 +203,8 @@ class TestTestingAssertions(TestCase):
         self.get("/view-context").assertViewHas("count")
         self.get("/view-context").assertViewHas("count", 1)
         self.get("/view-context").assertViewHas("users", ["John", "Joe"])
+        self.get("/view-context").assertViewHas("other_key.nested")
+        self.get("/view-context").assertViewHas("other_key.nested", 1)
 
         with self.assertRaises(AssertionError):
             self.get("/view-context").assertViewHas("not_in_view")
@@ -218,9 +220,9 @@ class TestTestingAssertions(TestCase):
             self.get("/test").assertViewIs("test")
 
     def test_assert_view_has_exact(self):
-        self.get("/view-context").assertViewHasExact(["users", "count"])
+        self.get("/view-context").assertViewHasExact(["users", "count", "other_key"])
         self.get("/view-context").assertViewHasExact(
-            {"count": 1, "users": ["John", "Joe"]}
+            {"count": 1, "users": ["John", "Joe"], "other_key": {"nested": 1}}
         )
 
         with self.assertRaises(AssertionError):
