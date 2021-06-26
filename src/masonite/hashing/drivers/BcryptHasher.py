@@ -13,7 +13,6 @@ class BcryptHasher:
         rounds = self.options.get("rounds")
         salt = bcrypt.gensalt(rounds=rounds)
         return str(bcrypt.hashpw(bytes(string, "utf-8"), salt))
-        # return str(bytes(bcrypt.hashpw(bytes(string, "utf-8"), bcrypt.gensalt())).decode("utf-8")
 
     def check(self, plain_string, hashed_string):
         rounds = self.options.get("rounds")
