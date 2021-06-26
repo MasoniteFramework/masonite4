@@ -1,7 +1,6 @@
+import pytest
 from tests import TestCase
 from src.masonite.mail import Mailable
-import os
-import pytest
 
 
 class Welcome(Mailable):

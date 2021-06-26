@@ -84,7 +84,6 @@ setup(
         "masonite.controllers",
         "masonite.cookies",
         "masonite.drivers",
-        "masonite.drivers.mail",
         "masonite.drivers.queue",
         "masonite.drivers.session",
         "masonite.environment",
@@ -126,6 +125,8 @@ setup(
             "boto3",
             "pusher",
             "pymemcache",
+            "vonage",
+            "slackblocks",
         ],
     },
     # If there are data files included in your packages that need to be
