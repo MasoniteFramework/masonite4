@@ -1,4 +1,3 @@
-import os
 from .structures import load
 
 
