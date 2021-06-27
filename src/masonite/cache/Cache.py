@@ -38,22 +38,22 @@ class Cache:
         return self.store(name=store).add(*args, **kwargs)
 
     def get(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).get(*args, **kwargs)
 
     def put(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).put(*args, **kwargs)
 
     def has(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).has(*args, **kwargs)
 
     def forget(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).forget(*args, **kwargs)
 
     def increment(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).increment(*args, **kwargs)
 
     def decrement(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).decrement(*args, **kwargs)
 
     def flush(self, *args, store=None, **kwargs):
-        return self.store(name=store).add(*args, **kwargs)
+        return self.store(name=store).flush(*args, **kwargs)
