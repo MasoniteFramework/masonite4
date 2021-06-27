@@ -1,6 +1,3 @@
-import argon2
-
-
 class Argon2Hasher:
     def __init__(self, options={}):
         self.options = options
@@ -10,6 +7,13 @@ class Argon2Hasher:
         return self
 
     def _get_password_hasher(self):
+        try:
+            import argon2
+        except ImportError:
+            raise ModuleNotFoundError(
+                "Could not find the 'argon2' library. Run 'pip install argon2-cffi' to fix this."
+            )
+
         memory = self.options.get("memory", argon2.DEFAULT_MEMORY_COST)
         threads = self.options.get("threads", argon2.DEFAULT_PARALLELISM)
         time = self.options.get("time", argon2.DEFAULT_TIME_COST)
