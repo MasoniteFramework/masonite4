@@ -21,7 +21,8 @@ class BcryptHasher:
 
     def needs_rehash(self, hashed_string):
         # Bcrypt hashes have the format $2b${rounds}${salt}{checksum}. rounds is encoded as
-        # 2 zero-padded decimal digits. The prefix is never modified in make() function so we
-        # can easily fetch the round at [4:6] indexes of the hash.
-        old_cost = int(hashed_string[4:6])
-        return old_cost != self.options.get("rounds", 12)
+        # 2 zero-padded decimal digits. The prefix (2b) is never modified in make() function so we
+        # can assume that rounds value used when generating the hash is located at [4:6] indexes
+        # of the hash.
+        old_rounds_value = int(hashed_string[4:6])
+        return old_rounds_value != self.options.get("rounds", 12)
