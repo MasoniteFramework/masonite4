@@ -1,4 +1,4 @@
-from argon2 import PasswordHasher
+import argon2
 
 
 class Argon2Hasher:
@@ -9,10 +9,22 @@ class Argon2Hasher:
         self.options = options
         return self
 
+    def _get_password_hasher(self):
+        memory = self.options.get("memory", argon2.DEFAULT_MEMORY_COST)
+        threads = self.options.get("threads", argon2.DEFAULT_PARALLELISM)
+        time = self.options.get("time", argon2.DEFAULT_TIME_COST)
+        return argon2.PasswordHasher(
+            memory_cost=memory, parallelism=threads, time_cost=time
+        )
+
     def make(self, string):
-        ph = PasswordHasher()
+        ph = self._get_password_hasher()
         return str(ph.hash(bytes(string, "utf-8")))
 
     def check(self, plain_string, hashed_string):
-        ph = PasswordHasher()
+        ph = self._get_password_hasher()
         return ph.verify(hashed_string, bytes(plain_string, "utf-8"))
+
+    def needs_rehash(self, hashed_string):
+        ph = self._get_password_hasher()
+        return ph.check_needs_rehash(hashed_string)

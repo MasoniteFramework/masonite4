@@ -37,3 +37,12 @@ class Hash:
             .set_options(options or self.get_config_options(driver))
             .check(plain_string, hashed_string)
         )
+
+    def needs_rehash(self, hashed_string, options={}, driver=None):
+        """Verify that a given hash needs to be hashed again because parameters for generating
+        the hash have changed."""
+        return (
+            self.get_driver(driver)
+            .set_options(options or self.get_config_options(driver))
+            .needs_rehash(hashed_string)
+        )

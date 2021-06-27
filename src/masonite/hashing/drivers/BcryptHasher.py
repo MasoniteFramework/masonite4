@@ -10,16 +10,18 @@ class BcryptHasher:
         return self
 
     def make(self, string):
-        rounds = self.options.get("rounds")
+        rounds = self.options.get("rounds", 12)
         salt = bcrypt.gensalt(rounds=rounds)
-        return str(bcrypt.hashpw(bytes(string, "utf-8"), salt))
+        return bcrypt.hashpw(bytes(string, "utf-8"), salt)
 
     def check(self, plain_string, hashed_string):
-        rounds = self.options.get("rounds")
-        # TODO: here we should take care of comparing use same rounds count
-        # byt bcrypt does not expose public api to do this !
-        # salt = bcrypt.gensalt(rounds=rounds)
-        # ref_hashed = bcrypt.hashpw(bytes(plain_string, "utf-8"), salt)
         if not isinstance(hashed_string, bytes):
             hashed_string = bytes(hashed_string or "", "utf-8")
         return bcrypt.checkpw(bytes(plain_string, "utf-8"), hashed_string)
+
+    def needs_rehash(self, hashed_string):
+        # Bcrypt hashes have the format $2b${rounds}${salt}{checksum}. rounds is encoded as
+        # 2 zero-padded decimal digits. The prefix is never modified in make() function so we
+        # can easily fetch the round at [4:6] indexes of the hash.
+        old_cost = int(hashed_string[4:6])
+        return old_cost != self.options.get("rounds", 12)
