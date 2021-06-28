@@ -58,6 +58,10 @@ class Kernel:
         self.application.bind("base_url", "http://localhost:8000")
 
         self.application.bind(
+            "notifications.location", "tests/integrations/notifications"
+        )
+
+        self.application.bind(
             "router",
             Router(),
         )

@@ -24,7 +24,8 @@ class OrderProcessed(CanBroadcast):
 
 class WelcomeController(Controller):
     def show(self, request: Request):
-        return "welcome"
+        hello = request.input("message")
+        return "hello"
 
     def test(self):
         return 2 / 0
@@ -72,7 +73,10 @@ class WelcomeController(Controller):
         return ""
 
     def view_with_context(self, view: View):
-        return view.render("welcome", {"count": 1, "users": ["John", "Joe"]})
+        return view.render(
+            "welcome",
+            {"count": 1, "users": ["John", "Joe"], "other_key": {"nested": 1}},
+        )
 
     def json(self, response: Response):
         return response.json(

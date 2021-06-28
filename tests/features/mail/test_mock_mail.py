@@ -14,6 +14,14 @@ class Welcome(Mailable):
 
 
 class TestSMTPDriver(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.fake("mail")
+
+    def tearDown(self):
+        super().tearDown()
+        self.restore("mail")
+
     def test_mock_mail(self):
         self.fake("mail")
         welcome_email = self.application.make("mail").mailable(Welcome()).send()

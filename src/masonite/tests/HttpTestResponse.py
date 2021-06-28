@@ -189,9 +189,10 @@ class HttpTestResponse:
     def assertViewHas(self, key, value=None):
         """Assert that view context contains a given data key (and eventually associated value)."""
         self._ensure_response_has_view()
-        assert key in self.response.original.dictionary
+        value_at_key = Dot().dot(key, self.response.original.dictionary)
+        assert value_at_key
         if value:
-            assert self.response.original.dictionary[key] == value
+            assert value_at_key == value
         return self
 
     def assertViewHasExact(self, keys):
@@ -211,7 +212,7 @@ class HttpTestResponse:
     def assertViewMissing(self, key):
         """Assert that given data key is not in the view context."""
         self._ensure_response_has_view()
-        assert key not in self.response.original.dictionary
+        assert not Dot().dot(key, self.response.original.dictionary)
         return self
 
     def assertAuthenticated(self):
@@ -305,4 +306,11 @@ class HttpTestResponse:
         assert (
             response_count == count
         ), f"JSON response count is {response_count}. Asserted {count}."
+        return self
+
+    def assertJsonMissing(self, path):
+        """Assert that JSON response is JSON and does not contain given path.
+        The path can be a dotted path"""
+        response_data = self._ensure_response_is_json()
+        assert not Dot().dot(path, response_data)
         return self
