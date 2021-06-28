@@ -1,6 +1,8 @@
 from .Input import Input
 from urllib.parse import parse_qs
-import email.parser
+from collections import defaultdict
+import urllib
+import re
 import json
 import cgi
 import re
@@ -51,12 +53,33 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
-                if isinstance(request_body, bytes):
-                    request_body = request_body.decode("utf-8")
+                parsed_request_body = urllib.parse.parse_qs(
+                    bytes(request_body).decode("utf-8")
+                )
 
-                for parts in request_body.split("&"):
-                    name, value = parts.split("=", 1)
-                    self.post_data.update({name: Input(name, value)})
+                tmp_post_data = defaultdict(dict)
+                for name, value in parsed_request_body.items():
+                    if name.endswith("[]"):
+                        tmp_post_data.update({name[:-2]: value})
+                    elif name.endswith("]"):
+                        # either comments[description] or comments[description][nested]
+                        groups = re.match(
+                            r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name
+                        ).groupdict()
+                        name = groups["name"]
+                        tmp_post_data[name].update({groups["value"]: value})
+                        # if len(groups["value"]) == 1:
+                        #     tmp_post_data[name].update({groups["value"][0]: value})
+                        # else:
+                        #     tmp_post_data[name][groups["value"][0]].update(
+                        #         {groups["value"][1]: value}
+                        #     )
+                    else:
+                        tmp_post_data.update({name: value})
+
+                for root_name, value in tmp_post_data.items():
+                    self.post_data.update({root_name: Input(name, value)})
+
             elif "multipart/form-data" in environ.get("CONTENT_TYPE", ""):
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
