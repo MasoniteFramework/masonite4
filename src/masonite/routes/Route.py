@@ -118,6 +118,7 @@ class Route:
             controller,
             request_method=request_methods,
             compilers=self.compilers,
+            module_location=self.controller_module_location,
             **options
         )
 
