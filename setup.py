@@ -95,6 +95,7 @@ setup(
         "masonite.events.commands",
         "masonite.events.providers",
         "masonite.exceptions",
+        "masonite.facades",
         "masonite.filesystem",
         "masonite.filesystem.drivers",
         "masonite.filesystem.providers",
@@ -134,6 +135,8 @@ setup(
             "boto3",
             "pusher",
             "pymemcache",
+            "vonage",
+            "slackblocks",
         ],
     },
     # If there are data files included in your packages that need to be

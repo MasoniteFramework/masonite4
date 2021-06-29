@@ -68,6 +68,9 @@ class Kernel:
         self.application.bind("config.broadcast", "tests.integrations.config.broadcast")
         self.application.bind("config.auth", "tests.integrations.config.auth")
         self.application.bind(
+            "config.notification", "tests.integrations.config.notification"
+        )
+        self.application.bind(
             "config.filesystem", "tests.integrations.config.filesystem"
         )
 
@@ -88,19 +91,6 @@ class Kernel:
 
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
-
-    def register_storage(self):
-        storage = StorageCapsule(self.application.base_path)
-        storage.add_storage_assets(
-            {
-                # folder                             # template alias
-                "tests/integrations/storage/static": "static/",
-                "tests/integrations/storage/compiled": "static/",
-                "tests/integrations/storage/uploads": "static/",
-                "tests/integrations/storage/public": "/",
-            }
-        )
-        self.application.bind("storage_capsule", storage)
 
     def register_database(self):
         from masoniteorm.query import QueryBuilder
