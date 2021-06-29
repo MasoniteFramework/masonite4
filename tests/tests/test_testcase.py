@@ -120,8 +120,8 @@ class TestTestingAssertions(TestCase):
         )
 
     def test_assert_contains(self):
-        self.get("/").assertContains("hello")
-        self.get("/").assertNotContains("welcome")
+        self.get("/").assertContains("welcome")
+        self.get("/").assertNotContains("hello")
 
     def test_assert_is_named(self):
         self.get("/test").assertIsNamed("test")

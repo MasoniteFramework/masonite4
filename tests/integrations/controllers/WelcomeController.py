@@ -25,7 +25,7 @@ class OrderProcessed(CanBroadcast):
 class WelcomeController(Controller):
     def show(self, request: Request):
         hello = request.input("message")
-        return "hello"
+        return "welcome"
 
     def test(self):
         return 2 / 0

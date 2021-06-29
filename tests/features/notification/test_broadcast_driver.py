@@ -1,6 +1,8 @@
+import pytest
 from tests import TestCase
 from src.masonite.notification import Notification, Notifiable
 from masoniteorm.models import Model
+
 
 
 class User(Model, Notifiable):
@@ -20,6 +22,7 @@ class WelcomeNotification(Notification):
         return ["broadcast"]
 
 
+@pytest.mark.integrations
 class TestBroadcastDriver(TestCase):
     def setUp(self):
         super().setUp()
