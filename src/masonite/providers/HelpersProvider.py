@@ -10,6 +10,7 @@ class HelpersProvider(Provider):
     def register(self):
         builtins.resolve = self.application.resolve
         builtins.container = lambda: self.application
+        self.application.bind("url", UrlHelper(self.application))
 
     def boot(self):
         request = self.application.make("request")
