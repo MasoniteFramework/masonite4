@@ -95,6 +95,7 @@ setup(
         "masonite.events.commands",
         "masonite.events.providers",
         "masonite.exceptions",
+        "masonite.facades",
         "masonite.filesystem",
         "masonite.filesystem.drivers",
         "masonite.filesystem.providers",
