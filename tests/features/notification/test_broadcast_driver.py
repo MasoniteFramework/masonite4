@@ -4,7 +4,6 @@ from src.masonite.notification import Notification, Notifiable
 from masoniteorm.models import Model
 
 
-
 class User(Model, Notifiable):
     """User Model"""
 
