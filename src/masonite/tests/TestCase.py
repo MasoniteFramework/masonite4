@@ -8,6 +8,7 @@ from .HttpTestResponse import HttpTestResponse
 from ..foundation.response_handler import testcase_handler
 from ..utils.helpers import generate_wsgi
 from ..request import Request
+from ..response import Response
 from ..environment import LoadEnvironment
 from .TestCommand import TestCommand
 
@@ -64,6 +65,13 @@ class TestCase(unittest.TestCase):
         request.app = self.application
 
         self.application.bind("request", request)
+        return request
+
+    def make_response(self, data={}):
+        request = Response(generate_wsgi(data))
+        request.app = self.application
+
+        self.application.bind("response", request)
         return request
 
     def fetch(self, route, data=None, method=None):
