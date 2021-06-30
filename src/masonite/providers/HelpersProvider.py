@@ -19,9 +19,9 @@ class HelpersProvider(Provider):
                 "request": lambda: request,
                 "auth": request.user,
                 "cookie": request.cookie,
-                "back": lambda url=request.get_path(): (Markup(
-                    f"<input type='hidden' name='__back' value='{url}' />"
-                )),
+                "back": lambda url=request.get_path(): (
+                    Markup(f"<input type='hidden' name='__back' value='{url}' />")
+                ),
                 "asset": AssetHelper(self.application).asset,
                 "url": UrlHelper(self.application).url,
                 "route": lambda name, params={}: (

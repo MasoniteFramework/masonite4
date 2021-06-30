@@ -42,7 +42,7 @@ class Request(ValidatesRequest):
         return self.environ.get("PATH_INFO")
 
     def get_back_path(self):
-        return self.input('__back') or self.get_path()
+        return self.input("__back") or self.get_path()
 
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")
