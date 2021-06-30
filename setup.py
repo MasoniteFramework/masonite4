@@ -137,6 +137,7 @@ setup(
             "pymemcache",
             "vonage",
             "slackblocks",
+            "argon2-cffi",
         ],
     },
     # If there are data files included in your packages that need to be

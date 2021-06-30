@@ -1,7 +1,6 @@
 """Password Helper Module."""
-import bcrypt
 import uuid
-from ...utils.helpers import password as bcrypt_password
+from ...facades import Hash
 
 
 class Authenticates:
@@ -18,7 +17,7 @@ class Authenticates:
         record_password = getattr(record, self.get_password_column())
         if not isinstance(record_password, bytes):
             record_password = bytes(record_password or "", "utf-8")
-        if bcrypt.checkpw(bytes(password, "utf-8"), record_password):
+        if Hash.check(password, record_password):
             record.set_remember_token().save()
             return record
 
@@ -26,11 +25,7 @@ class Authenticates:
 
     def register(self, dictionary):
         dictionary.update(
-            {
-                self.get_password_column(): bcrypt_password(
-                    dictionary.get("password", "")
-                )
-            }
+            {self.get_password_column(): Hash.make(dictionary.get("password", ""))}
         )
         return self.create(dictionary)
 
@@ -58,7 +53,7 @@ class Authenticates:
     def reset_password(self, username, password):
         """Attempts to login using a username and password"""
         self.where(self.get_username_column(), username).update(
-            {self.get_password_column(): str(bcrypt_password(password))}
+            {self.get_password_column(): Hash.make(password)}
         )
         return self
 
