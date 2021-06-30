@@ -3,9 +3,10 @@ from ..headers import HeaderBag, Header
 from ..input import InputBag
 import re
 import tldextract
+from .validation import ValidatesRequest
 
 
-class Request:
+class Request(ValidatesRequest):
     def __init__(self, environ):
         """Request class constructor.
 

@@ -42,6 +42,7 @@ setup(
         "hashids>=1.3,<1.4",
         "cryptography>=3.3.1,<4.0",
         "tldextract>=2.2,<2.3",
+        "masonite-validation>=4.0",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
