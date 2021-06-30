@@ -1,7 +1,6 @@
 """New Model Command."""
 
 
-
 class RuleCommand:
     """
     Creates a new Rule.

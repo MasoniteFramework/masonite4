@@ -7,7 +7,6 @@ from ..commands.RuleCommand import RuleCommand
 
 
 class ValidationProvider(Provider):
-
     def __init__(self, application):
         self.application = application
 
@@ -21,12 +20,14 @@ class ValidationProvider(Provider):
 
         MessageBag.get_errors = self._get_errors
 
-        self.application.make('view').share({"bag": MessageBag.view_helper})
+        self.application.make("view").share({"bag": MessageBag.view_helper})
 
     def _get_errors(self):
-        request = self.application.make('Request')
+        request = self.application.make("Request")
         messages = []
-        for error, message in request.session.get_flashed_messages().get('errors', {}).items():
+        for error, message in (
+            request.session.get_flashed_messages().get("errors", {}).items()
+        ):
             messages += message
 
         return messages

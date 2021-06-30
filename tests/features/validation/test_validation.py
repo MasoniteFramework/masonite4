@@ -4,6 +4,7 @@ import pytest
 import platform
 import pendulum
 from uuid import uuid1, uuid3, uuid4, uuid5
+
 # from masonite.drivers import SessionCookieDriver
 from tests import TestCase
 
@@ -489,9 +490,7 @@ class TestValidation(unittest.TestCase):
         )
 
         # test that empty strings validates maximum length
-        validate = Validator().validate(
-            {"json": ""}, length(["json"], max=10)
-        )
+        validate = Validator().validate({"json": ""}, length(["json"], max=10))
         self.assertEqual(len(validate), 0)
 
     def test_string(self):
@@ -1539,9 +1538,7 @@ class TestValidationProvider(TestCase):
         self.assertTrue(self.application.make(Validator).numeric)
 
     def test_request_validation(self):
-        request = self.make_request(data={
-            "QUERY_STRING": "id=1&name=Joe"
-        })
+        request = self.make_request(data={"QUERY_STRING": "id=1&name=Joe"})
         validate = self.application.make("Validator")
 
         validated = request.validate(validate.required(["id", "name"]))

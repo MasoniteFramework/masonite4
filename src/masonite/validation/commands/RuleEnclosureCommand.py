@@ -1,8 +1,7 @@
 """New Model Command."""
 
 
-
-class RuleEnclosureCommand():
+class RuleEnclosureCommand:
     """
     Creates a new rule enclosure.
 
