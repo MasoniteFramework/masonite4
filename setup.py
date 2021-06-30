@@ -121,6 +121,7 @@ setup(
         "masonite.storage",
         "masonite.tests",
         "masonite.utils",
+        "masonite.validation",
         "masonite.views",
     ],
     # List additional groups of dependencies here (e.g. development

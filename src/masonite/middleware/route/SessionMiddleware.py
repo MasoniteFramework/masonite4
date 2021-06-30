@@ -8,9 +8,9 @@ class SessionMiddleware(Middleware):
             session_code = random_string(10)
             response.cookie("SESSID", session_code)
             request.cookie("SESSID", session_code)
-
+        # load session from request cookies
+        request.app.make("session").start(request)
         return request
 
     def after(self, request, response):
-
         return request

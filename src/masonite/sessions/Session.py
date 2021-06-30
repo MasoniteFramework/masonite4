@@ -27,6 +27,12 @@ class Session:
 
         return self.driver_config.get(driver, {})
 
+    def start(self, request, driver=None):
+        return self.get_driver(name=driver).start(request)
+
+    def save(self, driver=None):
+        return self.get_driver(name=driver).save()
+
     def set(self, key, value, driver=None):
         return self.get_driver(name=driver).set(key, value)
 

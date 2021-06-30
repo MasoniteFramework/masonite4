@@ -4,6 +4,7 @@ from src.masonite.response.response import Response
 from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
+from src.masonite.facades import Session
 
 
 class CanBroadcast:
@@ -23,9 +24,17 @@ class OrderProcessed(CanBroadcast):
 
 
 class WelcomeController(Controller):
-    def show(self, request: Request):
-        hello = request.input("message")
-        return "welcome"
+    def play_with_session(self, request: Request, view: View):
+        # Session.flash("test", "hello flashed")
+        # Session.set("test_persisted", "hello persisted in session")
+        # request.app.make("session").set("test_persisted", "hello persisted")
+        print(request.app.make("session").get("test"))
+        print(request.app.make("session").driver("cookie").get("test"))
+        return view.render("welcome")
+
+    def show(self, request: Request, view: View):
+        request.app.make("session").flash("test", "value")
+        return view.render("welcome")
 
     def test(self):
         return 2 / 0

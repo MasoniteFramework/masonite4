@@ -15,14 +15,15 @@ class CookieDriver:
         """
         self.application = application
 
-    def get(self, key):
+    def get(self, key, default=None):
         """Get a value from the session.
 
         Arguments:
             key {string} -- The key to get from the session.
+            default|None -- The default value to return if value does not exist
 
         Returns:
-            string|None - Returns None if a value does not exist.
+            string|default - Returns default if a value does not exist.
         """
         response = self.get_response()
         cookie = response.cookie("s_{0}".format(key))
@@ -33,10 +34,23 @@ class CookieDriver:
         if cookie:
             return self._get_serialization_value(cookie)
 
-        return None
+        return default
+
+    def pull(self, key, default=None):
+        """Get a value from the session and then forget it.
+
+        Arguments:
+            key {string} -- The key to get from the session.
+            default|None -- The default value to return if value does not exist
+        """
+        value = self.get(key, default)
+        self.delete(key)
+        return value
 
     def _get_serialization_value(self, value):
         try:
+            if isinstance(value, str):
+                value = value.replace("'", '"')
             return json.loads(value)
         except (ValueError, TypeError):
             return value
@@ -54,6 +68,23 @@ class CookieDriver:
         response = self.get_response()
 
         response.cookie("s_{0}".format(key), str(value))
+
+    def push(self, key, value):
+        """Push a value in the session on a key which is an array
+
+        Arguments:
+            key {string} -- The key to set as the session key.
+            value {string} -- The value to set in the session.
+        """
+        array = self.get(key, [])
+        array.append(value)
+        self.set(key, array)
+
+    def increment(self, key, amount=1):
+        self.set(key, self.get(key, 0) + amount)
+
+    def decrement(self, key, amount=-1):
+        self.increment(key, amount)
 
     def has(self, key):
         """Check if a key exists in the session.
@@ -85,7 +116,8 @@ class CookieDriver:
         Returns:
             bool -- If the key was deleted or not
         """
-        self.__collect_data()
+        # @check: not sure this one is needed
+        # self.__collect_data()
 
         response = self.get_response()
 
@@ -94,6 +126,34 @@ class CookieDriver:
             return True
 
         return False
+
+    def flush(self):
+        """Delete all session data"""
+        response = self.get_response()
+        all_cookies = response.cookie_jar.to_dict()
+        for key, value in all_cookies.items():
+            if not (key.startswith("f_") or key.startswith("s_")):
+                continue
+            response.delete_cookie(key)
+
+    def start(self, request):
+        response = self.get_response()
+        for key, value in request.cookie_jar.to_dict().items():
+            if not (key.startswith("f_") or key.startswith("s_")) or key.startswith(
+                "_flash."
+            ):
+                continue
+            response.cookie_jar.load_cookie(key, self._get_serialization_value(value))
+
+    def save(self):
+        self.age_flash_data()
+
+    def age_flash_data(self):
+        """Age flash data for the session."""
+        for key in list(self.get("_flash.old", [])):
+            self.delete(key)
+        self.set("_flash.old", self.get("_flash.new", []))
+        self.set("_flash.new", [])
 
     def get_response(self):
         return self.application.make("response")
@@ -126,14 +186,17 @@ class CookieDriver:
             key {string} -- The key to set as the session key.
             value {string} -- The value to set in the session.
         """
-        if isinstance(value, (dict, list)):
-            value = json.dumps(value)
+        self.set(key, value)
+        self.push("_flash.new", key)
+        # if isinstance(value, (dict, list)):
+        #     value = json.dumps(value)
 
-        response = self.get_response()
-        response.cookie(
-            "f_{0}".format(key),
-            str(value),
-        )
+        # response = self.get_response()
+        # response.cookie(
+        #     "f_{0}".format(key),
+        #     str(value),
+        # )
+        self.set("_flash.old", list(set(self.get("_flash.old", [])) - set([key])))
 
     def get_error_messages(self):
         """Should get and delete the flashed messages
