@@ -76,6 +76,10 @@ class Response:
 
         return self.cookie_jar.add(name, value, **options)
 
+    def delete_cookie(self, name):
+        self.cookie_jar.delete(name)
+        return self
+
     def get_response_content(self):
         return self.data()
 

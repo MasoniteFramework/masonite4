@@ -68,3 +68,11 @@ class Session:
             dict
         """
         return self.get_driver(name=driver).all(flash_only=flash_only)
+
+    def get_flashed_messages(self, driver=None):
+        """Get flashed messages session data.
+
+        Returns:
+            dict
+        """
+        return self.get_driver(name=driver).get_flashed_messages()
