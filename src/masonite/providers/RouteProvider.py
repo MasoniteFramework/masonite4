@@ -39,15 +39,27 @@ class RouteProvider(Provider):
                 ),
                 handler="before",
             )
+            exception = None
 
-            response.view(route.get_response(self.application))
+            try:
+                response.view(route.get_response(self.application))
+            except Exception as e:
+                exception = e
+                Pipeline(request, response).through(
+                    self.application.make("middleware").get_route_middleware(
+                        route.list_middleware
+                    ),
+                    handler="after",
+                )
+                if exception:
+                    raise exception
 
             Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(
-                    route.list_middleware
-                ),
-                handler="after",
-            )
+                    self.application.make("middleware").get_route_middleware(
+                        route.list_middleware
+                    ),
+                    handler="after",
+                )
 
         else:
             response.view("route not found", status=404)
