@@ -12,8 +12,10 @@ class ValidationProvider(Provider):
 
     def register(self):
         self.application.singleton("Validator", Validator)
-        self.application.bind("RuleEnclosureCommand", RuleEnclosureCommand())
-        self.application.bind("RuleCommand", RuleCommand())
+        self.application.make("commands").add(
+            RuleEnclosureCommand(self.application),
+            RuleCommand(self.application),
+        )
 
     def boot(self, validator: Validator):
         validator.extend(ValidationFactory().registry)
