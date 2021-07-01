@@ -173,6 +173,7 @@ class Dot:
 
         return value
 
+
 def config(path, default=""):
     """Used to fetch a value from a configuration file
 
