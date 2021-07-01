@@ -29,7 +29,6 @@ class Dot:
         if "." not in search:
             if search == "":
                 return dictionary
-
             try:
                 return dictionary[search]
             except KeyError:
@@ -37,9 +36,12 @@ class Dot:
 
         searching = search.split(".")
         possible = None
+        if "*" not in search:
+            return self.flatten(dictionary).get(search, default)
+
         while searching:
             dic = dictionary
-            for search in searching:
+            for value in searching:
                 if not dic:
                     if "*" in searching:
                         return []
@@ -47,17 +49,16 @@ class Dot:
 
                 if isinstance(dic, list):
                     try:
-                        return (
-                            collect(dic)
-                            .pluck(searching[searching.index("*") + 1])
-                            .serialize()
-                        )
+                        return collect(dic).pluck(searching[searching.index("*") + 1])
                     except IndexError:
                         return dic
                     except KeyError:
                         return []
 
-                dic = dic.get(search)
+                if not isinstance(dic, dict):
+                    return default
+
+                dic = dic.get(value)
 
                 if isinstance(dic, str) and dic.isnumeric():
                     continue
@@ -65,6 +66,7 @@ class Dot:
                 if (
                     dic
                     and not isinstance(dic, int)
+                    and hasattr(dic, "__len__")
                     and len(dic) == 1
                     and not isinstance(dic[list(dic)[0]], dict)
                 ):
@@ -74,8 +76,24 @@ class Dot:
                 return dic
 
             del searching[-1]
-
         return possible
+
+    def flatten(self, d, parent_key="", sep="."):
+        items = []
+        for k, v in d.items():
+            new_key = parent_key + sep + k if parent_key else k
+            if isinstance(v, MutableMapping):
+                items.append((new_key, v))
+                items.extend(self.flatten(v, new_key, sep=sep).items())
+            elif isinstance(v, list):
+                for index, val in enumerate(v):
+                    items.extend(
+                        self.flatten({str(index): val}, new_key, sep=sep).items()
+                    )
+            else:
+                items.append((new_key, v))
+
+        return dict(items)
 
     def locate(self, search_path, default=""):
         """Locate the object from the given search path
@@ -140,7 +158,7 @@ class Dot:
 
         value = pydoc.locate(".".join(paths[:-1]) + "." + paths[-1].upper())
 
-        if value:
+        if value or value is False:
             return value
 
         search_path = -1
