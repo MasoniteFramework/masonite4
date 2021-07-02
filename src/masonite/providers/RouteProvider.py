@@ -55,11 +55,11 @@ class RouteProvider(Provider):
                     raise exception
 
             Pipeline(request, response).through(
-                    self.application.make("middleware").get_route_middleware(
-                        route.list_middleware
-                    ),
-                    handler="after",
-                )
+                self.application.make("middleware").get_route_middleware(
+                    route.list_middleware
+                ),
+                handler="after",
+            )
 
         else:
             response.view("route not found", status=404)
