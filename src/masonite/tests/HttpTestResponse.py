@@ -286,13 +286,14 @@ class HttpTestResponse:
         value if provided. The path is a dotted path."""
         response_data = self._ensure_response_is_json()
         data_at_path = Dot().dot(path, response_data)
-        assert data_at_path == value
+
+        assert data_at_path == value, f"'{data_at_path}' does not equal {value}"
         return self
 
     def assertJsonExact(self, data):
         """Assert that response is JSON and is exactly the given data."""
         response_data = self._ensure_response_is_json()
-        assert response_data == data
+        assert response_data == data, f"'{response_data}' does not equal {data}"
         return self
 
     def assertJsonCount(self, count, key=None):
@@ -312,5 +313,7 @@ class HttpTestResponse:
         """Assert that JSON response is JSON and does not contain given path.
         The path can be a dotted path"""
         response_data = self._ensure_response_is_json()
-        assert not Dot().dot(path, response_data)
+        assert not Dot().dot(
+            path, response_data
+        ), f"'{response_data}' is not missing from {Dot().dot(path, response_data)}"
         return self

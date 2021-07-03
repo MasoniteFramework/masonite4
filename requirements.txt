@@ -8,3 +8,4 @@ responses
 slackblocks
 hashids
 pwnedapi
+argon2-cffi

@@ -37,7 +37,7 @@ class WelcomeController(Controller):
         return view.render("welcome")
 
     def test(self):
-        return 2 / 0
+        return "test"
 
     def api(self):
         return {"key": "value"}

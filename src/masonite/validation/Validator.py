@@ -1,10 +1,8 @@
 from .RuleEnclosure import RuleEnclosure
 from .MessageBag import MessageBag
-from masonite.dot import Dot as DictDot
+from ..utils.structures import Dot
 import inspect
 import re
-import hashlib
-import requests
 import os
 import mimetypes
 
@@ -37,7 +35,7 @@ class BaseValidation:
             self.errors.update({key: message})
 
     def find(self, key, dictionary, default=False):
-        return DictDot().dot(key, dictionary, default)
+        return Dot().dot(key, dictionary, default)
 
     def message(self, key):
         return ""

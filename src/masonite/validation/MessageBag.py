@@ -115,6 +115,6 @@ class MessageBag:
         if errors:
             return MessageBag(errors)
 
-        from wsgi import container
+        from wsgi import application
 
-        return MessageBag(container.make("Request").session.get("errors") or {})
+        return MessageBag(application.make("request").session.get("errors") or {})

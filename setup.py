@@ -42,7 +42,7 @@ setup(
         "hashids>=1.3,<1.4",
         "cryptography>=3.3.1,<4.0",
         "tldextract>=2.2,<2.3",
-        "masonite-validation>=4.0b1",
+        "hfilesize>=0.1"
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -122,6 +122,9 @@ setup(
         "masonite.tests",
         "masonite.utils",
         "masonite.validation",
+        "masonite.validation.commands",
+        "masonite.validation.providers",
+        "masonite.validation.resources",
         "masonite.views",
     ],
     # List additional groups of dependencies here (e.g. development

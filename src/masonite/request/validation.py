@@ -1,4 +1,4 @@
-from masonite.validation import Validator
+from ..validation import Validator
 
 
 class ValidatesRequest:

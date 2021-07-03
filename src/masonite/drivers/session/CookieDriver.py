@@ -158,6 +158,9 @@ class CookieDriver:
     def get_response(self):
         return self.application.make("response")
 
+    def get_request(self):
+        return self.application.make("request")
+
     def __collect_data(self, flash_only=False):
         """Collect data from session and flash data.
 
@@ -165,8 +168,8 @@ class CookieDriver:
             dict
         """
         cookies = {}
-        response = self.get_response()
-        all_cookies = response.cookie_jar.to_dict()
+        request = self.get_request()
+        all_cookies = request.cookie_jar.to_dict()
         for key, value in all_cookies.items():
             if not (key.startswith("f_") or key.startswith("s_")):
                 continue
