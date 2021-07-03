@@ -53,10 +53,8 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
-                parsed_request_body = parse_qs(
-                    bytes(request_body).decode("utf-8")
-                )
-                
+                parsed_request_body = parse_qs(bytes(request_body).decode("utf-8"))
+
                 self.post_data = self.parse_dict(parsed_request_body)
 
             elif "multipart/form-data" in environ.get("CONTENT_TYPE", ""):
@@ -85,7 +83,7 @@ class InputBag:
                         self.post_data.update(
                             {name: Input(name, fields.getvalue(name))}
                         )
-                
+
                 self.post_data = self.parse_dict(self.post_data)
             else:
                 try:

@@ -66,11 +66,10 @@ class TestInput(TestCase):
     def test_only_array_based_inputs(self):
         bag = InputBag()
         bag.load({"QUERY_STRING": "user[]=user1&user[]=user2"})
-        self.assertEqual(bag.get('user[]'), ['user1', 'user2'])
+        self.assertEqual(bag.get("user[]"), ["user1", "user2"])
         bag = InputBag()
         bag.load({"QUERY_STRING": "user[user1]=value&user[user2]=value"})
-        self.assertEqual(bag.get('user'), {"user1": "value", "user2": "value"})
-
+        self.assertEqual(bag.get("user"), {"user1": "value", "user2": "value"})
 
     def test_can_parse_post_params(self):
         bag = InputBag()
