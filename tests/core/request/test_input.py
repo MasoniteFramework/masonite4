@@ -63,6 +63,15 @@ class TestInput(TestCase):
         bag.load({"QUERY_STRING": "hello=you&goodbye=me&name=Joe"})
         self.assertEqual(bag.only("hello", "name"), {"hello": "you", "name": "Joe"})
 
+    def test_only_array_based_inputs(self):
+        bag = InputBag()
+        bag.load({"QUERY_STRING": "user[]=user1&user[]=user2"})
+        self.assertEqual(bag.get('user[]'), ['user1', 'user2'])
+        bag = InputBag()
+        bag.load({"QUERY_STRING": "user[user1]=value&user[user2]=value"})
+        self.assertEqual(bag.get('user'), {"user1": "value", "user2": "value"})
+
+
     def test_can_parse_post_params(self):
         bag = InputBag()
         bag.load({"wsgi.input": self.post_data, "CONTENT_TYPE": "application/json"})

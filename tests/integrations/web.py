@@ -5,6 +5,7 @@ from src.masonite.authentication import Auth
 ROUTES = [
     Route.get("/", "WelcomeController@show").name("welcome"),
     Route.post("/", "WelcomeController@show"),
+    Route.post("/input", "WelcomeController@input"),
     Route.post("/upload", "WelcomeController@upload").name("upload"),
     Route.get("/test", "WelcomeController@test"),
     Route.get("/emit", "WelcomeController@emit"),

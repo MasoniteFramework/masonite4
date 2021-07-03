@@ -53,32 +53,11 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
-                parsed_request_body = urllib.parse.parse_qs(
+                parsed_request_body = parse_qs(
                     bytes(request_body).decode("utf-8")
                 )
-
-                tmp_post_data = defaultdict(dict)
-                for name, value in parsed_request_body.items():
-                    if name.endswith("[]"):
-                        tmp_post_data.update({name[:-2]: value})
-                    elif name.endswith("]"):
-                        # either comments[description] or comments[description][nested]
-                        groups = re.match(
-                            r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name
-                        ).groupdict()
-                        name = groups["name"]
-                        tmp_post_data[name].update({groups["value"]: value})
-                        # if len(groups["value"]) == 1:
-                        #     tmp_post_data[name].update({groups["value"][0]: value})
-                        # else:
-                        #     tmp_post_data[name][groups["value"][0]].update(
-                        #         {groups["value"][1]: value}
-                        #     )
-                    else:
-                        tmp_post_data.update({name: value})
-
-                for root_name, value in tmp_post_data.items():
-                    self.post_data.update({root_name: Input(name, value)})
+                
+                self.post_data = self.parse_dict(parsed_request_body)
 
             elif "multipart/form-data" in environ.get("CONTENT_TYPE", ""):
                 try:
@@ -106,6 +85,8 @@ class InputBag:
                         self.post_data.update(
                             {name: Input(name, fields.getvalue(name))}
                         )
+                
+                self.post_data = self.parse_dict(self.post_data)
             else:
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
@@ -119,11 +100,19 @@ class InputBag:
                     )
 
     def get(self, name, default=None, clean=True, quote=True):
-
         input = Dot().dot(name, self.all(), default=default)
-        if isinstance(input, (dict, str)):
+        if isinstance(input, (str,)):
             return input
+        elif isinstance(input, (dict,)):
+            rendered = {}
+            for key, inp in input.items():
+                rendered.update({key: inp.value})
+            return rendered
         elif hasattr(input, "value"):
+            if isinstance(input.value, list) and len(input.value) == 1:
+                return input.value[0]
+            elif isinstance(input.value, dict):
+                return input.value
             return input.value
         else:
             return input
@@ -172,6 +161,19 @@ class InputBag:
                 gd = regex_match.groupdict()
                 d.setdefault(gd["name"], {})[gd["value"]] = Input(name, value[0])
             else:
-                d.update({name: Input(name, value[0])})
+                d.update({name: Input(name, value)})
+        return d
 
+    def parse_dict(self, dictionary):
+        d = {}
+        for name, value in dictionary.items():
+            regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
+            if regex_match:
+                gd = regex_match.groupdict()
+                if isinstance(value, Input):
+                    d.setdefault(gd["name"], {})[gd["value"]] = value
+                else:
+                    d.setdefault(gd["name"], {})[gd["value"]] = Input(name, value[0])
+            else:
+                d.update({name: Input(name, value)})
         return d
