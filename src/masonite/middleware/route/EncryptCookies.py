@@ -11,6 +11,5 @@ class EncryptCookies:
     def after(self, request, response):
         for _, cookie in response.cookie_jar.all().items():
             cookie.value = request.app.make("sign").sign(cookie.value)
-            print(cookie.value)
 
         return request

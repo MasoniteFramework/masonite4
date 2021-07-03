@@ -3,9 +3,10 @@ from ..headers import HeaderBag, Header
 from ..input import InputBag
 import re
 import tldextract
+from .validation import ValidatesRequest
 
 
-class Request:
+class Request(ValidatesRequest):
     def __init__(self, environ):
         """Request class constructor.
 
@@ -39,6 +40,9 @@ class Request:
 
     def get_path(self):
         return self.environ.get("PATH_INFO")
+
+    def get_back_path(self):
+        return self.input("__back") or self.get_path()
 
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")

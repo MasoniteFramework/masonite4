@@ -76,6 +76,10 @@ class Response:
 
         return self.cookie_jar.add(name, value, **options)
 
+    def delete_cookie(self, name):
+        self.cookie_jar.delete(name)
+        return self
+
     def get_response_content(self):
         return self.data()
 
@@ -183,7 +187,7 @@ class Response:
         return self.data()
 
     def back(self):
-        return self.redirect(url=self.app.make("request").get_path())
+        return self.redirect(url=self.app.make("request").get_back_path())
 
     def redirect(self, location=None, name=None, params={}, url=None, status=302):
         """Set the redirection on the server.

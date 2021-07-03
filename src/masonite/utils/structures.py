@@ -50,6 +50,8 @@ class Dot:
                 if isinstance(dic, list):
                     try:
                         return collect(dic).pluck(searching[searching.index("*") + 1])
+                    except IndexError:
+                        return dic
                     except KeyError:
                         return []
 

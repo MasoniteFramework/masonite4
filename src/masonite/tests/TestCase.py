@@ -3,7 +3,7 @@ import io
 import unittest
 import pendulum
 
-from ..routes import Router
+from ..routes import Router, Route
 from .HttpTestResponse import HttpTestResponse
 from ..foundation.response_handler import testcase_handler
 from ..utils.helpers import generate_wsgi
@@ -18,6 +18,8 @@ class TestCase(unittest.TestCase):
         LoadEnvironment("testing")
         from wsgi import application
 
+        print(application.make("middleware").route_middleware)
+
         self.application = application
         self.original_class_mocks = {}
         self._test_cookies = {}
@@ -30,14 +32,11 @@ class TestCase(unittest.TestCase):
             self.stopTestRun()
 
     def setRoutes(self, *routes):
-        self.application.bind(
-            "router",
-            Router(*routes),
-        )
+        self.application.make("router").set(Route.group(*routes, middleware=["web"]))
         return self
 
     def addRoutes(self, *routes):
-        self.application.make("router").add(routes)
+        self.application.make("router").add(Route.group(*routes, middleware=["web"]))
         return self
 
     def withCsrf(self):

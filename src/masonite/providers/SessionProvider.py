@@ -1,7 +1,7 @@
 from .Provider import Provider
 from ..sessions import Session
 from ..drivers.session import CookieDriver
-from ..utils.structures import config, load
+from ..utils.structures import load
 
 
 class SessionProvider(Provider):
