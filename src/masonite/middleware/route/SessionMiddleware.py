@@ -9,8 +9,6 @@ class SessionMiddleware(Middleware):
             response.cookie("SESSID", session_code)
             request.cookie("SESSID", session_code)
 
-        print('hh')
-        request.session = request.app.make("session")
         return request
 
     def after(self, request, response):

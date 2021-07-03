@@ -1528,7 +1528,6 @@ class TestValidationProvider(TestCase):
     def setUp(self):
         super().setUp()
         self.provider = ValidationProvider(self.application)
-        self.provider.register()
         self.application.resolve(self.provider.boot)
 
     def test_loaded_validator_class(self):

@@ -18,7 +18,7 @@ class TestCase(unittest.TestCase):
         LoadEnvironment("testing")
         from wsgi import application
 
-        print(application.make('middleware').route_middleware)
+        print(application.make("middleware").route_middleware)
 
         self.application = application
         self.original_class_mocks = {}
@@ -32,17 +32,11 @@ class TestCase(unittest.TestCase):
             self.stopTestRun()
 
     def setRoutes(self, *routes):
-        self.application.make("router").add(
-            Route.group(
-                *routes, middleware=["web"]
-            )
-        )
+        self.application.make("router").set(Route.group(*routes, middleware=["web"]))
         return self
 
     def addRoutes(self, *routes):
-        self.application.make("router").add(Route.group(
-                *routes, middleware=["web"]
-            ))
+        self.application.make("router").add(Route.group(*routes, middleware=["web"]))
         return self
 
     def withCsrf(self):
