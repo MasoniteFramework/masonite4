@@ -160,12 +160,11 @@ class InputBag:
 
     def parse_dict(self, dictionary):
         d = {}
-        print('dict', dictionary)
         for name, value in dictionary.items():
             if name.endswith("[]"):
                 d.update({name: value}) 
             else:
-                regex_match = re.match(r'(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]', name)
+                regex_match = re.match(r'(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]', name)
 
                 if regex_match:
                     gd = regex_match.groupdict()
@@ -183,18 +182,9 @@ class InputBag:
                 new_name = name.replace("[]", "")
                 regex_match = re.match(r'(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]', new_name)
                 if regex_match:
-                    if regex_match["name"] in new_dict:
-                        new_dict[regex_match["name"]].append({regex_match["value"]: value})
-                    else:
-                        new_dict[regex_match["name"]] = [{regex_match["value"]: value}]
+                    new_dict.setdefault(regex_match["name"], []).append({regex_match["value"]: value})
                 else:
-                    print("no match")
-                    print('v', value)
-                    print('d', d)
                     new_dict.update({name: value})
-                    # new_dict.setdefault(regex_match["name"], {})[gd["value"]] = value[0]
-                    # new_dict[regex_match["name"]][gd["value"]] = value[0]
-                    # d.setdefault(gd["name"], {})[gd["value"]] = value[0]
             else:
                 new_dict.update({name: value})
 
