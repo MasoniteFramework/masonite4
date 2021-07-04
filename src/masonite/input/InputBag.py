@@ -1,7 +1,5 @@
 from .Input import Input
 from urllib.parse import parse_qs
-from collections import defaultdict
-import urllib
 import re
 import json
 import cgi
