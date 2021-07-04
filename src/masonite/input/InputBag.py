@@ -99,12 +99,17 @@ class InputBag:
 
     def get(self, name, default=None, clean=True, quote=True):
         input = Dot().dot(name, self.all(), default=default)
+
         if isinstance(input, (str,)):
             return input
+        if isinstance(input, list) and len(input) == 1:
+            return input[0]
         elif isinstance(input, (dict,)):
             rendered = {}
             for key, inp in input.items():
-                rendered.update({key: inp.value})
+                if hasattr(inp, 'value'):
+                    inp = inp.value
+                rendered.update({key: inp})
             return rendered
         elif hasattr(input, "value"):
             if isinstance(input.value, list) and len(input.value) == 1:
@@ -112,10 +117,9 @@ class InputBag:
             elif isinstance(input.value, dict):
                 return input.value
             return input.value
-        else:
-            return input
 
-        return default
+        return input
+
 
     def has(self, *names):
         return all((name in self.all()) for name in names)
@@ -152,26 +156,46 @@ class InputBag:
         return new
 
     def query_parse(self, query_string):
-        d = {}
-        for name, value in parse_qs(query_string).items():
-            regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
-            if regex_match:
-                gd = regex_match.groupdict()
-                d.setdefault(gd["name"], {})[gd["value"]] = Input(name, value[0])
-            else:
-                d.update({name: Input(name, value)})
-        return d
+        return self.parse_dict(parse_qs(query_string))
 
     def parse_dict(self, dictionary):
         d = {}
+        print('dict', dictionary)
         for name, value in dictionary.items():
-            regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
-            if regex_match:
-                gd = regex_match.groupdict()
-                if isinstance(value, Input):
-                    d.setdefault(gd["name"], {})[gd["value"]] = value
-                else:
-                    d.setdefault(gd["name"], {})[gd["value"]] = Input(name, value[0])
+            if name.endswith("[]"):
+                d.update({name: value}) 
             else:
-                d.update({name: Input(name, value)})
-        return d
+                regex_match = re.match(r'(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]', name)
+
+                if regex_match:
+                    gd = regex_match.groupdict()
+                    if isinstance(value, Input):
+                        d.setdefault(gd["name"], {})[gd["value"]] = value
+                    else:
+                        d.setdefault(gd["name"], {})[gd["value"]] = value[0]
+                else:
+                    d.update({name: value[0]})
+        
+        new_dict = {}
+        # Further filter the dictionary
+        for name, value in d.items():
+            if "[]" in name:
+                new_name = name.replace("[]", "")
+                regex_match = re.match(r'(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]', new_name)
+                if regex_match:
+                    if regex_match["name"] in new_dict:
+                        new_dict[regex_match["name"]].append({regex_match["value"]: value})
+                    else:
+                        new_dict[regex_match["name"]] = [{regex_match["value"]: value}]
+                else:
+                    print("no match")
+                    print('v', value)
+                    print('d', d)
+                    new_dict.update({name: value})
+                    # new_dict.setdefault(regex_match["name"], {})[gd["value"]] = value[0]
+                    # new_dict[regex_match["name"]][gd["value"]] = value[0]
+                    # d.setdefault(gd["name"], {})[gd["value"]] = value[0]
+            else:
+                new_dict.update({name: value})
+
+        return new_dict
