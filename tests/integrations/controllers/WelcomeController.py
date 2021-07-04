@@ -54,7 +54,7 @@ class WelcomeController(Controller):
 
     def input(self, request: Request):
         return request.all()
-        return 'input'
+        return "input"
 
     def forbidden(self):
         return "forbidden", 403

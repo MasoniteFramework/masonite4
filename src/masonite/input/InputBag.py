@@ -107,7 +107,7 @@ class InputBag:
         elif isinstance(input, (dict,)):
             rendered = {}
             for key, inp in input.items():
-                if hasattr(inp, 'value'):
+                if hasattr(inp, "value"):
                     inp = inp.value
                 rendered.update({key: inp})
             return rendered
@@ -119,7 +119,6 @@ class InputBag:
             return input.value
 
         return input
-
 
     def has(self, *names):
         return all((name in self.all()) for name in names)
@@ -162,9 +161,9 @@ class InputBag:
         d = {}
         for name, value in dictionary.items():
             if name.endswith("[]"):
-                d.update({name: value}) 
+                d.update({name: value})
             else:
-                regex_match = re.match(r'(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]', name)
+                regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
 
                 if regex_match:
                     gd = regex_match.groupdict()
@@ -174,15 +173,19 @@ class InputBag:
                         d.setdefault(gd["name"], {})[gd["value"]] = value[0]
                 else:
                     d.update({name: value[0]})
-        
+
         new_dict = {}
         # Further filter the dictionary
         for name, value in d.items():
             if "[]" in name:
                 new_name = name.replace("[]", "")
-                regex_match = re.match(r'(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]', new_name)
+                regex_match = re.match(
+                    r"(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]", new_name
+                )
                 if regex_match:
-                    new_dict.setdefault(regex_match["name"], []).append({regex_match["value"]: value})
+                    new_dict.setdefault(regex_match["name"], []).append(
+                        {regex_match["value"]: value}
+                    )
                 else:
                     new_dict.update({name: value})
             else:
