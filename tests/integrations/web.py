@@ -8,6 +8,7 @@ ROUTES = [
         "play_with_session"
     ),
     Route.post("/", "WelcomeController@show"),
+    Route.post("/input", "WelcomeController@input"),
     Route.post("/upload", "WelcomeController@upload").name("upload"),
     Route.get("/test", "WelcomeController@test"),
     Route.get("/emit", "WelcomeController@emit"),

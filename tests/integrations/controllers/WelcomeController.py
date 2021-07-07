@@ -61,6 +61,10 @@ class WelcomeController(Controller):
     def unauthorized(self):
         return "unauthorized", 401
 
+    def input(self, request: Request):
+        return request.all()
+        return "input"
+
     def forbidden(self):
         return "forbidden", 403
 
