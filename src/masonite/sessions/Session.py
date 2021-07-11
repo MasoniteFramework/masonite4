@@ -107,26 +107,10 @@ class Session:
         """
         self.flashed.update({key: value})
 
-    def reset(self, driver=None, flash_only=False):
-        """Delete all session data.
-
-        Keyword Arguments:
-            flash_only {bool} -- If only flash data should be deleted. (default: {False})
-        """
-        return self.get_driver(name=driver).reset(flash_only=flash_only)
-
-    def all(self, flash_only=False, driver=None):
+    def all(self):
         """Get all session data.
 
         Returns:
             dict
         """
-        return self.get_driver(name=driver).all(flash_only=flash_only)
-
-    def get_flashed_messages(self, driver=None):
-        """Get flashed messages session data.
-
-        Returns:
-            dict
-        """
-        return self.get_driver(name=driver).get_flashed_messages()
+        return self.get_data()
