@@ -37,7 +37,7 @@ def response_handler(environ, start_response):
 
     application.make("session").save()
 
-    request, response = application.make("request"), application.make("response")
+    _, response = application.make("request"), application.make("response")
 
     start_response(
         response.get_status_code(),
