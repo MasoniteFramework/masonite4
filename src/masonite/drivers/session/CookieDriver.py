@@ -136,17 +136,27 @@ class CookieDriver:
                 continue
             response.delete_cookie(key)
 
-    def start(self, request):
-        response = self.get_response()
+    def start(self):
+        request = self.get_request()
+        data = {}
         for key, value in request.cookie_jar.to_dict().items():
-            if not (key.startswith("f_") or key.startswith("s_")) or key.startswith(
-                "_flash."
-            ):
-                continue
-            response.cookie_jar.load_cookie(key, self._get_serialization_value(value))
+            if key.startswith("f_") or key.startswith("s_"):
+                data.update({key.replace("s_", "").replace("f_", ""): value})
 
-    def save(self):
-        self.age_flash_data()
+        return data
+
+    def save(self, added=None, deleted=None):
+        response = self.get_response()
+        if added is None:
+            added = {}
+        if deleted is None:
+            deleted = {}
+
+        for key, value in added.items():
+            response.cookie(f"s_{key}", value)
+
+        for key in deleted:
+            response.delete_cookie(f"s_{key}")
 
     def age_flash_data(self):
         """Age flash data for the session."""

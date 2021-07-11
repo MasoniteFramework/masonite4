@@ -27,7 +27,9 @@ class HttpTestResponse:
         )
 
     def assertContains(self, content):
-        assert content in self.get_content(), f"{content} not found."
+        assert (
+            content in self.get_content()
+        ), f"{content} not found in {self.get_content()}"
         return self
 
     def assertNotContains(self, content):
@@ -183,7 +185,9 @@ class HttpTestResponse:
     def assertViewIs(self, name):
         """Assert that request renders the given view name."""
         self._ensure_response_has_view()
-        assert self.response.original.template == name, f"Template {self.response.original.template} is not equal to {name}"
+        assert (
+            self.response.original.template == name
+        ), f"Template {self.response.original.template} is not equal to {name}"
         return self
 
     def assertViewHas(self, key, value=None):

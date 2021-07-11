@@ -5,6 +5,9 @@ class Session:
         self._driver = None
         self.driver_config = driver_config or {}
         self.options = {}
+        self.data = {}
+        self.added = {}
+        self.deleted = []
 
     def add_driver(self, name, driver):
         self.drivers.update({name: driver})
@@ -27,17 +30,32 @@ class Session:
 
         return self.driver_config.get(driver, {})
 
-    def start(self, request, driver=None):
-        return self.get_driver(name=driver).start(request)
+    # Start of methods
+    def start(self, driver=None):
+        self.data = {}
+        self.added = {}
+        self.deleted = []
+        self.data = self.get_driver(name=driver).start()
+        return self
+
+    def get_data(self):
+        data = self.data
+        data.update(self.added)
+        for deleted in self.deleted:
+            data.pop(deleted)
+        return data
 
     def save(self, driver=None):
-        return self.get_driver(name=driver).save()
+        return self.get_driver(name=driver).save(added=self.added, deleted=self.deleted)
 
-    def set(self, key, value, driver=None):
-        return self.get_driver(name=driver).set(key, value)
+    def set(self, key, value):
+        return self.added.update({key: value})
 
-    def get(self, key, driver=None):
-        return self.get_driver(name=driver).get(key)
+    def get(self, key):
+        return self.get_data().get(key)
+
+    def delete(self, key):
+        return self.deleted.append(key)
 
     def flash(self, key, value, driver=None):
         """Add temporary data to the session.

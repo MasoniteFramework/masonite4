@@ -18,8 +18,6 @@ class TestCase(unittest.TestCase):
         LoadEnvironment("testing")
         from wsgi import application
 
-        print(application.make("middleware").route_middleware)
-
         self.application = application
         self.original_class_mocks = {}
         self._test_cookies = {}

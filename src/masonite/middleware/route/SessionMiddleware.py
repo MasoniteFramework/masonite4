@@ -9,7 +9,7 @@ class SessionMiddleware(Middleware):
             response.cookie("SESSID", session_code)
             request.cookie("SESSID", session_code)
         # load session from request cookies
-        request.app.make("session").start(request)
+        request.app.make("session").start()
         return request
 
     def after(self, request, response):
