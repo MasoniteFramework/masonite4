@@ -59,6 +59,9 @@ class Session:
         self.delete(key)
         return key_value
 
+    def flush(self):
+        self.deleted += list(self.get_data().keys())
+
     def delete(self, key):
         return self.deleted.append(key)
 
