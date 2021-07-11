@@ -16,6 +16,17 @@ class TestCookieSession(TestCase):
         session.set("key1", "test1")
         self.assertEqual(session.get("key1"), "test1")
 
+    def test_can_increment_and_decrement_session(self):
+        self.make_request()
+        session = self.application.make("session")
+        session.start()
+        session.set("key1", "1")
+        session.set("key5", "5")
+        session.increment('key1')
+        session.decrement('key5')
+        self.assertEqual(session.get("key1"), "2")
+        self.assertEqual(session.get("key5"), "4")
+
     def test_can_save_session(self):
         self.make_request()
         response = self.make_response()

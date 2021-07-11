@@ -67,6 +67,12 @@ class Session:
     def set(self, key, value):
         return self.added.update({key: value})
 
+    def increment(self, key, count=1):
+        return self.set(key, str(int(self.get(key)) + count))
+
+    def decrement(self, key, count=1):
+        return self.set(key, str(int(self.get(key)) - count))
+
     def has(self, key):
         return key in self.get_data()
 
