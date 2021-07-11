@@ -4,6 +4,7 @@ from src.masonite.authentication import Auth
 
 ROUTES = [
     Route.get("/", "WelcomeController@show").name("welcome"),
+    Route.get("/flash_data", "WelcomeController@flash_data"),
     Route.get("/sessions", "WelcomeController@play_with_session").name(
         "play_with_session"
     ),

@@ -28,13 +28,15 @@ class WelcomeController(Controller):
         # Session.flash("test", "hello flashed")
         # Session.set("test_persisted", "hello persisted in session")
         # request.app.make("session").set("test_persisted", "hello persisted")
-        print(request.app.make("session").get("test"))
-        print(request.app.make("session").driver("cookie").get("test"))
         return view.render("welcome")
 
     def show(self, request: Request, view: View):
         request.app.make("session").flash("test", "value")
         return view.render("welcome")
+
+    def flash_data(self, request: Request, response: Response, view: View):
+        request.app.make("session").flash("test", "value")
+        return response.redirect("/sessions")
 
     def test(self):
         return "test"
@@ -104,19 +106,19 @@ class WelcomeController(Controller):
         )
 
     def session(self, request: Request):
-        request.app.make("session").driver("cookie").flash("key", "value")
+        request.app.make("session").flash("key", "value")
         return "session"
 
     def session_with_errors(self, request: Request):
-        request.app.make("session").driver("cookie").flash("key", "value")
-        request.app.make("session").driver("cookie").flash(
+        request.app.make("session").flash("key", "value")
+        request.app.make("session").flash(
             "errors",
             {"email": "Email required", "password": "Password too short", "name": ""},
         )
         return "session"
 
     def session2(self, request: Request):
-        request.app.make("session").driver("cookie").flash(
+        request.app.make("session").flash(
             "key", {"nested": 1, "nested_again": {"key2": "value2"}}
         )
         return "session2"

@@ -13,4 +13,5 @@ class SessionMiddleware(Middleware):
         return request
 
     def after(self, request, response):
+        request.app.make("session").save()
         return request

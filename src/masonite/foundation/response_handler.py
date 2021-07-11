@@ -35,8 +35,6 @@ def response_handler(environ, start_response):
     to next.
     """
 
-    application.make("session").save()
-
     _, response = application.make("request"), application.make("response")
 
     start_response(
