@@ -36,11 +36,9 @@ class CookieDriver:
             deleted_flashed = []
 
         for key, value in added.items():
-            print("adding key", key)
             response.cookie(f"s_{key}", value)
 
         for key, value in flashed.items():
-            print("adding flashed", key)
             response.cookie(f"f_{key}", value)
 
         for key in deleted:
