@@ -54,6 +54,11 @@ class Session:
     def get(self, key):
         return self.get_data().get(key)
 
+    def pull(self, key):
+        key_value = self.get(key)
+        self.delete(key)
+        return key_value
+
     def delete(self, key):
         return self.deleted.append(key)
 
