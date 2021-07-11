@@ -35,11 +35,8 @@ def response_handler(environ, start_response):
     to next.
     """
 
-    application.make("session").save()
+    _, response = application.make("request"), application.make("response")
 
-    request, response = application.make("request"), application.make("response")
-
-    print("response code", request.get_path(), response.get_status_code())
     start_response(
         response.get_status_code(),
         response.get_headers() + response.cookie_jar.render_response(),

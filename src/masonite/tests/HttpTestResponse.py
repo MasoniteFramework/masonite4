@@ -27,7 +27,9 @@ class HttpTestResponse:
         )
 
     def assertContains(self, content):
-        assert content in self.get_content(), f"{content} not found."
+        assert (
+            content in self.get_content()
+        ), f"{content} not found in {self.get_content()}"
         return self
 
     def assertNotContains(self, content):
@@ -135,42 +137,42 @@ class HttpTestResponse:
         assert not self.request.cookie_jar.exists(name)
         return self
 
-    def assertSessionHas(self, key, value=None, driver="cookie"):
+    def assertSessionHas(self, key, value=None):
         """Assert that session contains the given key with the corresponding value if given.
         The session driver can be specified if necessary."""
-        session = self.request.session.driver(driver)
+        session = self.request.session
         assert session.has(key)
         if value is not None:
             assert session.get(key) == value
         return self
 
-    def assertSessionMissing(self, key, driver="cookie"):
+    def assertSessionMissing(self, key):
         """Assert that session does not contain the given key. The session driver can be specified
         if necessary."""
-        assert not self.request.session.driver(driver).get(key)
+        assert not self.request.session.get(key)
         return self
 
-    def assertSessionHasErrors(self, keys=[], driver="cookie"):
+    def assertSessionHasErrors(self, keys=[]):
         """Assert that session contains errors for the given list of keys (meaning that each given key
         exists in 'errors' dict in session.) If no keys are given this will assert that the
         sessions has errors without checking specific keys."""
-        session = self.request.session.driver(driver)
+        session = self.request.session
         assert session.has("errors")
         if keys:
-            errors = session._get_serialization_value(session.get("errors"))
+            errors = session.get("errors")
             for key in keys:
                 assert errors.get(key)
         return self
 
-    def assertSessionHasNoErrors(self, keys=[], driver="cookie"):
+    def assertSessionHasNoErrors(self, keys=[]):
         """Assert that session does not have any errors (meaning that session does not contain an
         'errors' key or 'errors' key is empty. If a list of keys is given, this will check
         that there are no errors for each of those keys."""
-        session = self.request.session.driver(driver)
+        session = self.request.session
         if not keys:
             assert not session.has("errors")
         else:
-            errors = session._get_serialization_value(session.get("errors"))
+            errors = session.get("errors")
             for key in keys:
                 assert not errors.get(key)
         return self
@@ -183,7 +185,9 @@ class HttpTestResponse:
     def assertViewIs(self, name):
         """Assert that request renders the given view name."""
         self._ensure_response_has_view()
-        assert self.response.original.template == name, f"Template {self.response.original.template} is not equal to {name}"
+        assert (
+            self.response.original.template == name
+        ), f"Template {self.response.original.template} is not equal to {name}"
         return self
 
     def assertViewHas(self, key, value=None):

@@ -15,6 +15,7 @@ Hello. Setup chat connection here
     <p>flash messages</p>
     <p>{{ session().get("test") }}</p>
     <a href="/sessions">step 2</a>
+    <a href="/flash_data">Flash Data to session</a>
     <script>
         const pusher = new Pusher("", {
             authEndpoint: '/broadcasting/authorize',
