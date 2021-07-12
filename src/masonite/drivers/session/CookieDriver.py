@@ -1,8 +1,5 @@
 """Session Cookie Module."""
 
-import json
-from email import message
-
 
 class CookieDriver:
     """Cookie Session Driver."""
@@ -15,169 +12,46 @@ class CookieDriver:
         """
         self.application = application
 
-    def get(self, key):
-        """Get a value from the session.
+    def start(self):
+        request = self.get_request()
+        data = {}
+        flashed = {}
+        for key, value in request.cookie_jar.to_dict().items():
+            if key.startswith("s_"):
+                data.update({key.replace("s_", ""): value})
+            elif key.startswith("f_"):
+                flashed.update({key.replace("f_", ""): value})
 
-        Arguments:
-            key {string} -- The key to get from the session.
+        return {"data": data, "flashed": flashed}
 
-        Returns:
-            string|None - Returns None if a value does not exist.
-        """
+    def save(self, added=None, deleted=None, flashed=None, deleted_flashed=None):
         response = self.get_response()
-        cookie = response.cookie("s_{0}".format(key))
-        if cookie:
-            return self._get_serialization_value(cookie)
+        if added is None:
+            added = {}
+        if deleted is None:
+            deleted = []
+        if flashed is None:
+            flashed = {}
+        if deleted_flashed is None:
+            deleted_flashed = []
 
-        cookie = response.cookie("f_{0}".format(key))
-        if cookie:
-            return self._get_serialization_value(cookie)
+        for key, value in added.items():
+            response.cookie(f"s_{key}", value)
 
-        return None
+        for key, value in flashed.items():
+            response.cookie(f"f_{key}", value)
 
-    def _get_serialization_value(self, value):
-        try:
-            return json.loads(value)
-        except (ValueError, TypeError):
-            return value
+        for key in deleted:
+            response.delete_cookie(f"s_{key}")
 
-    def set(self, key, value):
-        """Set a value in the session.
-
-        Arguments:
-            key {string} -- The key to set as the session key.
-            value {string} -- The value to set in the session.
-        """
-        if isinstance(value, dict):
-            value = json.dumps(value)
-
-        response = self.get_response()
-
-        response.cookie("s_{0}".format(key), str(value))
-
-    def has(self, key):
-        """Check if a key exists in the session.
-
-        Arguments:
-            key {string} -- The key to check for in the session.
-
-        Returns:
-            bool
-        """
-        if self.get(key):
-            return True
-        return False
-
-    def all(self, flash_only=False):
-        """Get all session data.
-
-        Returns:
-            dict
-        """
-        return self.__collect_data(flash_only=flash_only)
-
-    def delete(self, key):
-        """Delete a value in the session by it's key.
-
-        Arguments:
-            key {string} -- The key to find in the session.
-
-        Returns:
-            bool -- If the key was deleted or not
-        """
-        self.__collect_data()
-
-        response = self.get_response()
-
-        if response.cookie("s_{}".format(key)):
-            response.delete_cookie("s_{}".format(key))
-            return True
-
-        return False
+        for key in deleted_flashed:
+            response.delete_cookie(f"f_{key}")
 
     def get_response(self):
         return self.application.make("response")
 
     def get_request(self):
         return self.application.make("request")
-
-    def __collect_data(self, flash_only=False):
-        """Collect data from session and flash data.
-
-        Returns:
-            dict
-        """
-        cookies = {}
-        request = self.get_request()
-        all_cookies = request.cookie_jar.to_dict()
-        for key, value in all_cookies.items():
-            if not (key.startswith("f_") or key.startswith("s_")):
-                continue
-
-            if flash_only and not key.startswith("f_"):
-                continue
-
-            key = key.replace("f_", "").replace("s_", "")
-
-            cookies.update({key: self.get(key)})
-        return cookies
-
-    def flash(self, key, value):
-        """Add temporary data to the session.
-
-        Arguments:
-            key {string} -- The key to set as the session key.
-            value {string} -- The value to set in the session.
-        """
-        if isinstance(value, (dict, list)):
-            value = json.dumps(value)
-
-        response = self.get_response()
-        response.cookie(
-            "f_{0}".format(key),
-            str(value),
-        )
-
-    def get_error_messages(self):
-        """Should get and delete the flashed messages
-
-        Arguments:
-            key {string} -- The key to set as the session key.
-            value {string} -- The value to set in the session.
-        """
-        only_messages = []
-        messages = self.all(flash_only=True).get("errors", {}).items()
-        for key, messages in messages:
-            for error_message in messages:
-                only_messages.append(error_message)
-        self.reset(flash_only=True)
-        return only_messages
-
-    def get_flashed_messages(self):
-        """Should get and delete the flashed messages
-
-        Arguments:
-            key {string} -- The key to set as the session key.
-            value {string} -- The value to set in the session.
-        """
-        messages = self.all(flash_only=True)
-        self.reset(flash_only=True)
-        return messages
-
-    def reset(self, flash_only=False):
-        """Delete all session data.
-
-        Keyword Arguments:
-            flash_only {bool} -- If only flash data should be deleted. (default: {False})
-        """
-        cookies = self.__collect_data()
-        response = self.get_response()
-        for cookie in cookies:
-            if flash_only:
-                response.delete_cookie("f_{0}".format(cookie))
-                continue
-
-            response.delete_cookie("s_{0}".format(cookie))
 
     def helper(self):
         """Use to create builtin helper function."""

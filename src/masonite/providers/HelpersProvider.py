@@ -17,6 +17,7 @@ class HelpersProvider(Provider):
         self.application.make("view").share(
             {
                 "request": lambda: request,
+                "session": lambda: request.app.make("session"),
                 "auth": request.user,
                 "cookie": request.cookie,
                 "back": lambda url=request.get_path(): (

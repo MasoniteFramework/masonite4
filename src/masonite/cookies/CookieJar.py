@@ -36,7 +36,7 @@ class CookieJar:
         self.deleted_cookies.update(
             {
                 name: Cookie(
-                    name, "", expires=cookie_expire_time("2 months"), timezone="GMT"
+                    name, "", expires=cookie_expire_time("expired"), timezone="GMT"
                 )
             }
         )
@@ -67,7 +67,7 @@ class CookieJar:
 
     def render_response(self):
         cookies = []
-        for name, cookie in self.all_added().items():
+        for name, cookie in {**self.deleted_cookies, **self.all_added()}.items():
             cookies.append(("Set-Cookie", cookie.render()))
 
         return cookies
