@@ -36,7 +36,7 @@ class WelcomeController(Controller):
 
     def flash_data(self, request: Request, response: Response, view: View):
         request.app.make("session").flash("test", "value")
-        return response.redirect("/sessions")
+        return response.with_input().redirect("/sessions")
 
     def test(self):
         return "test"
