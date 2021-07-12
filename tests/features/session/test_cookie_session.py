@@ -22,8 +22,8 @@ class TestCookieSession(TestCase):
         session.start()
         session.set("key1", "1")
         session.set("key5", "5")
-        session.increment('key1')
-        session.decrement('key5')
+        session.increment("key1")
+        session.decrement("key5")
         self.assertEqual(session.get("key1"), "2")
         self.assertEqual(session.get("key5"), "4")
 
