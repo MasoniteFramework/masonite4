@@ -24,6 +24,7 @@ class TestCase(unittest.TestCase):
         self._test_headers = {}
         if hasattr(self, "startTestRun"):
             self.startTestRun()
+        self.withoutCsrf()
 
     def tearDown(self):
         if hasattr(self, "stopTestRun"):
@@ -74,18 +75,28 @@ class TestCase(unittest.TestCase):
     def fetch(self, route, data=None, method=None):
         if data is None:
             data = {}
-        token = self.application.make("sign").sign("cookie")
-        data.update({"__token": token})
-        wsgi_request = generate_wsgi(
-            {
-                "HTTP_COOKIE": f"SESSID={token}; csrf_token={token}",
-                "CONTENT_LENGTH": len(str(json.dumps(data))),
-                "REQUEST_METHOD": method,
-                "PATH_INFO": route,
-                "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
-            }
-        )
-
+        if not self._csrf:
+            token = self.application.make("sign").sign("cookie")
+            data.update({"__token": "cookie"})
+            wsgi_request = generate_wsgi(
+                {
+                    "HTTP_COOKIE": f"SESSID={token}; csrf_token={token}",
+                    "CONTENT_LENGTH": len(str(json.dumps(data))),
+                    "REQUEST_METHOD": method,
+                    "PATH_INFO": route,
+                    "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
+                }
+            )
+        else:
+            wsgi_request = generate_wsgi(
+                {
+                    "CONTENT_LENGTH": len(str(json.dumps(data))),
+                    "REQUEST_METHOD": method,
+                    "PATH_INFO": route,
+                    "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
+                }
+            )
+        
         request, response = testcase_handler(
             self.application,
             wsgi_request,

@@ -33,7 +33,6 @@ class VerifyCsrfToken(Middleware):
         return session
 
     def verify_token(self, request, token):
-
         if self.in_exempt(request):
             return True
         if request.is_not_safe() and not token:
