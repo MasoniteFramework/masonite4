@@ -16,7 +16,7 @@ class VerifyCsrfToken(Middleware):
         request.app.make("view").share(
             {
                 "csrf_field": Markup(
-                    "<input type='hidden' name='__token' value='{0}' />".format(token)
+                    f"<input type='hidden' name='__token' value='{token}' />"
                 ),
                 "csrf_token": token,
             }
@@ -28,8 +28,9 @@ class VerifyCsrfToken(Middleware):
         return request
 
     def create_token(self, request, response):
-        response.cookie("csrf_token", request.cookie("SESSID"))
-        return request.cookie("SESSID")
+        session = request.cookie("SESSID")
+        response.cookie("csrf_token", session)
+        return session
 
     def verify_token(self, request, token):
 

@@ -170,7 +170,10 @@ class InputBag:
                     else:
                         d.setdefault(gd["name"], {})[gd["value"]] = value[0]
                 else:
-                    d.update({name: value[0]})
+                    try:
+                        d.update({name: value[0]})
+                    except TypeError:
+                        d.update({name: value})
 
         new_dict = {}
         # Further filter the dictionary
