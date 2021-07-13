@@ -96,7 +96,7 @@ class TestCase(unittest.TestCase):
                     "wsgi.input": io.BytesIO(bytes(json.dumps(data), "utf-8")),
                 }
             )
-        
+
         request, response = testcase_handler(
             self.application,
             wsgi_request,
