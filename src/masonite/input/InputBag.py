@@ -1,6 +1,6 @@
 from .Input import Input
 from urllib.parse import parse_qs
-import email.parser
+import re
 import json
 import cgi
 import re
@@ -51,12 +51,10 @@ class InputBag:
                     request_body_size = 0
 
                 request_body = environ["wsgi.input"].read(request_body_size)
-                if isinstance(request_body, bytes):
-                    request_body = request_body.decode("utf-8")
+                parsed_request_body = parse_qs(bytes(request_body).decode("utf-8"))
 
-                for parts in request_body.split("&"):
-                    name, value = parts.split("=", 1)
-                    self.post_data.update({name: Input(name, value)})
+                self.post_data = self.parse_dict(parsed_request_body)
+
             elif "multipart/form-data" in environ.get("CONTENT_TYPE", ""):
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
@@ -83,6 +81,8 @@ class InputBag:
                         self.post_data.update(
                             {name: Input(name, fields.getvalue(name))}
                         )
+
+                self.post_data = self.parse_dict(self.post_data)
             else:
                 try:
                     request_body_size = int(environ.get("CONTENT_LENGTH", 0))
@@ -96,16 +96,27 @@ class InputBag:
                     )
 
     def get(self, name, default=None, clean=True, quote=True):
-
         input = Dot().dot(name, self.all(), default=default)
-        if isinstance(input, (dict, str)):
-            return input
-        elif hasattr(input, "value"):
-            return input.value
-        else:
-            return input
 
-        return default
+        if isinstance(input, (str,)):
+            return input
+        if isinstance(input, list) and len(input) == 1:
+            return input[0]
+        elif isinstance(input, (dict,)):
+            rendered = {}
+            for key, inp in input.items():
+                if hasattr(inp, "value"):
+                    inp = inp.value
+                rendered.update({key: inp})
+            return rendered
+        elif hasattr(input, "value"):
+            if isinstance(input.value, list) and len(input.value) == 1:
+                return input.value[0]
+            elif isinstance(input.value, dict):
+                return input.value
+            return input.value
+
+        return input
 
     def has(self, *names):
         return all((name in self.all()) for name in names)
@@ -142,13 +153,43 @@ class InputBag:
         return new
 
     def query_parse(self, query_string):
-        d = {}
-        for name, value in parse_qs(query_string).items():
-            regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
-            if regex_match:
-                gd = regex_match.groupdict()
-                d.setdefault(gd["name"], {})[gd["value"]] = Input(name, value[0])
-            else:
-                d.update({name: Input(name, value[0])})
+        return self.parse_dict(parse_qs(query_string))
 
-        return d
+    def parse_dict(self, dictionary):
+        d = {}
+        for name, value in dictionary.items():
+            if name.endswith("[]"):
+                d.update({name: value})
+            else:
+                regex_match = re.match(r"(?P<name>[^\[]+)\[(?P<value>[^\]]+)\]", name)
+
+                if regex_match:
+                    gd = regex_match.groupdict()
+                    if isinstance(value, Input):
+                        d.setdefault(gd["name"], {})[gd["value"]] = value
+                    else:
+                        d.setdefault(gd["name"], {})[gd["value"]] = value[0]
+                else:
+                    try:
+                        d.update({name: value[0]})
+                    except TypeError:
+                        d.update({name: value})
+
+        new_dict = {}
+        # Further filter the dictionary
+        for name, value in d.items():
+            if "[]" in name:
+                new_name = name.replace("[]", "")
+                regex_match = re.match(
+                    r"(?P<name>[^\[]+)*\[(?P<value>[^\]]+)\]", new_name
+                )
+                if regex_match:
+                    new_dict.setdefault(regex_match["name"], []).append(
+                        {regex_match["value"]: value}
+                    )
+                else:
+                    new_dict.update({name: value})
+            else:
+                new_dict.update({name: value})
+
+        return new_dict

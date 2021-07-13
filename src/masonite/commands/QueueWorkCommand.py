@@ -8,10 +8,10 @@ class QueueWorkCommand(Command):
 
     queue:work
         {--c|--connection : Specifies the database connection if using database driver.}
-        {--queue=default : The queue to listen to}
-        {--d|driver=None : Specify the driver you would like to use}
-        {--p|poll=1 : Specify the seconds a worker should wait before fetching new jobs}
-        {--attempts=None : Specify the number of times a job should be retried before it fails}
+        {--queue=? : The queue to listen to}
+        {--d|driver=? : Specify the driver you would like to use}
+        {--p|poll=? : Specify the seconds a worker should wait before fetching new jobs}
+        {--attempts=? : Specify the number of times a job should be retried before it fails}
     """
 
     def __init__(self, application):
@@ -20,16 +20,12 @@ class QueueWorkCommand(Command):
 
     def handle(self):
         options = {}
-        driver = None if self.option("driver") == "None" else self.option("driver")
+        options.update({"driver": self.option("driver")})
+        options.update({"poll": self.option("poll") or "1"})
+        options.update({"attempts": self.option("attempts") or "3"})
+        options.update({"queue": self.option("queue") or "default"})
 
-        options.update({"driver": driver})
-        if self.option("poll") != "None":
-            options.update({"poll": self.option("poll")})
-
-        attempts = self.option("attempts")
-        if attempts == "None":
-            attempts = None
-        else:
-            options.update({"attempts": attempts})
+        if self.option("verbose"):
+            options.update({"verbosity": "v" + self.option("verbose")})
 
         return self.app.make("queue").consume(options)

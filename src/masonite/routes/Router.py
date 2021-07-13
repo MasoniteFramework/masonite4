@@ -35,3 +35,8 @@ class Router:
     def add(self, *routes):
         self.routes.append(*routes)
         self.routes = flatten(self.routes)
+
+    def set(self, *routes):
+        self.routes = []
+        self.routes.append(*routes)
+        self.routes = flatten(self.routes)

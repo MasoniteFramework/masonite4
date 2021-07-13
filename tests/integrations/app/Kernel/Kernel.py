@@ -17,8 +17,8 @@ from src.masonite.utils.structures import load_routes
 
 class Kernel:
 
-    http_middleware = []
-    route_middleware = {"web": [EncryptCookies, SessionMiddleware, VerifyCsrfToken]}
+    http_middleware = [EncryptCookies]
+    route_middleware = {"web": [SessionMiddleware, VerifyCsrfToken]}
 
     def __init__(self, app):
         self.application = app
@@ -91,19 +91,6 @@ class Kernel:
 
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
-
-    def register_storage(self):
-        storage = StorageCapsule(self.application.base_path)
-        storage.add_storage_assets(
-            {
-                # folder                             # template alias
-                "tests/integrations/storage/static": "static/",
-                "tests/integrations/storage/compiled": "static/",
-                "tests/integrations/storage/uploads": "static/",
-                "tests/integrations/storage/public": "/",
-            }
-        )
-        self.application.bind("storage_capsule", storage)
 
     def register_database(self):
         from masoniteorm.query import QueryBuilder

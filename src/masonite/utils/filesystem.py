@@ -14,6 +14,11 @@ def make_directory(directory):
     return False
 
 
+def file_exists(directory):
+    """Create a directory at the given path for a file if it does not exist"""
+    return os.path.exists(os.path.dirname(directory))
+
+
 def make_full_directory(directory):
     """Create all directories to the given path if they do not exist"""
     if not os.path.isfile(directory):

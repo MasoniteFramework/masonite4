@@ -1,8 +1,6 @@
 from .. import Middleware
 from jinja2 import Markup
-import binascii
 from ...exceptions import InvalidCSRFToken
-import os
 from hmac import compare_digest
 
 
@@ -13,12 +11,12 @@ class VerifyCsrfToken(Middleware):
     def before(self, request, response):
         self.verify_token(request, self.get_token(request))
 
-        token = self.create_token(request)
+        token = self.create_token(request, response)
 
         request.app.make("view").share(
             {
                 "csrf_field": Markup(
-                    "<input type='hidden' name='__token' value='{0}' />".format(token)
+                    f"<input type='hidden' name='__token' value='{token}' />"
                 ),
                 "csrf_token": token,
             }
@@ -27,14 +25,14 @@ class VerifyCsrfToken(Middleware):
         return request
 
     def after(self, request, response):
-        request.cookie("csrf_token", request.cookie("SESSID"))
         return request
 
-    def create_token(self, request):
-        return request.cookie("SESSID")
+    def create_token(self, request, response):
+        session = request.cookie("SESSID")
+        response.cookie("csrf_token", session)
+        return session
 
     def verify_token(self, request, token):
-
         if self.in_exempt(request):
             return True
         if request.is_not_safe() and not token:

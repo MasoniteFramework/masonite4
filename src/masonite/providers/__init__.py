@@ -13,4 +13,7 @@ from .CacheProvider import CacheProvider
 from ..events.providers import EventProvider
 from ..filesystem.providers import StorageProvider
 from ..broadcasting.providers import BroadcastProvider
+from ..scheduling.providers import ScheduleProvider
+from ..essentials.providers.HashIDProvider import HashIDProvider
 from .HashServiceProvider import HashServiceProvider
+from ..validation.providers import ValidationProvider

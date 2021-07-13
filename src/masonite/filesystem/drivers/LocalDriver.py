@@ -1,6 +1,8 @@
 import os
 from shutil import copyfile, move
 from ..FileStream import FileStream
+import uuid
+import os
 
 
 class LocalDriver:
@@ -17,10 +19,28 @@ class LocalDriver:
         self.make_file_path_if_not_exists(file_path)
         return file_path
 
+    def get_name(self, path, alias):
+        extension = os.path.splitext(path)[1]
+        return f"{alias}{extension}"
+
     def put(self, file_path, content):
-        with open(self.get_path(file_path), "w") as f:
+        with open(self.get_path(os.path.join(file_path)), "w") as f:
             f.write(content)
         return content
+
+    def put_file(self, file_path, content, name=None):
+        file_name = self.get_name(content.name, name or str(uuid.uuid4()))
+
+        if hasattr(content, "get_content"):
+            content = content.get_content()
+
+        if isinstance(content, str):
+            content = bytes(content, "utf-8")
+
+        with open(self.get_path(os.path.join(file_path, file_name)), "wb") as f:
+            f.write(content)
+
+        return os.path.join(file_path, file_name)
 
     def get(self, file_path):
         try:

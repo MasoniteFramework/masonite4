@@ -2,34 +2,96 @@ from tests import TestCase
 
 
 class TestCookieSession(TestCase):
-    def test_can_set_session(self):
+    def test_can_start_session(self):
+        request = self.make_request()
+        session = self.application.make("session")
+        request.cookie("s_hello", "test")
+        session.start()
+        self.assertEqual(session.get("hello"), "test")
+
+    def test_can_set_and_get_session(self):
         self.make_request()
-        session = self.application.make("session").driver("cookie")
+        session = self.application.make("session")
+        session.start()
+        session.set("key1", "test1")
+        self.assertEqual(session.get("key1"), "test1")
 
-        session.set("key", "value")
-        self.assertEqual(session.get("key"), "value")
-
-    def test_can_set_session_flash(self):
+    def test_can_increment_and_decrement_session(self):
         self.make_request()
-        session = self.application.make("session").driver("cookie")
+        session = self.application.make("session")
+        session.start()
+        session.set("key1", "1")
+        session.set("key5", "5")
+        session.increment("key1")
+        session.decrement("key5")
+        self.assertEqual(session.get("key1"), "2")
+        self.assertEqual(session.get("key5"), "4")
 
-        session.flash("key", "value")
-        self.assertEqual(session.get("key"), "value")
-
-        self.assertEqual(session.get_flashed_messages(), {"key": "value"})
-        self.assertFalse(session.get("key"))
-
-    def test_can_set_session_delete(self):
+    def test_can_save_session(self):
         self.make_request()
-        session = self.application.make("session").driver("cookie")
+        response = self.make_response()
+        session = self.application.make("session")
+        session.start()
+        session.set("key1", "test1")
+        session.save()
+        self.assertEqual(response.cookie("s_key1"), "test1")
 
-        session.set("key", "value")
+    def test_can_delete_session(self):
+        request = self.make_request()
+        response = self.make_response()
+        session = self.application.make("session")
+        request.cookie("s_key", "test")
+        session.start()
+
+        self.assertEqual(session.get("key"), "test")
+
         session.delete("key")
+        self.assertEqual(session.get("key"), None)
 
-        self.assertFalse(session.get("key"))
+        session.save()
+        self.assertEqual(response.cookie("s_key"), None)
+        self.assertTrue("s_key" in response.cookie_jar.deleted_cookies)
 
-    def test_can_get_errors(self):
-        self.make_request()
-        session = self.application.make("session").driver("cookie")
-        session.flash("errors", {"email": ["Your email is not available"]})
-        self.assertEqual(session.get_error_messages(), ["Your email is not available"])
+    def test_can_pull_session(self):
+        request = self.make_request()
+        response = self.make_response()
+        session = self.application.make("session")
+        request.cookie("s_key", "test")
+        session.start()
+
+        self.assertEqual(session.get("key"), "test")
+
+        key = session.pull("key")
+        self.assertEqual(key, "test")
+        self.assertEqual(session.get("key"), None)
+
+        session.save()
+        self.assertEqual(response.cookie("s_key"), None)
+        self.assertTrue("s_key" in response.cookie_jar.deleted_cookies)
+
+    def test_can_flush_session(self):
+        request = self.make_request()
+        response = self.make_response()
+        session = self.application.make("session")
+        request.cookie("s_key", "test")
+        session.start()
+
+        self.assertEqual(session.get("key"), "test")
+
+        session.flush()
+        self.assertEqual(session.get("key"), None)
+        session.save()
+        self.assertEqual(response.cookie("s_key"), None)
+        self.assertTrue("s_key" in response.cookie_jar.deleted_cookies)
+
+    def test_can_flash(self):
+        request = self.make_request()
+        response = self.make_response()
+        session = self.application.make("session")
+        session.start()
+        session.flash("key", "test")
+        self.assertEqual(session.get("key"), "test")
+        self.assertEqual(session.get("key"), None)
+
+        session.save()
+        self.assertEqual(response.cookie("f_key"), None)

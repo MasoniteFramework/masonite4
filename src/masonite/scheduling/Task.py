@@ -61,6 +61,10 @@ class Task:
         self.run_at = run_time
         return self
 
+    def at_twice(self, run_time):
+        self.twice_daily = run_time
+        return self
+
     def daily_at(self, run_time):
         return self.daily().at(run_time)
 
