@@ -21,10 +21,10 @@ class ValidationProvider(Provider):
 
         MessageBag.get_errors = self._get_errors
         self.application.make("view").share({"bag": MessageBag.view_helper})
-        self.application.make("response").with_errors = self.with_errors
 
     def boot(self, validator: Validator):
         validator.extend(ValidationFactory().registry)
+        # self.application.make("response").with_errors = self.with_errors
 
     def _get_errors(self):
         request = self.application.make("request")
