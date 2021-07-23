@@ -109,13 +109,15 @@ class WelcomeController(Controller):
         request.app.make("session").flash("key", "value")
         return "session"
 
-    def session_with_errors(self, request: Request):
+    def session_with_errors(self, request: Request, response: Response):
         request.app.make("session").flash("key", "value")
-        request.app.make("session").flash(
-            "errors",
-            {"email": "Email required", "password": "Password too short", "name": ""},
+        # request.app.make("session").flash(
+        #     "errors",
+        #     {"email": "Email required", "password": "Password too short", "name": ""},
+        # )
+        return response.with_errors(
+            {"email": "Email required", "password": "Password too short", "name": ""}
         )
-        return "session"
 
     def session2(self, request: Request):
         request.app.make("session").flash(
