@@ -42,7 +42,7 @@ setup(
         "hashids>=1.3,<1.4",
         "cryptography>=3.3.1,<4.0",
         "tldextract>=2.2,<2.3",
-        "hfilesize>=0.1"
+        "hfilesize>=0.1",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -101,6 +101,8 @@ setup(
         "masonite.filesystem.drivers",
         "masonite.filesystem.providers",
         "masonite.foundation",
+        "masonite.hashing",
+        "masonite.hashing.drivers",
         "masonite.headers",
         "masonite.input",
         "masonite.mail",
