@@ -111,11 +111,14 @@ class WelcomeController(Controller):
 
     def session_with_errors(self, request: Request, response: Response):
         request.app.make("session").flash("key", "value")
-        # request.app.make("session").flash(
-        #     "errors",
-        #     {"email": "Email required", "password": "Password too short", "name": ""},
-        # )
-        return response.with_errors(
+        request.app.make("session").flash(
+            "errors",
+            {"email": "Email required", "password": "Password too short", "name": ""},
+        )
+        return "session"
+
+    def with_errors(self, response: Response):
+        return response.back().with_errors(
             {"email": "Email required", "password": "Password too short", "name": ""}
         )
 
