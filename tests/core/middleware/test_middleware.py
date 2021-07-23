@@ -47,3 +47,16 @@ class TestMiddleware(TestCase):
         self.assertTrue(
             len(capsule.get_route_middleware(["mock", "mock1", "mock2", "mock3"])) == 5
         )
+
+    def test_can_parse_middleware_arguments(self):
+        capsule = MiddlewareCapsule()
+        capsule.add(
+            {
+                "mock": MockMiddleware,
+            }
+        )
+        capsule.add([MockMiddleware])
+        capsule.remove(MockMiddleware)
+        middleware, args = capsule.get_route_middleware(["mock:arg1,arg2"])[0]
+        assert middleware == MockMiddleware
+        assert args == ["arg1", "arg2"]

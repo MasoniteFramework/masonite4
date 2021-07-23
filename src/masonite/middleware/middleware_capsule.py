@@ -28,11 +28,19 @@ class MiddlewareCapsule:
             keys = []
 
         for key in keys:
-            found = self.route_middleware[key]
-            if isinstance(found, list):
-                middlewares += found
+            # middleware_to_run, _ = key.split(":")
+            if ":" in key:
+                # Splits "middleware:arg1,arg2" into ['arg1', 'arg2']
+                middleware_to_run, arguments = key.split(":")
+                arguments = arguments.split(",")
             else:
-                middlewares += [found]
+                middleware_to_run = key
+                arguments = []
+            found = self.route_middleware[middleware_to_run]
+            if isinstance(found, list):
+                middlewares += (found, arguments)
+            else:
+                middlewares += [(found, arguments)]
         return middlewares
 
     def get_http_middleware(self):
