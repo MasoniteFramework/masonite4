@@ -9,8 +9,8 @@ class TestView(TestCase):
         self.view = View(Application(os.getcwd()))
         self.view.add("tests/integrations/templates")
 
-    def test_can_render_view(self):
-        self.assertTrue("Welcome" in self.view.render("welcome").get_content())
+    # def test_can_render_view(self):
+    #     self.assertTrue("Welcome" in self.view.render("welcome").get_content())
 
     def test_can_pass_dict(self):
         self.assertTrue(

@@ -63,6 +63,14 @@ class TestInput(TestCase):
         bag.load({"QUERY_STRING": "hello=you&goodbye=me&name=Joe"})
         self.assertEqual(bag.only("hello", "name"), {"hello": "you", "name": "Joe"})
 
+    def test_only_array_based_inputs(self):
+        bag = InputBag()
+        bag.load({"QUERY_STRING": "user[]=user1&user[]=user2"})
+        self.assertEqual(bag.get("user[]"), ["user1", "user2"])
+        bag = InputBag()
+        bag.load({"QUERY_STRING": "user[user1]=value&user[user2]=value"})
+        self.assertEqual(bag.get("user"), {"user1": "value", "user2": "value"})
+
     def test_can_parse_post_params(self):
         bag = InputBag()
         bag.load({"wsgi.input": self.post_data, "CONTENT_TYPE": "application/json"})
@@ -77,3 +85,20 @@ class TestInput(TestCase):
             }
         )
         self.assertEqual(bag.get("jack"), "Daniels")
+
+    def test_advanced_dict_parse(self):
+        bag = InputBag()
+        inputs = bag.parse_dict(
+            {"user[][name]": ["Joe"], "user[][email]": ["joe@masoniteproject.com"]}
+        )
+        self.assertEqual(
+            inputs, {"user": [{"name": "Joe"}, {"email": "joe@masoniteproject.com"}]}
+        )
+        inputs = bag.parse_dict(
+            {"user[name]": ["Joe"], "user[email]": ["joe@masoniteproject.com"]}
+        )
+        self.assertEqual(
+            inputs, {"user": {"email": "joe@masoniteproject.com", "name": "Joe"}}
+        )
+        # inputs = bag.parse_dict({'user[options][name]': ['Joe'], 'user[options][email]': ['joe@masoniteproject.com']})
+        # self.assertEqual(inputs, {'user': {"options": {'email': 'joe@masoniteproject.com', 'name': 'Joe'}}}

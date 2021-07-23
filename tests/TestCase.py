@@ -15,14 +15,11 @@ from src.masonite.environment import LoadEnvironment
 class TestCase(TestCase):
     def setUp(self):
         super().setUp()
-        self.application.bind(
-            "router",
-            Router(
-                Route.set_controller_module_location(
-                    "tests.integrations.controllers"
-                ).get("/", "WelcomeController@show"),
-                Route.set_controller_module_location(
-                    "tests.integrations.controllers"
-                ).post("/", "WelcomeController@show"),
+        self.addRoutes(
+            Route.set_controller_module_location("tests.integrations.controllers").get(
+                "/", "WelcomeController@show"
+            ),
+            Route.set_controller_module_location("tests.integrations.controllers").post(
+                "/", "WelcomeController@show"
             ),
         )

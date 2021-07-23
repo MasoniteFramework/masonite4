@@ -1,6 +1,7 @@
 import os
 from shutil import copyfile, move
 from ..FileStream import FileStream
+import uuid
 
 
 class AmazonS3Driver:
@@ -33,11 +34,26 @@ class AmazonS3Driver:
     def get_bucket(self):
         return self.options.get("bucket")
 
+    def get_name(self, path, alias):
+        extension = os.path.splitext(path)[1]
+        return f"{alias}{extension}"
+
     def put(self, file_path, content):
         self.get_connection().resource("s3").Bucket(self.get_bucket()).put_object(
             Key=file_path, Body=content
         )
         return content
+
+    def put_file(self, file_path, content, name=None):
+        file_name = self.get_name(content.name, name or str(uuid.uuid4()))
+
+        if hasattr(content, "get_content"):
+            content = content.get_content()
+
+        self.get_connection().resource("s3").Bucket(self.get_bucket()).put_object(
+            Key=os.path.join(file_path, file_name), Body=content
+        )
+        return os.path.join(file_path, file_name)
 
     def get(self, file_path):
         try:

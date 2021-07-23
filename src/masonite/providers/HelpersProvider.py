@@ -1,6 +1,7 @@
 import builtins
 from ..providers import Provider
 from ..utils.helpers import AssetHelper, UrlHelper
+from jinja2 import Markup
 
 
 class HelpersProvider(Provider):
@@ -17,8 +18,12 @@ class HelpersProvider(Provider):
         self.application.make("view").share(
             {
                 "request": lambda: request,
+                "session": lambda: request.app.make("session"),
                 "auth": request.user,
                 "cookie": request.cookie,
+                "back": lambda url=request.get_path(): (
+                    Markup(f"<input type='hidden' name='__back' value='{url}' />")
+                ),
                 "asset": AssetHelper(self.application).asset,
                 "url": UrlHelper(self.application).url,
                 "route": lambda name, params={}: (

@@ -46,7 +46,7 @@ class TestTestCase(TestCase):
             CustomTestResponse, OtherCustomTestResponse
         )
         # can use default assertions and custom from different classes
-        self.get("/").assertContains("welcome").assertCustom().assertOtherCustom()
+        self.get("/").assertContains("Welcome").assertCustom().assertOtherCustom()
 
     def test_fake_time(self):
         given_date = pendulum.datetime(2015, 2, 5)
@@ -120,8 +120,8 @@ class TestTestingAssertions(TestCase):
         )
 
     def test_assert_contains(self):
-        self.get("/").assertContains("hello")
-        self.get("/").assertNotContains("welcome")
+        self.get("/").assertContains("Welcome")
+        self.get("/").assertNotContains("hello")
 
     def test_assert_is_named(self):
         self.get("/test").assertIsNamed("test")
@@ -169,7 +169,7 @@ class TestTestingAssertions(TestCase):
 
     def test_assert_request_with_headers(self):
         request = self.withHeaders({"X-TEST": "value"}).get("/").request
-        assert request.header("X-Test").value == "value"
+        assert request.header("X-Test") == "value"
 
     def test_assert_redirect_to_url(self):
         self.get("/test-redirect-1").assertRedirect("/")
@@ -216,8 +216,7 @@ class TestTestingAssertions(TestCase):
         with self.assertRaises(ValueError):
             self.get("/test-json").assertViewIs("test")
         # string response
-        with self.assertRaises(ValueError):
-            self.get("/test").assertViewIs("test")
+        self.get("/test").assertViewIs("welcome")
 
     def test_assert_view_has_exact(self):
         self.get("/view-context").assertViewHasExact(["users", "count", "other_key"])

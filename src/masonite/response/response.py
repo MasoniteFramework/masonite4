@@ -7,6 +7,7 @@ from pathlib import Path
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
 from ..utils.helpers import response_statuses, compile_route_to_url
+from ..cookies import CookieJar
 
 
 class Response:
@@ -22,6 +23,7 @@ class Response:
         self._status = None
         self.statuses = response_statuses()
         self.header_bag = HeaderBag()
+        self.cookie_jar = CookieJar()
         self.original = None
 
     def json(self, payload, status=200):
@@ -64,6 +66,19 @@ class Response:
 
     def get_headers(self):
         return self.header_bag.render()
+
+    def cookie(self, name, value=None, **options):
+        if value is None:
+            cookie = self.cookie_jar.get(name)
+            if not cookie:
+                return
+            return cookie.value
+
+        return self.cookie_jar.add(name, value, **options)
+
+    def delete_cookie(self, name):
+        self.cookie_jar.delete(name)
+        return self
 
     def get_response_content(self):
         return self.data()
@@ -172,7 +187,7 @@ class Response:
         return self.data()
 
     def back(self):
-        return self.redirect(url=self.app.make("request").get_path())
+        return self.redirect(url=self.app.make("request").get_back_path())
 
     def redirect(self, location=None, name=None, params={}, url=None, status=302):
         """Set the redirection on the server.

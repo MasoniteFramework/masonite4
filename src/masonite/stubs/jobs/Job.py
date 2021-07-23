@@ -1,6 +1,6 @@
 from masonite.queues import Queueable
 
 
-class SayHello(Queueable):
+class __class__(Queueable):
     def handle(self):
         pass

@@ -31,7 +31,7 @@ class TestFileCache(TestCase):
         time.sleep(2)
         self.assertEqual(self.driver.get("expire"), None)
 
-    def test_will_get_not_yet_expired(self):
+    def test_will_get_not_expired(self):
         self.driver.put("expire", "1", 20)
         self.assertEqual(self.driver.get("expire"), "1")
 

@@ -1,7 +1,7 @@
 from masoniteorm.migrations import Migration
 
 
-class CreateQueueJobsTable(Migration):
+class CreateFailedJobsTable(Migration):
     def up(self):
         """Run the migrations."""
         with self.schema.create("failed_jobs") as table:

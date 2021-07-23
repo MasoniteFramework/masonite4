@@ -55,13 +55,13 @@ class Mailable:
         self.html_content = content
         return self
 
-    def view(self, view, data):
+    def view(self, view, data={}):
         return self.html(
             self.application.make("view").render(view, data).rendered_template
         )
 
     def priority(self, priority):
-        self._priority = priority
+        self._priority = str(priority)
         return self
 
     def high_priority(self):

@@ -2,9 +2,11 @@ from ..cookies import CookieJar
 from ..headers import HeaderBag, Header
 from ..input import InputBag
 import re
+import tldextract
+from .validation import ValidatesRequest
 
 
-class Request:
+class Request(ValidatesRequest):
     def __init__(self, environ):
         """Request class constructor.
 
@@ -18,6 +20,8 @@ class Request:
         self.cookie_jar = CookieJar()
         self.header_bag = HeaderBag()
         self.input_bag = InputBag()
+        self.params = {}
+        self._user = None
         self.load()
 
     def load(self):
@@ -25,8 +29,20 @@ class Request:
         self.header_bag.load(self.environ)
         self.input_bag.load(self.environ)
 
+    def load_params(self, params=None):
+        if not params:
+            params = {}
+
+        self.params.update(params)
+
+    def param(self, param, default=""):
+        return self.params.get(param, default)
+
     def get_path(self):
         return self.environ.get("PATH_INFO")
+
+    def get_back_path(self):
+        return self.input("__back") or self.get_path()
 
     def get_request_method(self):
         return self.environ.get("REQUEST_METHOD")
@@ -64,7 +80,10 @@ class Request:
 
     def header(self, name, value=None):
         if value is None:
-            return self.header_bag.get(name)
+            header = self.header_bag.get(name)
+            if not header:
+                return
+            return header.value
         else:
             return self.header_bag.add(Header(name, value))
 
@@ -103,3 +122,15 @@ class Request:
         regex = re.compile(route.replace("*", "[a-zA-Z0-9_]+"))
 
         return regex.match(self.get_path())
+
+    def get_subdomain(self, exclude_www=True):
+        url = tldextract.extract(self.get_host())
+        if url.subdomain == "" or (
+            url.subdomain and exclude_www and url.subdomain == "www"
+        ):
+            return None
+
+        return url.subdomain
+
+    def get_host(self):
+        return self.environ.get("HTTP_HOST")

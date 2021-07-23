@@ -211,21 +211,16 @@ class Container:
                         "This container is not set to resolve parameters. You can set this in the container"
                         " constructor using the 'resolve_parameters=True' keyword argument."
                     )
-        try:
-            if self.remember:
-                if not inspect.ismethod(obj):
-                    self._remembered[obj] = objects
-                else:
-                    signature = "{}.{}.{}".format(
-                        obj.__module__, obj.__self__.__class__.__name__, obj.__name__
-                    )
-                    self._remembered[signature] = objects
-            return obj(*objects)
-        except (TypeError,) as e:
-            exception = ContainerError
-            exception.from_obj = obj
 
-            raise exception(str(e) + " while calling {}".format(obj)) from e
+        if self.remember:
+            if not inspect.ismethod(obj):
+                self._remembered[obj] = objects
+            else:
+                signature = "{}.{}.{}".format(
+                    obj.__module__, obj.__self__.__class__.__name__, obj.__name__
+                )
+                self._remembered[signature] = objects
+        return obj(*objects)
 
     def collect(self, search):
         """Fetch a dictionary of objects using a search query.
