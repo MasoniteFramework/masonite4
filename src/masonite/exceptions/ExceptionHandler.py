@@ -38,7 +38,7 @@ class ExceptionHandler:
                 f"{exception.__class__.__name__}Handler"
             ).handle(exception)
 
-        if getattr(exception, "get_response"):
+        if hasattr(exception, "get_response"):
             return response.view(exception.get_response())
 
         handler = Handler(exception)
