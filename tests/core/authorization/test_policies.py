@@ -14,7 +14,7 @@ class Post(Model):
     __fillable__ = ["user_id", "name"]
 
 
-class TestGate(TestCase):
+class TestPolicies(TestCase):
     def setUp(self):
         super().setUp()
         self.gate = self.application.make("gate")
@@ -23,9 +23,7 @@ class TestGate(TestCase):
     def tearDown(self):
         super().tearDown()
         self.gate.policies = {}
-        # self.gate.permissions = {}
-        # self.gate.before_callbacks = []
-        # self.gate.after_callbacks = []
+        self.gate.permissions = {}
 
     def test_can_register_policies(self):
         self.gate.register_policies([(Post, PostPolicy)])
@@ -45,3 +43,26 @@ class TestGate(TestCase):
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
 
         self.assertTrue(self.gate.allows("create", Post))
+
+    def test_using_policy_returning_response(self):
+        self.gate.register_policies([(Post, PostPolicy)])
+        # authenticates user 1
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        post = Post()
+        post.user_id = 3
+        response = self.gate.inspect("delete", post)
+        self.assertFalse(response.allowed())
+        self.assertEqual(response.message(), "You do not own this post")
+
+    def test_that_use_defined_gate_if_no_policy_match(self):
+        self.gate.define("update", lambda user, post: user.id == post.user_id)
+        post = Post()
+        post.user_id = 1
+        # authenticates user 1
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        # here no policy has been defined, the gate defined above will be used
+        self.assertTrue(self.gate.allows("update", post))
+
+    def test_that_policy_can_allow_guest_users(self):
+        self.gate.register_policies([(Post, PostPolicy)])
+        self.assertTrue(self.gate.allows("view_any", Post))

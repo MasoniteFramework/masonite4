@@ -53,6 +53,17 @@ class TestGate(TestCase):
 
         self.assertEqual(self.gate.define, Gate.define)
 
+    def test_denies_guests_users(self):
+        self.gate.define("create-post", lambda user: True)
+        # above permission should always been allowed but user is not authenticated
+        self.assertTrue(self.gate.denies("create-post"))
+
+    def test_allows_guests_users_if_specified(self):
+        # it can be specified by allowing user to be optional
+        self.gate.define("create-post", lambda user=None: True)
+        # above permission should always been allowed even for guests users
+        self.assertTrue(self.gate.allows("create-post"))
+
     def test_allows_and_denies(self):
         self.gate.define(
             "create-post", lambda user: user.email == "idmann509@gmail.com"

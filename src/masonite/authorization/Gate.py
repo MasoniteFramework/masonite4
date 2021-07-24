@@ -103,10 +103,6 @@ class Gate:
         """The core of the authorization class. Run before() checks, permission check and then
         after() checks."""
         user = self._get_user()
-        # when no user is authenticated always return False
-        # TODO: allow guest permission checking, check how Laravel handles this
-        if not user:
-            return False
 
         # run before checks and returns immediately if non null response
         result = None
@@ -127,8 +123,18 @@ class Gate:
             if not permission_method:
                 # else check in gates
                 permission_method = self.permissions[permission]
+
             params = signature(permission_method).parameters
-            if len(params) == 1:
+            # check if user parameter is optional (meaning that guests users are allowed)
+            if (
+                permission_method.__defaults__
+                and permission_method.__defaults__[0] is None
+                and not user
+            ):
+                result = True
+            elif not user:
+                result = False
+            elif len(params) == 1:
                 result = permission_method(user)
             else:
                 result = permission_method(user, *args)
