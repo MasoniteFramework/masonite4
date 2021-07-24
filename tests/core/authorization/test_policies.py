@@ -66,3 +66,11 @@ class TestPolicies(TestCase):
     def test_that_policy_can_allow_guest_users(self):
         self.gate.register_policies([(Post, PostPolicy)])
         self.assertTrue(self.gate.allows("view_any", Post))
+
+    def test_any_on_policy(self):
+        self.gate.register_policies([(Post, PostPolicy)])
+        post = Post()
+        post.user_id = 1
+        # authenticates user 1
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        self.assertTrue(self.gate.any(["update", "delete"], post))

@@ -140,12 +140,25 @@ class TestGate(TestCase):
         self.gate.after(lambda user, permission, result: False)
         # a permission that is always False
         self.gate.define("display-admin", lambda user: True)
-        # authenticate user
+        # authenticate user 1
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         self.assertTrue(self.gate.denies("display-admin"))
 
     def test_any(self):
-        pass
+        self.gate.define("delete-post", lambda user, post: True)
+        self.gate.define("update-post", lambda user, post: user.id == post.user_id)
+        # authenticate user 1
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        post = Post()
+        post.user_id = 1
+        self.assertTrue(self.gate.any(["update-post", "delete-post"], post))
 
     def test_none(self):
-        pass
+        self.gate.define("force-delete-post", lambda user, post: False)
+        self.gate.define(
+            "restore-post", lambda user, post: user.email == "admin@gmail.com"
+        )
+        # authenticate user 1
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        post = Post()
+        self.assertTrue(self.gate.none(["force-delete-post", "restore-post"], post))
