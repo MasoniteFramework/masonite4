@@ -98,6 +98,12 @@ class TestGate(TestCase):
             "Action not authorized"
         )
 
+    def test_inspect(self):
+        self.gate.define("display-admin", lambda user: False)
+        response = self.gate.inspect("display-admin")
+        self.assertIsInstance(response, AuthorizationResponse)
+        self.assertFalse(response.allowed())
+
     def test_define_gate_returning_response(self):
         self.gate.define(
             "display-admin",
