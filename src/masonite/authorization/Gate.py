@@ -19,12 +19,12 @@ class Gate:
 
     def before(self, before_callback):
         if not callable(before_callback):
-            raise Exception(f"before() should be given a callable.")
+            raise Exception("before() should be given a callable.")
         self.before_callbacks.append(before_callback)
 
     def after(self, after_callback):
         if not callable(after_callback):
-            raise Exception(f"before() should be given a callable.")
+            raise Exception("before() should be given a callable.")
         self.after_callbacks.append(after_callback)
 
     def allows(self, permission, *args):
