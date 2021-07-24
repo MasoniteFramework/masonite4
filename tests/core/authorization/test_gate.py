@@ -26,6 +26,8 @@ class TestGate(TestCase):
     def tearDown(self):
         super().tearDown()
         self.gate.permissions = {}
+        self.gate.before_callbacks = []
+        self.gate.after_callbacks = []
 
     def test_can_define_gates(self):
         self.gate.define(
@@ -116,3 +118,11 @@ class TestGate(TestCase):
         # authenticate user
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         self.assertTrue(self.gate.allows("display-admin"))
+
+    def test_gate_after(self):
+        self.gate.after(lambda user, permission, result: False)
+        # a permission that is always False
+        self.gate.define("display-admin", lambda user: True)
+        # authenticate user
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        self.assertTrue(self.gate.denies("display-admin"))

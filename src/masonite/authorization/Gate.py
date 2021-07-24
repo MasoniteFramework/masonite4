@@ -40,9 +40,11 @@ class Gate:
         return Gate(self.application, lambda: user)
 
     def any(self, permissions, *args):
+        # TODO:
         pass
 
     def none(self, permissions, *args):
+        # TODO:
         pass
 
     def authorize(self, permission, *args):
@@ -72,10 +74,13 @@ class Gate:
                 break
 
         # run permission checks if nothing returned previously
-        if not result:
+        if result is None:
             result = self.permissions[permission](user, *args)
 
         # run after checks
+        for callback in self.after_callbacks:
+            after_result = callback(user, permission, result)
+            result = after_result if after_result is not None else result
 
         return result
 
