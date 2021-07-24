@@ -21,9 +21,9 @@ class TestAuthorizes(TestCase):
         Gate.define("create-post", lambda user: user.email == "idmann509@gmail.com")
         self.assertTrue(user.can("create-post"))
 
-    def test_user_cant(self):
+    def test_user_cannot(self):
         user = User.find(1)
         Gate.define("delete-post", lambda user: False)
-        self.assertTrue(user.cant("delete-post"))
+        self.assertTrue(user.cannot("delete-post"))
         Gate.define("view-admin-panel", lambda user: user.email == "admin@gmail.com")
-        self.assertTrue(user.cant("view-admin-panel"))
+        self.assertTrue(user.cannot("view-admin-panel"))
