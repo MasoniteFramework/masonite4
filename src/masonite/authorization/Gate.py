@@ -1,3 +1,6 @@
+from inspect import isclass, signature
+from masoniteorm import Model
+
 from .AuthorizationResponse import AuthorizationResponse
 
 
@@ -6,7 +9,7 @@ class Gate:
         self,
         application,
         user_callback=None,
-        policies=[],
+        policies={},
         permissions={},
         before_callbacks=[],
         after_callbacks=[],
@@ -24,6 +27,26 @@ class Gate:
             raise Exception(f"Permission {permission} should be given a callable.")
 
         self.permissions.update({permission: condition})
+
+    def register_policies(self, policies):
+        for model_class, policy_class in policies:
+            self.policies[model_class] = policy_class
+        return self
+
+    # Gate.allows("update", post)
+    # Gate.allows("create", "Post")
+    def get_policy_for(self, instance):
+        if isinstance(instance, Model):
+            policy = self.policies.get(instance.__class__, None)
+        elif isclass(instance):
+            policy = self.policies.get(instance, None)
+        elif isinstance(instance, str):
+            # TODO: load model from str, get class and get policies
+            policy = None
+        if policy:
+            return policy()
+        else:
+            return None
 
     def before(self, before_callback):
         if not callable(before_callback):
@@ -80,6 +103,10 @@ class Gate:
         """The core of the authorization class. Run before() checks, permission check and then
         after() checks."""
         user = self._get_user()
+        # when no user is authenticated always return False
+        # TODO: allow guest permission checking, check how Laravel handles this
+        if not user:
+            return False
 
         # run before checks and returns immediately if non null response
         result = None
@@ -90,7 +117,21 @@ class Gate:
 
         # run permission checks if nothing returned previously
         if result is None:
-            result = self.permissions[permission](user, *args)
+            # first check in policy
+            permission_method = None
+            if len(args) > 0:
+                policy = self.get_policy_for(args[0])
+                if policy:
+                    permission_method = getattr(policy, permission)
+
+            if not permission_method:
+                # else check in gates
+                permission_method = self.permissions[permission]
+            params = signature(permission_method).parameters
+            if len(params) == 1:
+                result = permission_method(user)
+            else:
+                result = permission_method(user, *args)
 
         # run after checks
         for callback in self.after_callbacks:
