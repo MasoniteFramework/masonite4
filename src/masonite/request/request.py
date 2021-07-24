@@ -4,9 +4,10 @@ from ..input import InputBag
 import re
 import tldextract
 from .validation import ValidatesRequest
+from ..authorization import AuthorizesRequest
 
 
-class Request(ValidatesRequest):
+class Request(ValidatesRequest, AuthorizesRequest):
     def __init__(self, environ):
         """Request class constructor.
 

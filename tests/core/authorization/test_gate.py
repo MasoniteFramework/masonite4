@@ -21,7 +21,12 @@ class TestGate(TestCase):
         super().setUp()
         self.gate = self.application.make("gate")
         self.make_request()
-        self.setRoutes(Route.get("/not-authorized", "WelcomeController@not_authorized"))
+        self.setRoutes(
+            Route.get("/not-authorized", "WelcomeController@not_authorized"),
+            Route.get(
+                "/authorize-helper", "WelcomeController@use_authorization_helper"
+            ),
+        )
 
     def tearDown(self):
         super().tearDown()
@@ -162,3 +167,10 @@ class TestGate(TestCase):
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         post = Post()
         self.assertTrue(self.gate.none(["force-delete-post", "restore-post"], post))
+
+    # def test_can_use_authorize_helper_on_request(self):
+    #     self.gate.define("display-admin", lambda user: True)
+    #     # authenticate user : here it does not work => no user in request inside Gate...
+    #     # something is going on
+    #     self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+    #     self.get("/authorize-helper").assertOk()

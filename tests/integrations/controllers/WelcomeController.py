@@ -132,4 +132,7 @@ class WelcomeController(Controller):
 
     def not_authorized(self):
         # if current user not authorized it will raise an exception
-        Gate.authorize("display-admin").authorize()
+        Gate.authorize("display-admin")
+
+    def use_authorization_helper(self, request: Request):
+        request.authorize("display-admin")
