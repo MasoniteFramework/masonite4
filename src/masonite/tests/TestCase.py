@@ -74,7 +74,7 @@ class TestCase(unittest.TestCase):
         self.application.bind("response", request)
         return request
 
-    def with_exceptions_handling(self):
+    def withExceptionsHandling(self):
         self._exception_handling = True
 
     def fetch(self, route, data=None, method=None):
