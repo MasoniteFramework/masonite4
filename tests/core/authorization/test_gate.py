@@ -1,7 +1,7 @@
 from tests import TestCase
 from masoniteorm.models import Model
 
-from src.masonite.exceptions.exceptions import AuthorizationException
+from src.masonite.exceptions.exceptions import AuthorizationException, GateDoesNotExist
 from src.masonite.authorization import AuthorizationResponse
 from src.masonite.routes import Route
 
@@ -26,6 +26,7 @@ class TestGate(TestCase):
             Route.get(
                 "/authorize-helper", "WelcomeController@use_authorization_helper"
             ),
+            Route.get("/welcome", "WelcomeController@view"),
         )
 
     def tearDown(self):
@@ -167,6 +168,19 @@ class TestGate(TestCase):
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         post = Post()
         self.assertTrue(self.gate.none(["force-delete-post", "restore-post"], post))
+
+    def test_unknown_gate_raises_exception(self):
+        with self.assertRaises(GateDoesNotExist):
+            self.gate.allows("can-fly")
+
+    def test_view_helpers(self):
+        self.gate.define("view-posts", lambda user=None: True)
+        self.gate.define(
+            "display-admin", lambda user: user.email == "idmann509@gmail.com"
+        )
+        self.get("/welcome").assertContains("User can view posts").assertContains(
+            "User cannot display admin"
+        )
 
     # def test_can_use_authorize_helper_on_request(self):
     #     self.gate.define("display-admin", lambda user: True)

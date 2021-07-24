@@ -2,6 +2,7 @@ from tests import TestCase
 from masoniteorm.models import Model
 
 from tests.integrations.policies.PostPolicy import PostPolicy
+from src.masonite.exceptions.exceptions import PolicyDoesNotExist
 
 
 class User(Model):
@@ -74,3 +75,8 @@ class TestPolicies(TestCase):
         # authenticates user 1
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         self.assertTrue(self.gate.any(["update", "delete"], post))
+
+    def test_unknown_policy_method_raises_exception(self):
+        self.gate.register_policies([(Post, PostPolicy)])
+        with self.assertRaises(PolicyDoesNotExist):
+            self.gate.allows("can-fly", Post)

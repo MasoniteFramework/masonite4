@@ -29,5 +29,7 @@ class HelpersProvider(Provider):
                     self.application.make("base_url")
                     + self.application.make("router").route(name, params)
                 ),
+                "can": self.application.make("gate").allows,
+                "cannot": self.application.make("gate").denies,
             }
         )

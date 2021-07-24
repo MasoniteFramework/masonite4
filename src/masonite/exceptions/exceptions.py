@@ -122,3 +122,10 @@ class AuthorizationException(Exception):
 
     def get_response(self):
         return self.message, self.code
+
+
+class GateDoesNotExist(Exception):
+    pass
+
+class PolicyDoesNotExist(Exception):
+    pass

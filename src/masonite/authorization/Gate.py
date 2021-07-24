@@ -2,6 +2,7 @@ from inspect import isclass, signature
 from masoniteorm import Model
 
 from .AuthorizationResponse import AuthorizationResponse
+from ..exceptions.exceptions import GateDoesNotExist, PolicyDoesNotExist
 
 
 class Gate:
@@ -122,11 +123,21 @@ class Gate:
             if len(args) > 0:
                 policy = self.get_policy_for(args[0])
                 if policy:
-                    permission_method = getattr(policy, permission)
+                    try:
+                        permission_method = getattr(policy, permission)
+                    except AttributeError:
+                        raise PolicyDoesNotExist(
+                            f"Policy method {permission} not found in {policy.__class__.__name__}."
+                        )
 
             if not permission_method:
                 # else check in gates
-                permission_method = self.permissions[permission]
+                try:
+                    permission_method = self.permissions[permission]
+                except KeyError:
+                    raise GateDoesNotExist(
+                        f"Gate {permission} has not been found. Did you declare it ?"
+                    )
 
             params = signature(permission_method).parameters
             # check if user parameter is optional (meaning that guests users are allowed)

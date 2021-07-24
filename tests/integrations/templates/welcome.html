@@ -20,6 +20,12 @@ Hello. Setup chat connection here
         <button type="submit">Submit</button>
         <!-- <a href="/flash_data">Flash Data to session</a> -->
     </form>
+    {% if can("view-posts") %}
+    <p>User can view posts</p>
+    {% endif %}
+    {% if cannot("display-admin") %}
+    <p>User cannot display admin</p>
+    {% endif %}
     <script>
         const pusher = new Pusher("", {
             authEndpoint: '/broadcasting/authorize',
