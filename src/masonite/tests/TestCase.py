@@ -25,8 +25,10 @@ class TestCase(unittest.TestCase):
         if hasattr(self, "startTestRun"):
             self.startTestRun()
         self.withoutCsrf()
+        self._exception_handling = False
 
     def tearDown(self):
+        self._exception_handling = False
         if hasattr(self, "stopTestRun"):
             self.stopTestRun()
 
@@ -72,6 +74,9 @@ class TestCase(unittest.TestCase):
         self.application.bind("response", request)
         return request
 
+    def with_exceptions_handling(self):
+        self._exception_handling = True
+
     def fetch(self, route, data=None, method=None):
         if data is None:
             data = {}
@@ -101,7 +106,7 @@ class TestCase(unittest.TestCase):
             self.application,
             wsgi_request,
             self.mock_start_response,
-            exception_handling=False,
+            exception_handling=self._exception_handling,
         )
         # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():

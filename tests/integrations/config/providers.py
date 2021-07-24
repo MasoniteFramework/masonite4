@@ -13,6 +13,7 @@ from src.masonite.providers import (
     HelpersProvider,
     BroadcastProvider,
     AuthenticationProvider,
+    AuthorizationProvider,
     HashServiceProvider,
     ValidationProvider,
 )
@@ -38,5 +39,6 @@ PROVIDERS = [
     BroadcastProvider,
     HashServiceProvider,
     AuthenticationProvider,
+    AuthorizationProvider,
     ValidationProvider,
 ]

@@ -4,7 +4,7 @@ from src.masonite.response.response import Response
 from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
-from src.masonite.facades import Session
+from src.masonite.facades import Gate
 
 
 class CanBroadcast:
@@ -129,3 +129,7 @@ class WelcomeController(Controller):
     def auth(self, request: Request):
         request.app.make("auth").guard("web").attempt("idmann509@gmail.com", "secret")
         return "logged in"
+
+    def not_authorized(self):
+        # if current user not authorized it will raise an exception
+        Gate.authorize("display-admin").authorize()

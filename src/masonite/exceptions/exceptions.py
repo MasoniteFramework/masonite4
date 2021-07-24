@@ -112,3 +112,13 @@ class ProjectTargetNotEmpty(Exception):
 
 class NotificationException(Exception):
     pass
+
+
+class AuthorizationException(Exception):
+    def __init__(self, code, message):
+        super().__init__(self)
+        self.code = code or 403
+        self.message = message or "Action not authorized"
+
+    def get_response(self):
+        return self.message, self.code
