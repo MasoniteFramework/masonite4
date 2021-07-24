@@ -67,6 +67,7 @@ class Kernel:
         self.application.bind("config.cache", "tests.integrations.config.cache")
         self.application.bind("config.broadcast", "tests.integrations.config.broadcast")
         self.application.bind("config.auth", "tests.integrations.config.auth")
+        self.application.bind("policies.location", "tests.integrations.policies")
         self.application.bind(
             "config.notification", "tests.integrations.config.notification"
         )
