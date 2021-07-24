@@ -2,6 +2,7 @@ from tests import TestCase
 from masoniteorm.models import Model
 
 from src.masonite.exceptions.exceptions import AuthorizationException
+from src.masonite.authorization import AuthorizationResponse
 from src.masonite.routes import Route
 
 
@@ -94,3 +95,24 @@ class TestGate(TestCase):
         self.get("/not-authorized").assertForbidden().assertContains(
             "Action not authorized"
         )
+
+    def test_define_gate_returning_response(self):
+        self.gate.define(
+            "display-admin",
+            lambda user: AuthorizationResponse.allow()
+            if user.email == "admin@masonite.com"
+            else AuthorizationResponse.deny("You shall not pass"),
+        )
+        # authenticate user
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        response = self.gate.inspect("display-admin")
+        self.assertFalse(response.allowed())
+        self.assertEqual(response.message(), "You shall not pass")
+
+    def test_gate_before(self):
+        self.gate.before(lambda user, permission: user.email == "idmann509@gmail.com")
+        # a permission that is always False
+        self.gate.define("display-admin", lambda user: False)
+        # authenticate user
+        self.application.make("auth").attempt("idmann509@gmail.com", "secret")
+        self.assertTrue(self.gate.allows("display-admin"))
