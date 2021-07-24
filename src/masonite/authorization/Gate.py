@@ -2,14 +2,22 @@ from .AuthorizationResponse import AuthorizationResponse
 
 
 class Gate:
-    def __init__(self, application, user_callback=None):
+    def __init__(
+        self,
+        application,
+        user_callback=None,
+        policies=[],
+        permissions={},
+        before_callbacks=[],
+        after_callbacks=[],
+    ):
         self.application = application
         self.user_callback = user_callback
 
-        self.policies = []
-        self.permissions = {}
-        self.before_callbacks = []
-        self.after_callbacks = []
+        self.policies = policies
+        self.permissions = permissions
+        self.before_callbacks = before_callbacks
+        self.after_callbacks = after_callbacks
 
     def define(self, permission, condition):
         if not callable(condition):
@@ -37,7 +45,14 @@ class Gate:
         return permission in self.permissions
 
     def for_user(self, user):
-        return Gate(self.application, lambda: user)
+        return Gate(
+            self.application,
+            lambda: user,
+            self.policies,
+            self.permissions,
+            self.before_callbacks,
+            self.after_callbacks,
+        )
 
     def any(self, permissions, *args):
         # TODO:
