@@ -127,5 +127,6 @@ class AuthorizationException(Exception):
 class GateDoesNotExist(Exception):
     pass
 
+
 class PolicyDoesNotExist(Exception):
     pass
