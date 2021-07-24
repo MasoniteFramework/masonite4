@@ -26,7 +26,7 @@ class TestGate(TestCase):
             Route.get(
                 "/authorize-helper", "WelcomeController@use_authorization_helper"
             ),
-            Route.get("/welcome", "WelcomeController@view"),
+            Route.get("/authorizations", "WelcomeController@authorizations"),
         )
 
     def tearDown(self):
@@ -178,9 +178,9 @@ class TestGate(TestCase):
         self.gate.define(
             "display-admin", lambda user: user.email == "idmann509@gmail.com"
         )
-        self.get("/welcome").assertContains("User can view posts").assertContains(
-            "User cannot display admin"
-        )
+        self.get("/authorizations").assertContains(
+            "User can view posts"
+        ).assertContains("User cannot display admin")
 
     # def test_can_use_authorize_helper_on_request(self):
     #     self.gate.define("display-admin", lambda user: True)
