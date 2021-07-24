@@ -33,8 +33,6 @@ class Gate:
             self.policies[model_class] = policy_class
         return self
 
-    # Gate.allows("update", post)
-    # Gate.allows("create", "Post")
     def get_policy_for(self, instance):
         if isinstance(instance, Model):
             policy = self.policies.get(instance.__class__, None)
@@ -78,12 +76,18 @@ class Gate:
         )
 
     def any(self, permissions, *args):
-        # TODO:
-        pass
+        """Check that every of those permissions are allowed."""
+        for permission in permissions:
+            if self.denies(permission, *args):
+                return False
+        return True
 
     def none(self, permissions, *args):
-        # TODO:
-        pass
+        """Check that none of those permissions are allowed."""
+        for permission in permissions:
+            if self.allows(permission, *args):
+                return False
+        return True
 
     def authorize(self, permission, *args):
         return self.inspect(permission, *args).authorize()

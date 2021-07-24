@@ -143,3 +143,9 @@ class TestGate(TestCase):
         # authenticate user
         self.application.make("auth").attempt("idmann509@gmail.com", "secret")
         self.assertTrue(self.gate.denies("display-admin"))
+
+    def test_any(self):
+        pass
+
+    def test_none(self):
+        pass
