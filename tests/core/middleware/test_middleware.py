@@ -64,4 +64,4 @@ class TestMiddleware(TestCase):
             }
         )
 
-        capsule.run_route_middleware(['mock:arg1'], request, response)
+        capsule.run_route_middleware(["mock:arg1"], request, response)
