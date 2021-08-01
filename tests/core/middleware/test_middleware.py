@@ -4,12 +4,18 @@ from tests import TestCase
 
 
 class MockMiddleware:
-    pass
+    def before(self, request, response, arg1):
+        return request
+
+    def after(self, request, response):
+
+        return request
 
 
 class TestMiddleware(TestCase):
     def test_can_create_capsule(self):
         capsule = MiddlewareCapsule()
+        self.assertTrue(capsule)
 
     def test_can_add_middleware(self):
         capsule = MiddlewareCapsule()
@@ -47,3 +53,15 @@ class TestMiddleware(TestCase):
         self.assertTrue(
             len(capsule.get_route_middleware(["mock", "mock1", "mock2", "mock3"])) == 5
         )
+
+    def test_can_run_middleware(self):
+        request = self.make_request()
+        response = self.make_response()
+        capsule = MiddlewareCapsule()
+        capsule.add(
+            {
+                "mock": MockMiddleware,
+            }
+        )
+
+        capsule.run_route_middleware(['mock:arg1'], request, response)

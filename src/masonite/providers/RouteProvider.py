@@ -33,11 +33,9 @@ class RouteProvider(Provider):
         )
         if route:
             request.load_params(route.extract_parameters(request.get_path()))
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(
-                    route.list_middleware
-                ),
-                handler="before",
+            self.application.make("middleware").run_route_middleware(route.list_middleware,
+                request, response,
+                callback="before"
             )
             exception = None
 
@@ -45,20 +43,18 @@ class RouteProvider(Provider):
                 response.view(route.get_response(self.application))
             except Exception as e:
                 exception = e
-                Pipeline(request, response).through(
-                    self.application.make("middleware").get_route_middleware(
-                        route.list_middleware
-                    ),
-                    handler="after",
+                self.application.make("middleware").run_route_middleware(
+                    route.list_middleware,
+                    request, response,
+                    callback="after"
                 )
                 if exception:
                     raise exception
 
-            Pipeline(request, response).through(
-                self.application.make("middleware").get_route_middleware(
-                    route.list_middleware
-                ),
-                handler="after",
+            self.application.make("middleware").run_route_middleware(
+                route.list_middleware,
+                request, response,
+                callback="after"
             )
 
         else:
