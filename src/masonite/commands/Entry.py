@@ -10,7 +10,7 @@ from .ProjectCommand import (
     ProjectCommand,
 )
 
-application = Application("Masonite Starter Version:", 0.1)
+application = Application("Masonite Starter Version:", 4.0)
 
 application.add(ProjectCommand())
 
