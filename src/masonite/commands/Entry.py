@@ -10,9 +10,14 @@ from .ProjectCommand import (
     ProjectCommand,
 )
 
+from .KeyCommand import KeyCommand
+from .InstallCommand import InstallCommand
+
 application = Application("Masonite Starter Version:", 4.0)
 
 application.add(ProjectCommand())
+application.add(KeyCommand())
+application.add(InstallCommand())
 
 if __name__ == "__main__":
     application.run()
