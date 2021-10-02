@@ -1,5 +1,6 @@
 import os
 import platform
+import shutil
 
 
 def make_directory(directory):
@@ -58,3 +59,13 @@ def modified_date(path_to_file):
             # We're probably on Linux. No easy way to get creation dates here,
             # so we'll settle for when its content was last modified.
             return 0
+
+
+def copy_file_or_append(from_location, to_location):
+    if not os.path.isfile(to_location):
+        shutil.copyfile(from_location, to_location)
+    else:
+        with open(from_location, "r") as from_file_pointer, open(
+            os.path.join(os.getcwd(), to_location), "a"
+        ) as to_file_pointer:
+            to_file_pointer.write(from_file_pointer.read())

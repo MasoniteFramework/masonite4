@@ -19,6 +19,7 @@ from src.masonite.providers import (
 
 from src.masonite.scheduling.providers import ScheduleProvider
 from src.masonite.notification.providers import NotificationProvider
+from ..testpackage.TestPackageProvider import TestPackageProvider
 
 PROVIDERS = [
     FrameworkProvider,
@@ -39,4 +40,5 @@ PROVIDERS = [
     HashServiceProvider,
     AuthenticationProvider,
     ValidationProvider,
+    TestPackageProvider,
 ]

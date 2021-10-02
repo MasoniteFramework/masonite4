@@ -1,3 +1,4 @@
+from src.masonite.commands.PublishCommand import PublishCommand
 from .response_handler import response_handler
 from cleo import Application as CommandApplication
 from ..commands import (
@@ -14,6 +15,7 @@ from ..commands import (
     MakeJobCommand,
     MakeMailableCommand,
     MakeProviderCommand,
+    PublishCommand,
 )
 import os
 from ..environment import LoadEnvironment
@@ -82,6 +84,7 @@ class Kernel:
                 MakeJobCommand(self.application),
                 MakeMailableCommand(self.application),
                 MakeProviderCommand(self.application),
+                PublishCommand(self.application),
             ),
         )
 

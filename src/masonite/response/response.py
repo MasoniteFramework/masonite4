@@ -184,7 +184,7 @@ class Response:
 
         self.make_headers()
 
-        return self.data()
+        return self
 
     def back(self):
         return self.redirect(url=self.app.make("request").get_back_path())
