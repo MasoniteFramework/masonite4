@@ -39,7 +39,7 @@ class ExceptionHandler:
             ).handle(exception)
 
         if hasattr(exception, "get_response"):
-            return response.view(exception.get_response())
+            return response.view(exception.get_response(), exception.get_status())
 
         handler = Handler(exception)
         handler.integrate(StackOverflowIntegration())

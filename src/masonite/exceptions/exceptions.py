@@ -115,13 +115,16 @@ class NotificationException(Exception):
 
 
 class AuthorizationException(Exception):
-    def __init__(self, code, message):
+    def __init__(self, message, status):
         super().__init__(self)
-        self.code = code or 403
         self.message = message or "Action not authorized"
+        self.status = status or 403
 
     def get_response(self):
-        return self.message, self.code
+        return self.message
+
+    def get_status(self):
+        return self.status
 
 
 class GateDoesNotExist(Exception):
