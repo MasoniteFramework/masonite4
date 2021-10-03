@@ -1,4 +1,3 @@
-from .structures import load
 import random
 import string
 
@@ -21,42 +20,6 @@ def flatten(routes):
             route_collection.append(route)
 
     return route_collection
-
-
-class AssetHelper:
-    def __init__(self, app):
-        self.app = app
-
-    def asset(self, alias, file_name):
-        disks = load(self.app.make("config.filesystem")).DISKS
-
-        if "." in alias:
-            alias = alias.split(".")
-            location = disks[alias[0]]["path"][alias[1]]
-            if location.endswith("/"):
-                location = location[:-1]
-
-            return "{}/{}".format(location, file_name)
-
-        location = disks[alias]["path"]
-        if isinstance(location, dict):
-            location = list(location.values())[0]
-            if location.endswith("/"):
-                location = location[:-1]
-
-        return "{}/{}".format(location, file_name)
-
-
-class UrlHelper:
-    def __init__(self, app):
-        self.app = app
-
-    def url(self, url):
-        base_url = self.app.make("base_url").rstrip(
-            "/"
-        )  # just ensure that no slash is appended to the url
-
-        return f"{base_url}/{url}"
 
 
 """Helper Functions for working with Status Codes."""
@@ -380,40 +343,6 @@ class HasColoredCommands:
 
     def info(self, message):
         return self.success(message)
-
-
-class DefaultType:
-    def __init__(self, value):
-        self.value = value
-
-    def __getattr__(self, attr):
-        return self.value
-
-    def __call__(self, *args, **kwargs):
-        return self.value
-
-    def __eq__(self, other):
-        if self.value is None:
-            return other is self.value
-        else:
-            return other == self.value
-
-
-class Optional:
-    def __init__(self, obj, default=None):
-        self.obj = obj
-        self.default = default
-
-    def __getattr__(self, attr):
-        if hasattr(self.obj, attr):
-            return getattr(self.obj, attr)
-        return DefaultType(self.default)
-
-    def __call__(self, *args, **kwargs):
-        return DefaultType(self.default)
-
-    def instance(self):
-        return self.obj
 
 
 def random_string(length=4):
