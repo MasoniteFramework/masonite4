@@ -1,6 +1,7 @@
 from tests import TestCase
 
 from src.masonite.utils import optional
+from src.masonite.utils import url
 
 
 class User:
@@ -21,3 +22,6 @@ class TestHelpers(TestCase):
 
         self.assertEqual(optional(user, default=0).non_existing_attr, 0)
         self.assertEqual(optional(user, default=0).non_existing_method(), 0)
+
+    def test_url(self):
+        self.assertEqual(url.url("upload"), "http://localhost:8000/upload")
