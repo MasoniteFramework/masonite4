@@ -1,5 +1,3 @@
-import time
-import os
 import sys
 
 import hupper
@@ -57,7 +55,7 @@ class ServeCommand(Command):
         reloader = hupper.start_reloader(self.app.make("server.runner"))
 
         # monitor an extra file
-        reloader.watch_files([".env", application.get_storage_path()])
+        reloader.watch_files([".env", self.app.get_storage_path()])
 
 
 def main(args=sys.argv[1:]):
