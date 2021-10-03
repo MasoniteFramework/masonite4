@@ -184,7 +184,7 @@ class Response:
 
         self.make_headers()
 
-        return self.data()
+        return self
 
     def back(self):
         return self.redirect(url=self.app.make("request").get_back_path())
@@ -204,14 +204,13 @@ class Response:
 
         if location:
             self.header_bag.add(Header("Location", location))
-            return self.view("Redirecting ...")
         elif name:
             url = self._get_url_from_route_name(name, params)
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
         elif url:
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
+        self.view("Redirecting ...")
+        return self
 
     def _get_url_from_route_name(self, name, params={}):
         route = self.app.make("router").find_by_name(name)

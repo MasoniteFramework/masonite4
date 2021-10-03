@@ -24,7 +24,6 @@ class ValidationProvider(Provider):
 
     def boot(self, validator: Validator):
         validator.extend(ValidationFactory().registry)
-        # self.application.make("response").with_errors = self.with_errors
 
     def _get_errors(self):
         request = self.application.make("request")
@@ -35,7 +34,3 @@ class ValidationProvider(Provider):
             messages += message
 
         return messages
-
-    def with_errors(self, errors):
-        Session.flash("errors", errors)
-        return Response

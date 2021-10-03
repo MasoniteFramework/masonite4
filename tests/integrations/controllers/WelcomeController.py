@@ -38,6 +38,9 @@ class WelcomeController(Controller):
         request.app.make("session").flash("test", "value")
         return response.with_input().redirect("/sessions")
 
+    def form_with_input(self, request: Request, response: Response, view: View):
+        return response.redirect("/sessions").with_input()
+
     def test(self):
         return "test"
 
