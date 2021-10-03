@@ -522,6 +522,11 @@ class Collection:
         return items
 
 
+def collect(iterable):
+    """Transform an iterable into a collection."""
+    return Collection(iterable)
+
+
 def flatten(iterable):
     """Flatten all sub-iterables of an iterable structure (recursively)."""
     flat_list = []

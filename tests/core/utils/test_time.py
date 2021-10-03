@@ -1,7 +1,11 @@
 import pendulum
 from tests import TestCase
 
-from src.masonite.utils.time import parse_human_time, cookie_expire_time
+from src.masonite.utils.time import (
+    migration_timestamp,
+    parse_human_time,
+    cookie_expire_time,
+)
 
 
 class TestTimeUtils(TestCase):
@@ -50,3 +54,7 @@ class TestTimeUtils(TestCase):
         self.fakeTime(pendulum.datetime(2021, 1, 21, 7, 28, 0))
         expiration_time_str = cookie_expire_time("7 days")
         self.assertEqual(expiration_time_str, "Thu, 28 Jan 2021 07:28:00")
+
+    def test_migration_timestamp(self):
+        self.fakeTime(pendulum.datetime(2021, 10, 25, 8, 12, 54))
+        self.assertEqual(migration_timestamp(), "2021_10_25_081254")

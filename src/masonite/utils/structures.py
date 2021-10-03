@@ -1,5 +1,4 @@
-"""A Module For Manipulating Code Structures."""
-
+"""Helpers for multiple data structures"""
 import inspect
 import pydoc
 from collections.abc import MutableMapping
@@ -234,3 +233,10 @@ def load_routes(path):
         mixed
     """
     return pydoc.locate(path).ROUTES
+
+
+def data_get(dict, key, default=None):
+    """Read dictionary value from key using nested notation.
+    Example: data_get('a.b')
+    """
+    return Dot().dot(key, dict, default)

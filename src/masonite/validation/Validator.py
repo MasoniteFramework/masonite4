@@ -1,6 +1,6 @@
 from .RuleEnclosure import RuleEnclosure
 from .MessageBag import MessageBag
-from ..utils.structures import Dot
+from ..utils.structures import data_get
 import inspect
 import re
 import os
@@ -35,7 +35,7 @@ class BaseValidation:
             self.errors.update({key: message})
 
     def find(self, key, dictionary, default=False):
-        return Dot().dot(key, dictionary, default)
+        return data_get(dictionary, key, default)
 
     def message(self, key):
         return ""

@@ -1,4 +1,5 @@
 """Time related helpers"""
+import pendulum
 
 
 def cookie_expire_time(str_time):
@@ -23,8 +24,6 @@ def parse_human_time(str_time):
     Returns:
         pendulum -- Returns Pendulum instance
     """
-    import pendulum
-
     if str_time == "now":
         return pendulum.now("GMT")
 
@@ -50,3 +49,10 @@ def parse_human_time(str_time):
         return None
     else:
         return pendulum.now("GMT").subtract(years=20)
+
+
+def migration_timestamp():
+    """Return current time formatted for creating migration filenames.
+    Example: 2021_01_09_043202
+    """
+    return pendulum.now().format("YYYY_MM_DD_HHmmss")
