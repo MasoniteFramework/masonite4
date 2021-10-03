@@ -43,7 +43,7 @@ class ServeCommand(Command):
                 "This will only work for templates. Changes to Python files may require a browser refresh."
             )
             self.line("")
-            application = server.serve(
+            server.serve(
                 port=self.option("port"),
                 restart_delay=self.option("reload-interval"),
                 liveport=5500,
