@@ -1,5 +1,5 @@
 from .HTTPRoute import HTTPRoute
-from ..utils.helpers import flatten
+from ..utils.collections import flatten
 from ..controllers import RedirectController
 
 

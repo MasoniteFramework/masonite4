@@ -1,5 +1,5 @@
 from .. import Middleware
-from ...utils.helpers import random_string
+from ...utils.str import random_string
 from ...facades import Request, Session, Response
 
 

@@ -4,7 +4,6 @@ import inspect
 import pydoc
 from collections.abc import MutableMapping
 
-# from masoniteorm.collection import Collection as collect
 from .collections import Collection as collect
 
 

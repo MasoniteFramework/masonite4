@@ -1175,19 +1175,6 @@ class distinct(BaseValidation):
         return "The {} field has only different values.".format(attribute)
 
 
-def flatten(iterable):
-
-    flat_list = []
-    for route in iterable:
-        if isinstance(route, list):
-            for r in flatten(route):
-                flat_list.append(r)
-        else:
-            flat_list.append(route)
-
-    return flat_list
-
-
 class Validator:
     def __init__(self):
         pass

@@ -6,7 +6,7 @@ import pendulum
 from ..routes import Router, Route
 from .HttpTestResponse import HttpTestResponse
 from ..foundation.response_handler import testcase_handler
-from ..utils.helpers import generate_wsgi
+from ..utils.http import generate_wsgi
 from ..request import Request
 from ..response import Response
 from ..environment import LoadEnvironment
