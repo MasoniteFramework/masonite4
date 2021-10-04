@@ -21,4 +21,6 @@ from .exceptions import (
     ProjectProviderTimeout,
     ProjectProviderHttpError,
     ProjectTargetNotEmpty,
+    MixFileNotFound,
+    MixManifestNotFound,
 )

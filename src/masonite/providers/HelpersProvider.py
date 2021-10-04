@@ -1,6 +1,7 @@
 import builtins
 from ..providers import Provider
 from ..utils.helpers import AssetHelper, UrlHelper
+from ..helpers import MixHelper
 from jinja2 import Markup
 
 
@@ -30,5 +31,6 @@ class HelpersProvider(Provider):
                     self.application.make("base_url")
                     + self.application.make("router").route(name, params)
                 ),
+                "mix": MixHelper(self.application).url,
             }
         )

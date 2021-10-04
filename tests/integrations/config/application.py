@@ -8,3 +8,5 @@ HASHING = {
     "bcrypt": {"rounds": 10},
     "argon2": {"memory": 1024, "threads": 2, "time": 2},
 }
+
+MIX_BASE_URL = os.getenv("MIX_BASE_URL", None)
