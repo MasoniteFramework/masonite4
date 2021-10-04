@@ -10,6 +10,7 @@ class TestAuthentication(TestCase):
         super().setUp()
         self.auth = self.application.make("auth")
         self.make_request()
+        self.make_response()
 
     def test_attempt(self):
         self.assertTrue(self.auth.attempt("idmann509@gmail.com", "secret"))
