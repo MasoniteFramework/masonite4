@@ -12,35 +12,35 @@ We will use this document to stay on track and as a guide when creating new feat
 
 Masonite 4 is the successor to Masonite 3. Masonite 4 is a complete, from the ground up rewrite of Masonite. The reason for this rewrite is plentiful:
 
-* Masonite was started in December of 2017 as a learning project for me to learn how frameworks work. It has since become a passion project for me and many others but there are still major parts of the framework that still have code from those beginning months. This code has obviously become legacy at this point and needs to be removed and rewritten.
-* Masonite has gone through plenty of design changes over the course of 4 years and has relics in the codebase as such. We changed how routes work, added service providers, we changed how authentication works, we added web guards and many other changes. These were all sort of built around the same concepts and I think those decisions in the past have seriously stunted the growth of Masonite. Masonite at one point was one giant python file and only until version 2 did it even have service providers.
-* When building a framework, one of the important concepts is making it expandable. This is done simply via new features but also done as packages and as a community. There really is no easy way to write a package for Masonite, theres no standard, theres some nice ways to plug it in but package development is not really there yet. This is why i think there are not many packages currently for Masonite. When first building Masonite I obviously didn't know what I know now. So now I am taking everything i learned over 4 years, plus everything i learned after a successful ORM project rewrite and building a Masonite framework i know will survive the test of time.
-* Masonite ORM was developed recently and I am so proud of that library and how we built it that I want to apply those same principals to Masonite. Since Masonite codebase is so tightly coupled to everything it's hard to maintain it and build new features. Refactors are hard because it always leaves small remnants of technical debt left behind that eventually need to be cleaned up with a rewrite anyway. It's difficult sometimes to know which tests need to be fixed, which tests no longer apply and which tests need to be written. When you are dealing with nearly 1000 tests it gets time consuming to check them. They might be failing but how do we make them pass? Do we fix them? Do we fix the code? Do we delete the test? And even when all the tests pass again we are left with a mix of new code, refactored code and code thats there just to make the test pass. This type of time management and technical debt needed for new features is costly for open source projects. 
+- Masonite was started in December of 2017 as a learning project for me to learn how frameworks work. It has since become a passion project for me and many others but there are still major parts of the framework that still have code from those beginning months. This code has obviously become legacy at this point and needs to be removed and rewritten.
+- Masonite has gone through plenty of design changes over the course of 4 years and has relics in the codebase as such. We changed how routes work, added service providers, we changed how authentication works, we added web guards and many other changes. These were all sort of built around the same concepts and I think those decisions in the past have seriously stunted the growth of Masonite. Masonite at one point was one giant python file and only until version 2 did it even have service providers.
+- When building a framework, one of the important concepts is making it expandable. This is done simply via new features but also done as packages and as a community. There really is no easy way to write a package for Masonite, theres no standard, theres some nice ways to plug it in but package development is not really there yet. This is why i think there are not many packages currently for Masonite. When first building Masonite I obviously didn't know what I know now. So now I am taking everything i learned over 4 years, plus everything i learned after a successful ORM project rewrite and building a Masonite framework i know will survive the test of time.
+- Masonite ORM was developed recently and I am so proud of that library and how we built it that I want to apply those same principals to Masonite. Since Masonite codebase is so tightly coupled to everything it's hard to maintain it and build new features. Refactors are hard because it always leaves small remnants of technical debt left behind that eventually need to be cleaned up with a rewrite anyway. It's difficult sometimes to know which tests need to be fixed, which tests no longer apply and which tests need to be written. When you are dealing with nearly 1000 tests it gets time consuming to check them. They might be failing but how do we make them pass? Do we fix them? Do we fix the code? Do we delete the test? And even when all the tests pass again we are left with a mix of new code, refactored code and code thats there just to make the test pass. This type of time management and technical debt needed for new features is costly for open source projects.
 
 ## Table Of Contents
 
-* Foundation
-* Features
+- Foundation
+- Features
 
 ## Foundation
 
-In M4, The foundation is completely redone. 
+In M4, The foundation is completely redone.
 
-These improvements allows the directory structure to be anything we need it to be. All features are fully encapsulated and modular and Masonite does not need to be in specific directory structure order anymore. 
+These improvements allows the directory structure to be anything we need it to be. All features are fully encapsulated and modular and Masonite does not need to be in specific directory structure order anymore.
 
-There is a new concept in M4 called the Application class. This class has is a mix between a new "Application" concept class and the container. So now everything is bound and made from the application class. It is also a callable so wsgi servers actually call this class to. Its very adaptable. 
+There is a new concept in M4 called the Application class. This class has is a mix between a new "Application" concept class and the container. So now everything is bound and made from the application class. It is also a callable so wsgi servers actually call this class to. Its very adaptable.
 
 The application class is an IOC container. So we can bind anything to these classes from key value strings to lists and dicts, to classes. Later we can make these values back out, swap them out with other implementations and other cool things. This keeps the entire framework extremely modular and really revolves around this IOC container.
 
 ### Kernel Classes
 
-Kernel classes is really just a service provider that only registers things to the application class that is crucial to making the framework work. For example, we need to know where the config directories are, the view directories, controller directories, bind middleware, etc. These are booted before the service providers are even imported. These classes should not need to be developed on but will come with new applications and will be located inside those new applications. These can be tweaked per application. For example if you want your views directory to be located in `app/views` then you can do just that. 
+Kernel classes is really just a service provider that only registers things to the application class that is crucial to making the framework work. For example, we need to know where the config directories are, the view directories, controller directories, bind middleware, etc. These are booted before the service providers are even imported. These classes should not need to be developed on but will come with new applications and will be located inside those new applications. These can be tweaked per application. For example if you want your views directory to be located in `app/views` then you can do just that.
 
 ## Providers
 
 Providers are a concept in Masonite in which they are simply wrappers around binding things to the container as well as logic that runs during a request. Everything will be bound to the container through a provider from mail and sessions features to fetching controller responses and showing the exception handling page.
 
-Providers will run 2 times. First when they are first added to the container. This runs a `register` method. The register method will bind things into the container. There is a second time it runs which is during the request which will run the `boot` method. 
+Providers will run 2 times. First when they are first added to the container. This runs a `register` method. The register method will bind things into the container. There is a second time it runs which is during the request which will run the `boot` method.
 
 Let's take the example of the route provider which contains both a `register` and `boot` method:
 
@@ -131,11 +131,11 @@ So if the token doesn't pass we return the response which stops and exists the p
 
 Features of Masonite should be written in a very specific way. This way features are written in Masonite allow features to be:
 
-* expanded
-* fixed
-* tweaked
-* provides the maximum effeciency for maintenance
-* standardized features so anybody can improve features with a common understanding.
+- expanded
+- fixed
+- tweaked
+- provides the maximum effeciency for maintenance
+- standardized features so anybody can improve features with a common understanding.
 
 This is a guide on how Masonite features are developed but also apply to packages as well. Packaging will be in another white paper which will be linked here: Link TBD.
 
@@ -153,17 +153,15 @@ There are several moving peices to each feature. I'll explain them briefly here 
 - Registers drivers to the manager in the same exact way.
   (see https://github.com/MasoniteFramework/masonite4/pull/28/files#diff-221cd9f78ee5571e49f930cfd66a2229a784701de1076f132c379c81794e0ff1R18-R20)
 
-
-
 **I'll be using the example of building a mail feature to demonstrate how each part works together.**
 
 ### Managers
 
 There are 3 parts to a manager class:
 
-* The manager class itself
-* Drivers.
-* Optional component classes.
+- The manager class itself
+- Drivers.
+- Optional component classes.
 
 Managers are wrappers around your feature. Its a single entry point for your app. This is typically the class you will be type hinting. If your API looks like this:
 
@@ -174,7 +172,7 @@ def show(self, mail: Mail):
 
 Then this manager will have both the `mailable` and `send` methods. This is the front facing class.
 
-The manager is called a manager class because it manages smaller classes. These smaller classes are called drivers. 
+The manager is called a manager class because it manages smaller classes. These smaller classes are called drivers.
 
 An example manager looks something like this:
 
@@ -273,7 +271,7 @@ class MailgunDriver:
 
 ```
 
-Notice that theres nothing in the class above that isn't related to sending an email with mailgun. 
+Notice that theres nothing in the class above that isn't related to sending an email with mailgun.
 
 ### Component Classes
 
@@ -290,7 +288,7 @@ for email in emails.split(','):
 
 This is a problem for a few reasons.
 
-**Problem number 1** is that we now can no longer add cool features to this part of the feature. For example maybe now we want to support something like `Joseph Mancuso idmann509@gmail.com` and compile it down to `Joseph Mancuso <idmann509@gmail.com>`.  We can't really do this and if we do we have to add the logic in each mail driver to support this. It also needs to be tested in each mail driver.
+**Problem number 1** is that we now can no longer add cool features to this part of the feature. For example maybe now we want to support something like `Joseph Mancuso idmann509@gmail.com` and compile it down to `Joseph Mancuso <idmann509@gmail.com>`. We can't really do this and if we do we have to add the logic in each mail driver to support this. It also needs to be tested in each mail driver.
 
 **Problem Number 2** is we need to do this for each email address. In a normal email we have things like to, from, cc and bcc. so you can see can _can_ make it work but it will get quite messy. Especially if we have to support more features down the road.
 
@@ -317,7 +315,7 @@ cc_emails = Recipient(cc_emails).header()
 
 The same rules apply to an email attachment.
 
-So these component classes should be used where applicable so we can add features at a central location and it be propogated throughout other drivers. They should also do 1 thing and 1 thing only to not break anything with side effects 
+So these component classes should be used where applicable so we can add features at a central location and it be propogated throughout other drivers. They should also do 1 thing and 1 thing only to not break anything with side effects
 
 ### Registering Drivers
 
@@ -325,9 +323,7 @@ Registering drivers are simple too. All drivers need to be registered and can be
 
 ```python
     def register(self):
-        mail = Mail(self.application).set_configuration(
-            load(self.application.make("config.mail")).DRIVERS
-        )
+        mail = Mail(self.application).set_configuration(config("mail.drivers"))
         mail.add_driver("smtp", SMTPDriver(self.application))
         mail.add_driver("mailgun", MailgunDriver(self.application))
         mail.add_driver("terminal", TerminalDriver(self.application))

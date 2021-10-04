@@ -1,4 +1,4 @@
-from .structures import load
+from ..configuration import config
 import random
 import string
 
@@ -28,7 +28,7 @@ class AssetHelper:
         self.app = app
 
     def asset(self, alias, file_name):
-        disks = load(self.app.make("config.filesystem")).DISKS
+        disks = config("filesystem.disks")
 
         if "." in alias:
             alias = alias.split(".")
