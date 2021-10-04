@@ -23,6 +23,3 @@ class TestUrlsHelper(TestCase):
                 "storage/framework/filesystem/test.jpg"
             )
         )
-        self.assertTrue(
-            url.asset("local.private", "test.jpg").endswith("storage/private/test.jpg")
-        )
