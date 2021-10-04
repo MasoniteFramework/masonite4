@@ -7,6 +7,8 @@ from ..drivers import (
     SlackDriver,
     VonageDriver,
 )
+from ...configuration import config
+
 from ..NotificationManager import NotificationManager
 from ..MockNotification import MockNotification
 from ..commands import MakeNotificationCommand, NotificationTableCommand
@@ -20,7 +22,7 @@ class NotificationProvider(Provider):
 
     def register(self):
         notification_manager = NotificationManager(self.application).set_configuration(
-            load(self.application.make("config.notification"))
+            config("notification")
         )
         notification_manager.add_driver("mail", MailDriver(self.application))
         notification_manager.add_driver("vonage", VonageDriver(self.application))

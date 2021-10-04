@@ -20,7 +20,9 @@ from ..environment import LoadEnvironment
 
 from ..middleware import MiddlewareCapsule
 from ..routes import Router
-
+from ..configuration.Configuration import Configuration
+from ..configuration.helpers import config
+from ..auth import Sign
 from ..tests.HttpTestResponse import HttpTestResponse
 from ..tests.TestResponseCapsule import TestResponseCapsule
 
@@ -31,6 +33,7 @@ class Kernel:
 
     def register(self):
         self.load_environment()
+        self.register_config()
         self.register_framework()
         self.register_commands()
         self.register_controllers()
@@ -39,6 +42,14 @@ class Kernel:
 
     def load_environment(self):
         LoadEnvironment()
+
+    def register_config(self):
+        # root directory of all config files
+        self.application.bind("config.location", "tests/integrations/config")
+        config = Configuration(self.application)
+        # load config
+        config.load()
+        self.application.bind("config", config)
 
     def register_controllers(self):
         self.application.bind("controller.location", "tests.integrations.controllers")
@@ -65,6 +76,9 @@ class Kernel:
             "router",
             Router(),
         )
+        key = config("application.key")
+        self.application.bind("key", key)
+        self.application.bind("sign", Sign(key))
 
     def register_commands(self):
         self.application.bind(

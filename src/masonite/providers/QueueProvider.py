@@ -1,6 +1,6 @@
 from ..drivers.queue import DatabaseDriver, AsyncDriver, AMQPDriver
 from ..queues import Queue
-from ..utils.structures import load
+from ..configuration import config
 
 
 class QueueProvider:
@@ -8,10 +8,7 @@ class QueueProvider:
         self.application = application
 
     def register(self):
-        queue = Queue(self.application).set_configuration(
-            load(self.application.make("config.queue")).DRIVERS
-        )
-
+        queue = Queue(self.application).set_configuration(config("queue.drivers"))
         queue.add_driver("database", DatabaseDriver(self.application))
         queue.add_driver("async", AsyncDriver(self.application))
         queue.add_driver("amqp", AMQPDriver(self.application))
