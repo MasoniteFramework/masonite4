@@ -49,6 +49,9 @@ class LoadEnvironment:
 
 
 def env(value, default="", cast=True):
+    """Helper to retrieve the value of an environment variable or returns
+    a default value. In addition, if type can be inferred then the value can be casted to the
+    inferred type."""
     env_var = os.getenv(value, default)
 
     if not cast:

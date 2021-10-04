@@ -4,9 +4,9 @@ import sys
 import pkgutil
 import importlib
 import inspect
-import os
 from cleo import Command
 
+from ..environment import env
 from ..utils.collections import collect
 from ..utils.structures import load, data_get
 from ..utils.location import base_path, config_path
@@ -63,11 +63,12 @@ class TinkerCommand(Command):
         models = self.autoload_models(["tests/integrations/app"])
         banner = BANNER.format(
             version,
-            "optional, load, collect, url, asset, route, load, data_get, base_path, config_path",
+            "env, optional, load, collect, url, asset, route, load, data_get, base_path, config_path",
             ",".join(models.keys()),
         )
         helpers = {
             "app": application,
+            "env": env,
             "optional": optional,
             "collect": collect,
             "url": url.url,
