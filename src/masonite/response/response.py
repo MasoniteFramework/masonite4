@@ -4,7 +4,7 @@ import json
 import mimetypes
 from pathlib import Path
 
-from ..routes import Router
+from ..routes.Router import Router
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
 from ..utils.http import HTTP_STATUS_CODES
