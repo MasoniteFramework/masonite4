@@ -43,6 +43,7 @@ setup(
         "cryptography>=3.3.1,<4.0",
         "tldextract>=2.2,<2.3",
         "hfilesize>=0.1",
+        "dotty_dict>=1.3.0<1.40",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
