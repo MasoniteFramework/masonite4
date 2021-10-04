@@ -32,7 +32,7 @@ setup(
         "inflection>=0.3<0.4",
         "exceptionite>=1.0<1.1",
         "pendulum>=2,<3",
-        "jinja2>=2.11<2.12",
+        "jinja2>=3.0.0<3.1",
         "cleo>=0.8.1,<0.9",
         "hupper>=1.10,<1.11",
         "waitress>=1.4,<1.5",
