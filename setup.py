@@ -145,6 +145,7 @@ setup(
             "vonage",
             "slackblocks",
             "argon2-cffi",
+            "pwnedapi",
         ],
     },
     # If there are data files included in your packages that need to be
