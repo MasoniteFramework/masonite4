@@ -7,3 +7,4 @@ from .Url import Url
 from .Session import Session
 from .View import View
 from .Auth import Auth
+from .Config import Config
