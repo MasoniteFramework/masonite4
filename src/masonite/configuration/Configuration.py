@@ -1,6 +1,7 @@
 import importlib
 import inspect
 import pkgutil
+from os.path import relpath
 
 from dotty_dict import dotty
 
@@ -15,7 +16,7 @@ class Configuration:
         config_root = self.application.make("config.location")
 
         for (module_loader, name, _) in pkgutil.iter_modules([config_root]):
-            module_path = module_loader.path
+            module_path = relpath(module_loader.path)
             obj_in_modules = importlib.import_module(
                 module_path.replace("/", ".") + "." + name
             )
