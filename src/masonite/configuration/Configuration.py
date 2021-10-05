@@ -1,14 +1,8 @@
-# from src.masonite.utils.structures import data_get  # PR not merged
 import importlib
 import inspect
 import pkgutil
+
 from dotty_dict import dotty
-
-
-def data_get(self, struct, key, default=None):
-    from src.masonite.utils.structures import Dot
-
-    return Dot().dot(key, struct, default)
 
 
 class Configuration:

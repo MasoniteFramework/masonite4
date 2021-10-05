@@ -1,6 +1,8 @@
+import os
 from tests import TestCase
 
 from src.masonite.utils.location import (
+    base_path,
     view_path,
     controller_path,
     seeds_path,
@@ -10,6 +12,13 @@ from src.masonite.utils.location import (
 
 
 class TestLocation(TestCase):
+    def test_base_path(self):
+        base_dir = os.getcwd()
+        location = base_path()
+        self.assertEqual(base_dir, location)
+        location = base_path("tests/integrations")
+        self.assertEqual(os.path.join(base_dir, "tests/integrations"), location)
+
     def test_view_path(self):
         location = view_path("app.html")
         self.assertTrue(location.endswith("tests/integrations/templates/app.html"))
@@ -19,6 +28,8 @@ class TestLocation(TestCase):
         )
         location = view_path("account/app.html", absolute=False)
         self.assertEqual("tests/integrations/templates/account/app.html", location)
+        location = view_path(absolute=False)
+        self.assertEqual(location, "tests/integrations/templates/")
 
     def test_controller_path(self):
         location = controller_path("MyController.py")

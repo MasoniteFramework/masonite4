@@ -1,11 +1,11 @@
 from tests import TestCase
-from src.masonite.utils.helpers import generate_wsgi
+from src.masonite.utils.http import generate_wsgi
 from src.masonite.request import Request
 
 
 class TestRequest(TestCase):
     def setUp(self):
-        self.request = Request(generate_wsgi({"PATH_INFO": "/test"}))
+        self.request = Request(generate_wsgi(path="/test"))
 
     def test_request_no_input_returns_false(self):
         self.assertEqual(self.request.input("notavailable"), False)

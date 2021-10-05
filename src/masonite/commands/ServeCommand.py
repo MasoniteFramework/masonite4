@@ -1,5 +1,3 @@
-import time
-import os
 import sys
 
 import hupper
@@ -45,7 +43,7 @@ class ServeCommand(Command):
                 "This will only work for templates. Changes to Python files may require a browser refresh."
             )
             self.line("")
-            application = server.serve(
+            server.serve(
                 port=self.option("port"),
                 restart_delay=self.option("reload-interval"),
                 liveport=5500,
@@ -57,7 +55,7 @@ class ServeCommand(Command):
         reloader = hupper.start_reloader(self.app.make("server.runner"))
 
         # monitor an extra file
-        reloader.watch_files([".env", application.get_storage_path()])
+        reloader.watch_files([".env", self.app.get_storage_path()])
 
 
 def main(args=sys.argv[1:]):

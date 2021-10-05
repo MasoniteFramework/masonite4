@@ -4,7 +4,7 @@ import re
 import json
 import cgi
 import re
-from ..utils.structures import Dot
+from ..utils.structures import data_get
 from ..filesystem import UploadedFile
 
 
@@ -96,7 +96,7 @@ class InputBag:
                     )
 
     def get(self, name, default=None, clean=True, quote=True):
-        input = Dot().dot(name, self.all(), default=default)
+        input = data_get(self.all(), name, default)
 
         if isinstance(input, (str,)):
             return input

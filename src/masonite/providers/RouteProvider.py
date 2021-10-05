@@ -1,3 +1,6 @@
+from inspect import isclass
+from ..response import Response
+from ..facades import Response as ResponseFacade
 from .Provider import Provider
 from ..routes import Router, Route
 from ..pipeline import Pipeline
@@ -39,7 +42,13 @@ class RouteProvider(Provider):
             exception = None
 
             try:
-                response.view(route.get_response(self.application))
+                data = route.get_response(self.application)
+                if isinstance(data, Response) or (
+                    isclass(data) and issubclass(data, ResponseFacade)
+                ):
+                    pass
+                else:
+                    response.view(data)
             except Exception as e:
                 exception = e
                 self.application.make("middleware").run_route_middleware(

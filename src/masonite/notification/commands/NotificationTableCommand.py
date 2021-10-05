@@ -1,9 +1,10 @@
 """Notification Table Command."""
 from cleo import Command
-from ...utils.filesystem import make_directory
 import os
 import pathlib
-import datetime
+
+from ...utils.filesystem import make_directory
+from ...utils.time import migration_timestamp
 
 
 class NotificationTableCommand(Command):
@@ -15,8 +16,6 @@ class NotificationTableCommand(Command):
     """
 
     def handle(self):
-        now = datetime.datetime.today()
-
         with open(
             os.path.join(
                 pathlib.Path(__file__).parent.absolute(),
@@ -26,7 +25,7 @@ class NotificationTableCommand(Command):
         ) as fp:
             output = fp.read()
 
-        file_name = f"{now.strftime('%Y_%m_%d_%H%M%S')}_create_notifications_table.py"
+        file_name = f"{migration_timestamp()}_create_notifications_table.py"
 
         path = os.path.join(os.getcwd(), self.option("directory"), file_name)
         make_directory(path)

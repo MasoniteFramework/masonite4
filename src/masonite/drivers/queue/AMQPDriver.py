@@ -1,10 +1,10 @@
 import pickle
 import pendulum
 import inspect
-from ...utils.helpers import HasColoredCommands
+from ...utils.console import HasColoredOutput
 
 
-class AMQPDriver(HasColoredCommands):
+class AMQPDriver(HasColoredOutput):
     def __init__(self, application):
         self.application = application
         self.connection = None
