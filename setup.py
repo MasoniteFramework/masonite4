@@ -163,7 +163,6 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         "console_scripts": [
-            "masonite-orm = masoniteorm.commands.Entry:application.run",
             "start = masonite.commands.Entry:application.run",
         ],
     },
