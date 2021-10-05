@@ -1,5 +1,5 @@
 from os.path import join
-from ..utils.structures import load
+from ..configuration import config
 
 
 class UrlsHelper:
@@ -21,7 +21,7 @@ class UrlsHelper:
             asset("local", "avatar.jpg") (take first pat)
             asset("s3.private", "doc.pdf") (when multiple paths are specified for the disk)
         """
-        disks = load(self.app.make("config.filesystem")).DISKS
+        disks = config("filesystem.disks")
         # ensure that no slash is prefixing the relative filename path
         filename = filename.lstrip("/")
         if "." in alias:

@@ -1,7 +1,9 @@
 import builtins
-from ..providers import Provider
-from ..helpers.urls import UrlsHelper
 from markupsafe import Markup
+
+from ..providers import Provider
+from ..configuration import config
+from ..helpers.urls import UrlsHelper
 
 
 class HelpersProvider(Provider):
@@ -29,5 +31,6 @@ class HelpersProvider(Provider):
                 "asset": urls_helper.asset,
                 "url": urls_helper.url,
                 "route": urls_helper.route,
+                "config": config,
             }
         )
