@@ -1,8 +1,9 @@
 """New Key Command."""
 from cleo import Command
-from ..utils.filesystem import make_directory
 import inflection
 import os
+
+from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
 
 
 class MakeProviderCommand(Command):
@@ -20,26 +21,20 @@ class MakeProviderCommand(Command):
     def handle(self):
         name = inflection.camelize(self.argument("name"))
 
-        with open(self.get_providers_path(), "r") as f:
-            content = f.read()
-            content = content.replace("__class__", name)
+        content = render_stub_file(self.get_providers_path(), name)
 
-        file_name = os.path.join(
+        filename = os.path.join(
             self.app.make("providers.location").replace(".", "/"), name + ".py"
         )
 
-        make_directory(file_name)
+        make_directory(filename)
 
-        with open(file_name, "w") as f:
+        with open(filename, "w") as f:
             f.write(content)
-        self.info(f"Provider Created ({file_name})")
+        self.info(f"Provider Created ({filename})")
 
     def get_template_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/templates/")
+        return os.path.join(get_module_dir(__file__), "../stubs/templates/")
 
     def get_providers_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/providers/Provider.py")
+        return os.path.join(get_module_dir(__file__), "../stubs/providers/Provider.py")

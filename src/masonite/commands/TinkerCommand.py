@@ -4,17 +4,20 @@ import sys
 import pkgutil
 import importlib
 import inspect
-import os
 from cleo import Command
 
-from ..utils.collections import Collection
-from ..utils.structures import load
+from ..environment import env
+from ..utils.collections import collect
+from ..utils.structures import load, data_get
+from ..utils.location import base_path, config_path
+from ..helpers import optional, url
 
-BANNER = """Masonite Python {} Console
+
+BANNER = """Masonite Python \033[92m {} \033[0m Console
 This interactive console has the following things imported:
-    container as 'app',
-    {},
-    {}
+    -\033[92m app(container), \033[0m
+    - Utils:\033[92m {}, \033[0m
+    - Models:\033[92m {}, \033[0m
 
 Type `exit()` to exit."""
 
@@ -58,8 +61,25 @@ class TinkerCommand(Command):
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
         models = self.autoload_models(["tests/integrations/app"])
-        banner = BANNER.format(version, "Collection, load", ",".join(models.keys()))
-        context = {"app": application, "Collection": Collection, "load": load, **models}
+        banner = BANNER.format(
+            version,
+            "env, optional, load, collect, url, asset, route, load, data_get, base_path, config_path",
+            ",".join(models.keys()),
+        )
+        helpers = {
+            "app": application,
+            "env": env,
+            "optional": optional,
+            "collect": collect,
+            "url": url.url,
+            "asset": url.asset,
+            "route": url.route,
+            "load": load,
+            "data_get": data_get,
+            "base_path": base_path,
+            "config_path": config_path,
+        }
+        context = {**helpers, **models}
 
         if self.option("ipython"):
             try:

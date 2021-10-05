@@ -1,9 +1,10 @@
 """New Key Command."""
 from cleo import Command
-from ..utils.filesystem import make_directory
 import os
 import pathlib
-import datetime
+
+from ..utils.filesystem import make_directory
+from ..utils.time import migration_timestamp
 
 
 class QueueFailedCommand(Command):
@@ -15,8 +16,6 @@ class QueueFailedCommand(Command):
     """
 
     def handle(self):
-        now = datetime.datetime.today()
-
         with open(
             os.path.join(
                 pathlib.Path(__file__).parent.absolute(),
@@ -28,7 +27,7 @@ class QueueFailedCommand(Command):
             # output = output.replace("__MIGRATION_NAME__", camelize(name))
             # output = output.replace("__TABLE_NAME__", table)
 
-        file_name = f"{now.strftime('%Y_%m_%d_%H%M%S')}_create_failed_jobs_table.py"
+        file_name = f"{migration_timestamp()}_create_failed_jobs_table.py"
 
         path = os.path.join(os.getcwd(), self.option("directory"), file_name)
         make_directory(path)

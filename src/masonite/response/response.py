@@ -4,9 +4,10 @@ import json
 import mimetypes
 from pathlib import Path
 
+from ..routes.Router import Router
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
-from ..utils.helpers import response_statuses, compile_route_to_url
+from ..utils.http import HTTP_STATUS_CODES
 from ..cookies import CookieJar
 
 
@@ -21,7 +22,7 @@ class Response:
         self.app = app
         self.content = ""
         self._status = None
-        self.statuses = response_statuses()
+        self.statuses = HTTP_STATUS_CODES
         self.header_bag = HeaderBag()
         self.cookie_jar = CookieJar()
         self.original = None
@@ -216,7 +217,7 @@ class Response:
         route = self.app.make("router").find_by_name(name)
         if not route:
             raise ValueError(f"Route with the name '{name}' not found.")
-        return compile_route_to_url(route.url, params)
+        return Router.compile_to_url(route.url, params)
 
     def to_bytes(self):
         """Converts the data to bytes so the WSGI server can handle it.

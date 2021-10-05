@@ -1,12 +1,11 @@
 import pickle
 import pendulum
-import inspect
-from ...utils.helpers import HasColoredCommands
-from ...utils.helpers import parse_human_time
+from ...utils.console import HasColoredOutput
+from ...utils.time import parse_human_time
 import time
 
 
-class DatabaseDriver(HasColoredCommands):
+class DatabaseDriver(HasColoredOutput):
     def __init__(self, application):
         self.application = application
 
