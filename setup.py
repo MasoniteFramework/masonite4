@@ -104,6 +104,7 @@ setup(
         "masonite.hashing",
         "masonite.hashing.drivers",
         "masonite.headers",
+        "masonite.helpers",
         "masonite.input",
         "masonite.mail",
         "masonite.mail.drivers",
