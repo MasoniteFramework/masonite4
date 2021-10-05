@@ -925,10 +925,6 @@ class TestValidation(unittest.TestCase):
             ],
         )
 
-    @pytest.mark.skipif(
-        int(platform.python_version_tuple()[1]) < 6,
-        reason="python 3.5 mimetype modules breaks test but validation rule is ok",
-    )
     def test_image_validation(self):
         validate = Validator().validate(
             {
@@ -991,10 +987,6 @@ class TestValidation(unittest.TestCase):
                 validate.get("avatar"), ["The avatar file size exceeds 20 bytes."]
             )
 
-    @pytest.mark.skipif(
-        int(platform.python_version_tuple()[1]) < 6,
-        reason="python 3.5 mimetype modules breaks test but validation rule is ok",
-    )
     def test_video_validation(self):
         validate = Validator().validate(
             {
