@@ -1,5 +1,5 @@
 from .. import Middleware
-from jinja2 import Markup
+from markupsafe import Markup
 from ...exceptions import InvalidCSRFToken
 from hmac import compare_digest
 
