@@ -212,7 +212,7 @@ class date(BaseValidation):
 
 
 class before_today(BaseValidation):
-    def __init__(self, validations, tz="Universal", messages={}, raises={}):
+    def __init__(self, validations, tz="UTC", messages={}, raises={}):
         super().__init__(validations, messages=messages, raises=raises)
         self.tz = tz
 

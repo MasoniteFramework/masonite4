@@ -3,7 +3,6 @@ from ...providers import Provider
 
 from ..commands.CreateTaskCommand import CreateTaskCommand
 from ..commands.ScheduleRunCommand import ScheduleRunCommand
-from ..CommandTask import CommandTask
 from ..TaskHandler import TaskHandler
 
 

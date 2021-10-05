@@ -249,7 +249,7 @@ class TestValidation(unittest.TestCase):
 
         validate = Validator().validate(
             {
-                "date": pendulum.yesterday(tz="Universal").to_datetime_string(),
+                "date": pendulum.now().subtract(days=2).to_datetime_string(),
             },
             before_today(["date"]),
         )
