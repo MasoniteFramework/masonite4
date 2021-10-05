@@ -1,7 +1,7 @@
 import builtins
 from ..providers import Provider
 from ..utils.helpers import AssetHelper, UrlHelper
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class HelpersProvider(Provider):
