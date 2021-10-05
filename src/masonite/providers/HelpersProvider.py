@@ -1,7 +1,7 @@
 import builtins
 from ..providers import Provider
 from ..helpers.urls import UrlsHelper
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class HelpersProvider(Provider):
@@ -15,7 +15,7 @@ class HelpersProvider(Provider):
 
     def boot(self):
         request = self.application.make("request")
-        urls_helper = UrlsHelper(self.application)
+        urls_helper = self.application.make("url")
 
         self.application.make("view").share(
             {

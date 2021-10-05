@@ -8,7 +8,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="4.0.0a",
+    version="4.0.0b",
     package_dir={"": "src"},
     description="The Masonite Framework",
     long_description=long_description,
@@ -32,7 +32,7 @@ setup(
         "inflection>=0.3<0.4",
         "exceptionite>=1.0<1.1",
         "pendulum>=2,<3",
-        "jinja2>=2.11<2.12",
+        "jinja2>=3.0.0<3.1",
         "cleo>=0.8.1,<0.9",
         "hupper>=1.10,<1.11",
         "waitress>=1.4,<1.5",
@@ -50,7 +50,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         # Indicate who your project is intended for
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
@@ -145,6 +145,7 @@ setup(
             "vonage",
             "slackblocks",
             "argon2-cffi",
+            "pwnedapi",
         ],
     },
     # If there are data files included in your packages that need to be
@@ -163,7 +164,6 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         "console_scripts": [
-            "masonite-orm = masoniteorm.commands.Entry:application.run",
             "start = masonite.commands.Entry:application.run",
         ],
     },

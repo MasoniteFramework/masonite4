@@ -177,11 +177,11 @@ class ProjectCommand(Command):
                 self.call("install")
 
                 self.info(
-                    "Installed Successfully. Just Run `craft serve` To Start Your Application."
+                    "Installed Successfully. Just Run `python craft serve` To Start Your Application."
                 )
             else:
                 self.info(
-                    "Project Created Successfully. You now will have to CD into your new '{}' directory and run `craft install` to complete the installation".format(
+                    "Project Created Successfully. You now will have to go into your new '{}' directory and run `start install` to complete the installation".format(
                         target
                     )
                 )
