@@ -58,4 +58,4 @@ If you discover a security vulnerability within Masonite please read the [Securi
 
 ## License
 
-The Masonite framework is open-sourced software licensed under the MIT license.
+The Masonite framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
