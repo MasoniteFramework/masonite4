@@ -86,6 +86,7 @@ setup(
         "masonite.commands",
         "masonite.configuration",
         "masonite.configuration.providers",
+        "masonite.configuration.helpers",
         "masonite.container",
         "masonite.controllers",
         "masonite.cookies",
