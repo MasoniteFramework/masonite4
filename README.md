@@ -37,6 +37,16 @@ If you are more of a visual learner you can watch Masonite related tutorial vide
 
 Also be sure to join the [Masonite Slack Community](http://slack.masoniteproject.com/)!
 
+## Getting Started Quickly
+
+If you have a working Python 3.6+ getting started is as quick as typing
+
+```bash
+pip install masonite
+start project my_project
+python craft serve
+```
+
 ## Contributing
 
 Contributing to Masonite is simple:
