@@ -2,6 +2,7 @@ from cleo import Command
 import os
 import shutil
 import zipfile
+import tempfile
 import requests
 from io import BytesIO
 
@@ -51,11 +52,6 @@ class ProjectCommand(Command):
             to_dir = os.path.join(os.getcwd(), target)
         self.check_target_does_not_exist(to_dir)
 
-        for directory in os.listdir(os.getcwd()):
-            if directory.startswith("masonite-"):
-                return self.comment(
-                    'There is a folder that starts with "masonite-" and therefore craft cannot create a new project'
-                )
         try:
             if repo and provider not in self.providers:
                 return self.line_error(
@@ -141,24 +137,24 @@ class ProjectCommand(Command):
 
         self.info("Crafting Application ...")
 
+        # create a tmp directory to extract project template
+        tmp_dir = tempfile.TemporaryDirectory()
         try:
             request = requests.get(zipurl)
             with zipfile.ZipFile(BytesIO(request.content)) as zfile:
-                extracted_name = zfile.infolist()[0].filename
-                zfile.extractall(os.getcwd())
+                zfile.extractall(tmp_dir.name)
+                extracted_path = os.path.join(
+                    tmp_dir.name, zfile.infolist()[0].filename
+                )
             success = True
         except Exception as e:
             self.line_error("An error occured when downloading {0}".format(zipurl))
             raise e
 
         if success:
-            from_dir = os.path.join(os.getcwd(), extracted_name)
-            if target == ".":
-                for file in os.listdir(from_dir):
-                    shutil.move(os.path.join(from_dir, file), to_dir)
-                os.rmdir(from_dir)
-            else:
-                os.rename(from_dir, to_dir)
+            shutil.move(extracted_path, to_dir)
+            # remove tmp directory
+            tmp_dir.cleanup()
 
             self.info("Application Created Successfully!")
             self.info("Installing Dependencies ")
@@ -188,7 +184,7 @@ class ProjectCommand(Command):
 
         if os.path.isdir(target):
             raise ProjectTargetNotEmpty(
-                "{} already exists. You must craft a project in a not existing directory.".format(
+                "{} already exists. You must craft a project in a new directory.".format(
                     target
                 )
             )
