@@ -5,8 +5,7 @@ DISKS = {
     "default": "local",
     "local": {
         "driver": "file",
-        "path": os.path.join(os.getcwd(), "storage/framework/filesystem")
-        #
+        "path": os.path.join(os.getcwd(), "storage/framework/filesystem"),
     },
     "s3": {
         "driver": "s3",

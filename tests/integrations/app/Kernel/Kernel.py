@@ -1,10 +1,10 @@
-from src.masonite.foundation import response_handler
-from cleo import Application as CommandApplication
-from src.masonite.storage import StorageCapsule
-from src.masonite.auth import Sign
 import os
+
+from src.masonite.auth import Sign
+from src.masonite.foundation import response_handler
+from src.masonite.storage import StorageCapsule
 from src.masonite.environment import LoadEnvironment
-from src.masonite.utils.structures import load
+from src.masonite.configuration import Configuration, config
 from src.masonite.middleware import (
     VerifyCsrfToken,
     SessionMiddleware,
@@ -24,13 +24,11 @@ class Kernel:
         self.application = app
 
     def register(self):
-        # Register routes
         self.load_environment()
         self.register_configurations()
-        self.register_routes()
         self.register_middleware()
+        self.register_routes()
         self.register_database()
-        self.register_controllers()
         self.register_templates()
         self.register_storage()
 
@@ -56,60 +54,40 @@ class Kernel:
         )
 
     def register_configurations(self):
-        self.application.bind(
-            "config.application", "tests.integrations.config.application"
-        )
-        self.application.bind("config.mail", "tests.integrations.config.mail")
-        self.application.bind("config.session", "tests.integrations.config.session")
-        self.application.bind("config.queue", "tests.integrations.config.queue")
-        self.application.bind("config.database", "tests.integrations.config.database")
+        # load configuration
         self.application.bind("config.location", "tests/integrations/config")
-        self.application.bind("config.cache", "tests.integrations.config.cache")
-        self.application.bind("config.broadcast", "tests.integrations.config.broadcast")
-        self.application.bind("config.auth", "tests.integrations.config.auth")
-        self.application.bind(
-            "config.notification", "tests.integrations.config.notification"
-        )
-        self.application.bind(
-            "config.filesystem", "tests.integrations.config.filesystem"
-        )
-
-        self.application.bind("base_url", "http://localhost:8000")
-
-        self.application.bind("jobs.location", "tests/integrations/jobs")
-        self.application.bind("mailables.location", "tests/integrations/mailables")
-        self.application.bind(
-            "server.runner", "src.masonite.commands.ServeCommand.main"
-        )
-
-        key = load(self.application.make("config.application")).KEY
+        configuration = Configuration(self.application)
+        configuration.load()
+        self.application.bind("config", configuration)
+        key = config("application.key")
         self.application.bind("key", key)
         self.application.bind("sign", Sign(key))
 
-    def register_controllers(self):
+        # set locations
         self.application.bind("controller.location", "tests.integrations.controllers")
+        self.application.bind("jobs.location", "tests/integrations/jobs")
+        self.application.bind("mailables.location", "tests/integrations/mailables")
+
+        self.application.bind(
+            "server.runner", "src.masonite.commands.ServeCommand.main"
+        )
 
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
 
     def register_database(self):
         from masoniteorm.query import QueryBuilder
+        from config.database import DB
 
         self.application.bind(
             "builder",
-            QueryBuilder(
-                connection_details=load(
-                    self.application.make("config.database")
-                ).DATABASES
-            ),
+            QueryBuilder(connection_details=config("database.databases")),
         )
 
         self.application.bind(
             "migrations.location", "tests/integrations/databases/migrations"
         )
         self.application.bind("seeds.location", "tests/integrations/databases/seeds")
-
-        from config.database import DB
 
         self.application.bind("resolver", DB)
 

@@ -1,6 +1,6 @@
 from .RuleEnclosure import RuleEnclosure
 from .MessageBag import MessageBag
-from ..utils.structures import Dot
+from ..utils.structures import data_get
 import inspect
 import re
 import os
@@ -35,7 +35,7 @@ class BaseValidation:
             self.errors.update({key: message})
 
     def find(self, key, dictionary, default=False):
-        return Dot().dot(key, dictionary, default)
+        return data_get(dictionary, key, default)
 
     def message(self, key):
         return ""
@@ -212,7 +212,7 @@ class date(BaseValidation):
 
 
 class before_today(BaseValidation):
-    def __init__(self, validations, tz="Universal", messages={}, raises={}):
+    def __init__(self, validations, tz="UTC", messages={}, raises={}):
         super().__init__(validations, messages=messages, raises=raises)
         self.tz = tz
 
@@ -736,15 +736,9 @@ class json(BaseValidation):
     def passes(self, attribute, key, dictionary):
         import json as json_module
 
-        # Hacky workaround for Python 3.4
-        try:
-            JsonParseException = json.decoder.JSONDecodeError
-        except AttributeError:
-            JsonParseException = ValueError
-
         try:
             return json_module.loads(str(attribute))
-        except (TypeError, JsonParseException):
+        except (TypeError, json_module.decoder.JSONDecodeError):
             return False
 
     def message(self, attribute):
@@ -1173,19 +1167,6 @@ class distinct(BaseValidation):
 
     def negated_message(self, attribute):
         return "The {} field has only different values.".format(attribute)
-
-
-def flatten(iterable):
-
-    flat_list = []
-    for route in iterable:
-        if isinstance(route, list):
-            for r in flatten(route):
-                flat_list.append(r)
-        else:
-            flat_list.append(route)
-
-    return flat_list
 
 
 class Validator:

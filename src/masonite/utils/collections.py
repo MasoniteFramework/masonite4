@@ -520,3 +520,21 @@ class Collection:
             items = items.all()
 
         return items
+
+
+def collect(iterable):
+    """Transform an iterable into a collection."""
+    return Collection(iterable)
+
+
+def flatten(iterable):
+    """Flatten all sub-iterables of an iterable structure (recursively)."""
+    flat_list = []
+    for item in iterable:
+        if isinstance(item, list):
+            for subitem in flatten(item):
+                flat_list.append(subitem)
+        else:
+            flat_list.append(item)
+
+    return flat_list

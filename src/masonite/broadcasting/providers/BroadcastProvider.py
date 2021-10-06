@@ -1,7 +1,7 @@
 from ...providers import Provider
 from ..Broadcast import Broadcast
 from ..drivers import PusherDriver
-from ...utils.structures import load
+from ...configuration import config
 
 
 class BroadcastProvider(Provider):
@@ -10,9 +10,8 @@ class BroadcastProvider(Provider):
 
     def register(self):
         broadcast = Broadcast(self.application).set_configuration(
-            load(self.application.make("config.broadcast")).BROADCASTS
+            config("broadcast.broadcasts")
         )
-
         broadcast.add_driver("pusher", PusherDriver(self.application))
 
         self.application.bind("broadcast", broadcast)

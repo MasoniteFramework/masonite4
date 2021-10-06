@@ -1,7 +1,7 @@
 import pendulum
 from .Cookie import Cookie
 
-from ..utils.helpers import cookie_expire_time
+from ..utils.time import cookie_expire_time
 
 
 class CookieJar:

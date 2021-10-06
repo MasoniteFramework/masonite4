@@ -1,9 +1,10 @@
 """New Key Command."""
 from cleo import Command
-from cryptography.fernet import Fernet
-from distutils.dir_util import copy_tree
 import inflection
 import os
+
+from ..utils.location import controller_path
+from ..utils.filesystem import get_module_dir, render_stub_file
 
 
 class MakeControllerCommand(Command):
@@ -23,25 +24,18 @@ class MakeControllerCommand(Command):
         if not name.endswith("Controller"):
             name += "Controller"
 
-        with open(self.get_controllers_path(), "r") as f:
-            content = f.read()
-            content = content.replace("__class__", name)
+        content = render_stub_file(self.get_controllers_path(), name)
 
-        with open(
-            os.path.join(
-                self.app.make("controller.location").replace(".", "/"), name + ".py"
-            ),
-            "w",
-        ) as f:
+        filename = name + ".py"
+        with open(controller_path(filename), "w") as f:
             f.write(content)
-        self.info(f"Controller Created ({file_name})")
+
+        self.info(f"Controller Created ({filename})")
 
     def get_template_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/templates/")
+        return os.path.join(get_module_dir(__file__), "../stubs/templates/")
 
     def get_controllers_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/controllers/Controller.py")
+        return os.path.join(
+            get_module_dir(__file__), "../stubs/controllers/Controller.py"
+        )

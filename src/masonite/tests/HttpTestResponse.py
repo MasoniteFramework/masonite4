@@ -1,7 +1,7 @@
 import json
 from ..views import View
 from ..controllers import Controller
-from ..utils.structures import Dot
+from ..utils.structures import data_get
 
 
 class HttpTestResponse:
@@ -193,7 +193,7 @@ class HttpTestResponse:
     def assertViewHas(self, key, value=None):
         """Assert that view context contains a given data key (and eventually associated value)."""
         self._ensure_response_has_view()
-        value_at_key = Dot().dot(key, self.response.original.dictionary)
+        value_at_key = data_get(self.response.original.dictionary, key)
         assert value_at_key
         if value:
             assert value_at_key == value
@@ -216,7 +216,7 @@ class HttpTestResponse:
     def assertViewMissing(self, key):
         """Assert that given data key is not in the view context."""
         self._ensure_response_has_view()
-        assert not Dot().dot(key, self.response.original.dictionary)
+        assert not data_get(self.response.original.dictionary, key)
         return self
 
     def assertAuthenticated(self):
@@ -289,7 +289,7 @@ class HttpTestResponse:
         """Assert that response is JSON and contains the given path, with eventually the given
         value if provided. The path is a dotted path."""
         response_data = self._ensure_response_is_json()
-        data_at_path = Dot().dot(path, response_data)
+        data_at_path = data_get(response_data, path)
 
         assert data_at_path == value, f"'{data_at_path}' does not equal {value}"
         return self
@@ -317,7 +317,7 @@ class HttpTestResponse:
         """Assert that JSON response is JSON and does not contain given path.
         The path can be a dotted path"""
         response_data = self._ensure_response_is_json()
-        assert not Dot().dot(
-            path, response_data
-        ), f"'{response_data}' is not missing from {Dot().dot(path, response_data)}"
+        assert not data_get(
+            response_data, path
+        ), f"'{response_data}' is not missing from {data_get(response_data, path)}"
         return self

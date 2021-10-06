@@ -68,3 +68,10 @@ class Application(Container):
         if len(sys.argv) > 1:
             return sys.argv[1] != "serve"
         return True
+
+    def environment(self):
+        """Helper to get current environment."""
+        if self.is_running_tests():
+            return "testing"
+        else:
+            return os.getenv("APP_ENV")

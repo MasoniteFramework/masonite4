@@ -142,21 +142,10 @@ class ProjectCommand(Command):
         self.info("Crafting Application ...")
 
         try:
-            # Python 3
             request = requests.get(zipurl)
             with zipfile.ZipFile(BytesIO(request.content)) as zfile:
                 extracted_name = zfile.infolist()[0].filename
                 zfile.extractall(os.getcwd())
-            success = True
-        except ImportError:
-            # Python 2
-            import urllib
-
-            r = urllib.urlopen(zipurl)
-            with zipfile.ZipFile(BytesIO(r.read())) as z:
-                extracted_name = z.infolist()[0].filename
-                z.extractall(os.getcwd())
-
             success = True
         except Exception as e:
             self.line_error("An error occured when downloading {0}".format(zipurl))
@@ -177,11 +166,11 @@ class ProjectCommand(Command):
                 self.call("install")
 
                 self.info(
-                    "Installed Successfully. Just Run `craft serve` To Start Your Application."
+                    "Installed Successfully. Just Run `python craft serve` To Start Your Application."
                 )
             else:
                 self.info(
-                    "Project Created Successfully. You now will have to CD into your new '{}' directory and run `craft install` to complete the installation".format(
+                    "Project Created Successfully. You now will have to go into your new '{}' directory and run `start install` to complete the installation".format(
                         target
                     )
                 )

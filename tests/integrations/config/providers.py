@@ -14,11 +14,12 @@ from src.masonite.providers import (
     BroadcastProvider,
     AuthenticationProvider,
     HashServiceProvider,
-    ValidationProvider,
 )
+
 
 from src.masonite.scheduling.providers import ScheduleProvider
 from src.masonite.notification.providers import NotificationProvider
+from src.masonite.validation.providers.ValidationProvider import ValidationProvider
 
 PROVIDERS = [
     FrameworkProvider,

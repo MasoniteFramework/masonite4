@@ -1,8 +1,9 @@
 """New Key Command."""
 from cleo import Command
-from ..utils.filesystem import make_directory
 import inflection
 import os
+
+from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
 
 
 class MakeMailableCommand(Command):
@@ -20,19 +21,17 @@ class MakeMailableCommand(Command):
     def handle(self):
         name = inflection.camelize(self.argument("name"))
 
-        with open(self.get_mailables_path(), "r") as f:
-            content = f.read()
-            content = content.replace("__class__", name)
+        content = render_stub_file(self.get_mailables_path(), name)
 
-        file_name = os.path.join(
+        filename = os.path.join(
             self.app.make("mailables.location").replace(".", "/"), name + ".py"
         )
 
-        make_directory(file_name)
+        make_directory(filename)
 
-        with open(file_name, "w") as f:
+        with open(filename, "w") as f:
             f.write(content)
-        self.info(f"Mailable Created ({file_name})")
+        self.info(f"Mailable Created ({filename})")
 
     def get_template_path(self):
         current_path = os.path.dirname(os.path.realpath(__file__))
