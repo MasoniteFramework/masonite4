@@ -112,3 +112,7 @@ class ProjectTargetNotEmpty(Exception):
 
 class NotificationException(Exception):
     pass
+
+
+class InvalidConfigurationLocation(Exception):
+    pass

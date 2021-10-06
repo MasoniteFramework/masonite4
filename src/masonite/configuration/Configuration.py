@@ -2,8 +2,9 @@ import importlib
 import inspect
 import pkgutil
 from os.path import relpath
-
 from dotty_dict import dotty
+
+from ..exceptions import InvalidConfigurationLocation
 
 
 class Configuration:
@@ -23,6 +24,11 @@ class Configuration:
             for obj in inspect.getmembers(obj_in_modules):
                 if obj[0].isupper():
                     self._config[f"{name}.{obj[0].lower()}"] = obj[1]
+        # check loaded configuration
+        if len(self._config.keys()) == 0 or "application" not in self._config:
+            raise InvalidConfigurationLocation(
+                f"Config directory {config_root} does not contain required configuration files."
+            )
 
     def set(self, path, value):
         self._config[path] = value

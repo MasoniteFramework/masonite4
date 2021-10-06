@@ -26,10 +26,9 @@ class Kernel:
     def register(self):
         self.load_environment()
         self.register_configurations()
-        self.register_routes()
         self.register_middleware()
+        self.register_routes()
         self.register_database()
-        self.register_controllers()
         self.register_templates()
         self.register_storage()
 
@@ -56,7 +55,7 @@ class Kernel:
 
     def register_configurations(self):
         # load configuration
-        self.application.bind("config.location", "config")
+        self.application.bind("config.location", "tests/integrations/config")
         configuration = Configuration(self.application)
         configuration.load()
         self.application.bind("config", configuration)

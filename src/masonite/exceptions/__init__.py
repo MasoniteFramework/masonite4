@@ -21,4 +21,5 @@ from .exceptions import (
     ProjectProviderTimeout,
     ProjectProviderHttpError,
     ProjectTargetNotEmpty,
+    InvalidConfigurationLocation,
 )
