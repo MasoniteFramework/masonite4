@@ -13,19 +13,19 @@
 
 ## About Masonite
 
-> Note: This repository contains the core code of the Masonite framework. If you want to see a Masonite project template please go here [MasoniteFramework/cookie-cutter](https://github.com/MasoniteFramework/cookie-cutter)
+> Note: This repository contains the core code of the Masonite framework. If you want to see a Masonite project template please go to [MasoniteFramework/cookie-cutter](https://github.com/MasoniteFramework/cookie-cutter)
 
 The modern and developer centric Python web framework that strives for an actual batteries included developer tool with a lot of out of the box functionality with an extremely extendable architecture. Masonite is perfect for beginner developers getting into their first web applications as well as experienced devs that need to utilize the full potential of Masonite to get their applications done.
-
 Masonite works hard to be fast and easy from install to deployment so developers can go from concept to creation in as quick and efficiently as possible. Use it for your next SaaS! Try it once and you’ll fall in love.
 
-- Having a simple and expressive routing engine
-- Extremely powerful command line helpers called `craft` commands
-- A simple migration system, removing the "magic" and finger crossing of migrations
-- A great [Active Record ORM](https://github.com/MasoniteFramework/orm)
-- A great filesystem architecture for navigating and expanding your project
-- An extremely powerful Service Container (IOC Container)
-- Service Providers which makes Masonite extremely extendable
+- Easily send emails with the Mail Provider and the SMTP and Mailgun drivers
+- Send websocket requests from your server with the Broadcast Provider and Pusher, Ably and PubNub drivers
+- IOC container and auto resolving dependency injection
+- Service Providers to easily add functionality to the framework
+- Extremely simple static files configured and ready to go
+- Active Record style ORM called [Masonite ORM](https://github.com/MasoniteFramework/orm)
+- An extremely useful command line tool to assist in your development tasks
+- Extremely extendable
 
 ## Learning Masonite
 
@@ -33,7 +33,7 @@ New to Masonite ? Please first read the [Official Documentation](https://docs.ma
 Masonite strives to have extremely comprehensive documentation 😃. It would be wise to go through the tutorials there.
 If you find any discrepencies or anything that doesn't make sense, be sure to comment directly on the documentation to start a discussion!
 
-If you are a visual learner you can find tutorials here: [MasoniteCasts](https://masonitecasts.com)
+If you are more of a visual learner you can watch Masonite related tutorial videos at [masonitecasts.com](https://masonitecasts.com)
 
 Also be sure to join the [Masonite Slack Community](http://slack.masoniteproject.com/)!
 
@@ -49,8 +49,12 @@ Contributing to Masonite is simple:
 ## Core Maintainers
 
 - [Joseph Mancuso](https://github.com/josephmancuso) (Author)
-- [Samuel Girardin](https://www.github.com/girardinsamuel)
+- [Samuel Girardin](https://github.com/girardinsamuel)
 - [Marlysson Silva](https://github.com/Marlysson)
+
+## Sponsors
+
+To become a sponsor head to our [GitHub Sponsors page](https://github.com/sponsors/MasoniteFramework)!
 
 ## Security Vulnerabilities
 
