@@ -13,7 +13,7 @@ class UrlsHelper:
         the base url domain."""
         # ensure that no slash is prefixing the relative path
         relative_path = path.lstrip("/")
-        return join(self.app.make("base_url"), relative_path)
+        return join(config("application.app_url"), relative_path)
 
     def asset(self, alias, filename):
         """Generates a fully qualified URL for the given asset using the given disk

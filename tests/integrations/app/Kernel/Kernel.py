@@ -1,9 +1,10 @@
 import os
 
+from src.masonite.auth import Sign
 from src.masonite.foundation import response_handler
 from src.masonite.storage import StorageCapsule
 from src.masonite.environment import LoadEnvironment
-from src.masonite.configuration import config
+from src.masonite.configuration import Configuration, config
 from src.masonite.middleware import (
     VerifyCsrfToken,
     SessionMiddleware,
@@ -23,7 +24,6 @@ class Kernel:
         self.application = app
 
     def register(self):
-        # Register routes
         self.load_environment()
         self.register_configurations()
         self.register_routes()
@@ -55,22 +55,30 @@ class Kernel:
         )
 
     def register_configurations(self):
-        self.application.bind("base_url", "http://localhost:8000")
+        # load configuration
+        self.application.bind("config.location", "config")
+        configuration = Configuration(self.application)
+        configuration.load()
+        self.application.bind("config", configuration)
+        key = config("application.key")
+        self.application.bind("key", key)
+        self.application.bind("sign", Sign(key))
 
+        # set locations
+        self.application.bind("controller.location", "tests.integrations.controllers")
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+
         self.application.bind(
             "server.runner", "src.masonite.commands.ServeCommand.main"
         )
-
-    def register_controllers(self):
-        self.application.bind("controller.location", "tests.integrations.controllers")
 
     def register_templates(self):
         self.application.bind("views.location", "tests/integrations/templates")
 
     def register_database(self):
         from masoniteorm.query import QueryBuilder
+        from config.database import DB
 
         self.application.bind(
             "builder",
@@ -81,8 +89,6 @@ class Kernel:
             "migrations.location", "tests/integrations/databases/migrations"
         )
         self.application.bind("seeds.location", "tests/integrations/databases/seeds")
-
-        from config.database import DB
 
         self.application.bind("resolver", DB)
 
