@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://masoniteframework.github.io/img/logo.png" width="160px">
-  <h1>Masonite</h1>
+  <h1 align="center">Masonite</h1>
 </p>
 <p align="center">
   <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/MasoniteFramework/masonite/Test%20Application">
