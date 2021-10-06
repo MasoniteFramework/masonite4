@@ -8,7 +8,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="4.0.0b1.post1",
+    version="4.0.0b1.post2",
     package_dir={"": "src"},
     description="The Masonite Framework",
     long_description=long_description,
@@ -84,6 +84,8 @@ setup(
         "masonite.cache",
         "masonite.cache.drivers",
         "masonite.commands",
+        "masonite.configuration",
+        "masonite.configuration.providers",
         "masonite.container",
         "masonite.controllers",
         "masonite.cookies",
