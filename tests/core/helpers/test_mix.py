@@ -4,6 +4,7 @@ from tests import TestCase
 
 from src.masonite.helpers import MixHelper
 from src.masonite.exceptions import MixFileNotFound, MixManifestNotFound
+from src.masonite.facades import Config
 
 
 class TestMix(TestCase):
@@ -14,7 +15,11 @@ class TestMix(TestCase):
 
     def tearDown(self):
         super().tearDown()
-        pathlib.Path(self.manifest_file).unlink(missing_ok=True)
+        try:
+            # missing_ok=True is only available starting from Python3.8
+            pathlib.Path(self.manifest_file).unlink()
+        except FileNotFoundError:
+            pass
 
     def _make_manifest(self):
         manifest = {"/storage/app.css": "/static/app.css"}
@@ -32,12 +37,18 @@ class TestMix(TestCase):
 
     def test_mix_url(self):
         self._make_manifest()
-        self.assertEqual(self.mix("/storage/app.css"), "/static/app.css")
+        self.assertEqual(
+            self.mix("/storage/app.css"), "http://localhost:8000/static/app.css"
+        )
         # also works if missing / prefix
-        self.assertEqual(self.mix("storage/app.css"), "/static/app.css")
+        self.assertEqual(
+            self.mix("storage/app.css"), "http://localhost:8000/static/app.css"
+        )
 
-    # def test_mix_with_mix_base_url(self):
-    #     self._make_manifest()
-    #     # does not override
-    #     os.environ["MIX_BASE_URL"] = "https://some-cdn.com/"
-    #     test = self.mix("/storage/app.css")
+    def test_mix_with_mix_base_url(self):
+        Config.set("application.mix_base_url", "https://some-cdn.com/")
+        self._make_manifest()
+        self.assertEqual(
+            self.mix("storage/app.css"), "https://some-cdn.com/static/app.css"
+        )
+        Config.set("application.mix_base_url", None)

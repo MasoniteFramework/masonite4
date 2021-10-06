@@ -31,4 +31,4 @@ class MixHelper:
             compiled_path = manifest[path]
         except KeyError:
             raise MixFileNotFound(f"Can't locate mix file: {path}.")
-        return join(root_url, compiled_path)
+        return join(root_url, compiled_path.lstrip("/"))
