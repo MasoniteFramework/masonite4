@@ -1,8 +1,8 @@
 import json
 from os.path import join, exists
-from ..utils.structures import load
 
-# from ..utils.location import base_path  # PR not merged yet
+from ..configuration import config
+from ..utils.location import base_path
 from ..exceptions import MixManifestNotFound, MixFileNotFound
 
 
@@ -14,12 +14,10 @@ class MixHelper:
         if not path.startswith("/"):
             path = "/" + path
 
-        mix_base_url = load(self.app.make("config.application")).MIX_BASE_URL
-        root_url = mix_base_url or self.app.make("base_url")
+        root_url = config("application.mix_base_url") or config("application.app_url")
 
         # load manifest file
-        # manifest_file = base_path(join(manifest_dir, "mix-manifest.json"))
-        manifest_file = join(manifest_dir, "mix-manifest.json")
+        manifest_file = base_path(join(manifest_dir, "mix-manifest.json"))
         if not exists(manifest_file):
             raise MixManifestNotFound(
                 "Mix manifest file mix-manifest.json does not exist."
