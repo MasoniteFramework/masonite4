@@ -4,6 +4,7 @@ import inflection
 import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
+from ..utils.str import dotted_to_path
 
 
 class MakeProviderCommand(Command):
@@ -24,17 +25,13 @@ class MakeProviderCommand(Command):
         content = render_stub_file(self.get_providers_path(), name)
 
         filename = os.path.join(
-            self.app.make("providers.location").replace(".", "/"), name + ".py"
+            dotted_to_path(self.app.make("providers.location")), name + ".py"
         )
-
         make_directory(filename)
 
         with open(filename, "w") as f:
             f.write(content)
         self.info(f"Provider Created ({filename})")
-
-    def get_template_path(self):
-        return os.path.join(get_module_dir(__file__), "../stubs/templates/")
 
     def get_providers_path(self):
         return os.path.join(get_module_dir(__file__), "../stubs/providers/Provider.py")

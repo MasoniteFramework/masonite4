@@ -1,10 +1,10 @@
 """Notification Table Command."""
 from cleo import Command
 import os
-import pathlib
 
-from ...utils.filesystem import make_directory
+from ...utils.filesystem import get_module_dir, make_directory
 from ...utils.time import migration_timestamp
+from ...utils.location import base_path
 
 
 class NotificationTableCommand(Command):
@@ -18,19 +18,17 @@ class NotificationTableCommand(Command):
     def handle(self):
         with open(
             os.path.join(
-                pathlib.Path(__file__).parent.absolute(),
-                "../",
-                "stubs/notification/create_notifications_table.py",
+                get_module_dir(__file__),
+                "../stubs/notification/create_notifications_table.py",
             )
         ) as fp:
             output = fp.read()
 
-        file_name = f"{migration_timestamp()}_create_notifications_table.py"
-
-        path = os.path.join(os.getcwd(), self.option("directory"), file_name)
+        filename = f"{migration_timestamp()}_create_notifications_table.py"
+        path = os.path.join(base_path(self.option("directory")), filename)
         make_directory(path)
 
         with open(path, "w") as fp:
             fp.write(output)
 
-        self.info(f"Migration file created: {file_name}")
+        self.info(f"Migration file created: {filename}")

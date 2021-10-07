@@ -4,6 +4,7 @@ import inflection
 import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
+from ..utils.str import dotted_to_path
 
 
 class MakeMailableCommand(Command):
@@ -24,9 +25,8 @@ class MakeMailableCommand(Command):
         content = render_stub_file(self.get_mailables_path(), name)
 
         filename = os.path.join(
-            self.app.make("mailables.location").replace(".", "/"), name + ".py"
+            dotted_to_path(self.app.make("mailables.location")), name + ".py"
         )
-
         make_directory(filename)
 
         with open(filename, "w") as f:
