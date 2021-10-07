@@ -48,14 +48,14 @@ class TestConfiguration(TestCase):
 
     def test_cannot_override_foundation_config(self):
         with self.assertRaises(InvalidConfigurationSetup):
-            Config.merge_config_with("auth", {"key": "val"})
+            Config.merge_with("auth", {"key": "val"})
 
     def test_can_merge_external_config_with_project_config(self):
         # reset test package config for idempotent tests
         Config.set("package", {"package_param": "package_value"})
 
         package_default_config = {"PACKAGE_PARAM": "default_value", "OTHER_PARAM": 2}
-        Config.merge_config_with("package", package_default_config)
+        Config.merge_with("package", package_default_config)
         self.assertEqual(config("package.package_param"), "package_value")
         self.assertEqual(config("package.other_param"), 2)
 
@@ -63,6 +63,6 @@ class TestConfiguration(TestCase):
         # reset test package config for idempotent tests
         Config.set("package", {"package_param": "package_value"})
 
-        Config.merge_config_with("package", "tests/core/configuration/test_config.py")
+        Config.merge_with("package", "tests/core/configuration/test_config.py")
         self.assertEqual(config("package.package_param"), "package_value")
         self.assertEqual(config("package.other_param"), 3)
