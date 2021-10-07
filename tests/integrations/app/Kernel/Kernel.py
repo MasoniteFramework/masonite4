@@ -77,7 +77,6 @@ class Kernel:
 
     def register_database(self):
         from masoniteorm.query import QueryBuilder
-        from config.database import DB
 
         self.application.bind(
             "builder",
@@ -89,7 +88,7 @@ class Kernel:
         )
         self.application.bind("seeds.location", "tests/integrations/databases/seeds")
 
-        self.application.bind("resolver", DB)
+        self.application.bind("resolver", config("database.databases.db"))
 
     def register_storage(self):
         storage = StorageCapsule(self.application.base_path)
