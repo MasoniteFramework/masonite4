@@ -4,7 +4,7 @@ import operator
 from functools import reduce
 from dotty_dict import Dotty
 
-from src.masonite.utils.structures import data_get
+from .structures import data_get
 
 
 class Collection:
