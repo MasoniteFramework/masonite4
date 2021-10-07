@@ -12,7 +12,7 @@ from src.masonite.middleware import (
     LoadUserMiddleware,
 )
 from src.masonite.routes import Route
-from src.masonite.utils.structures import load_routes
+from src.masonite.utils.structures import load
 
 
 class Kernel:
@@ -40,11 +40,11 @@ class Kernel:
             self.application.make("controller.location")
         )
 
-        self.application.bind("routes.web", "tests.integrations.web")
-
+        self.application.bind("routes.web", "tests/integrations/web")
         self.application.make("router").add(
             Route.group(
-                load_routes(self.application.make("routes.web")), middleware=["web"]
+                load(self.application.make("routes.web"), "ROUTES", []),
+                middleware=["web"],
             )
         )
 
@@ -64,7 +64,7 @@ class Kernel:
         self.application.bind("sign", Sign(key))
 
         # set locations
-        self.application.bind("controller.location", "tests.integrations.controllers")
+        self.application.bind("controller.location", "tests/integrations/controllers")
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
 

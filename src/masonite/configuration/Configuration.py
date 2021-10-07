@@ -2,15 +2,15 @@ import importlib
 import inspect
 import pkgutil
 from os.path import relpath
-from dotty_dict import dotty
 
+from ..utils.structures import data
 from ..exceptions import InvalidConfigurationLocation
 
 
 class Configuration:
     def __init__(self, application):
         self.application = application
-        self._config = dotty()
+        self._config = data()
 
     def load(self):
         """At boot load configuration from all files and store them in here."""
