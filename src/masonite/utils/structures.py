@@ -11,11 +11,10 @@ def load(path, object_name=None, default=None):
 
     Arguments:
         path {str} -- A file path or a dotted path of a Python module
-        object {str} -- The object name to load in this module
+        object {str} -- The object name to load in this module (None)
         default {str} -- The default value to return if object not found in module (None)
-
     Returns:
-        {object} -- The value (or default) read in the module
+        {object} -- The value (or default) read in the module or the module if no object name
     """
     # modularize path if needed
     dotted_path = modularize(path)
