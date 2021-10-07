@@ -2,6 +2,9 @@ import json
 import random
 import operator
 from functools import reduce
+from dotty_dict import Dotty
+
+from src.masonite.utils.structures import data_get
 
 
 class Collection:
@@ -438,8 +441,10 @@ class Collection:
 
     def _data_get(self, item, key, default=None):
         try:
-            if isinstance(item, (list, tuple, dict)):
+            if isinstance(item, (list, tuple)):
                 item = item[key]
+            elif isinstance(item, (dict, Dotty)):
+                item = data_get(item, key, default)
             elif isinstance(item, object):
                 item = getattr(item, key)
         except (IndexError, AttributeError, KeyError, TypeError):

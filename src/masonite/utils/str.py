@@ -15,3 +15,14 @@ def random_string(length=4):
     return "".join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(length)
     )
+
+
+def modularize(file_path):
+    """Transform a file_path to a dotted path.
+    Keyword Arguments:
+        file_path {str} -- A file path such app/controllers
+
+    Returns:
+        string
+    """
+    return file_path.replace("/", ".")
