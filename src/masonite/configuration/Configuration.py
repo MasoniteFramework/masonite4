@@ -7,20 +7,33 @@ from dotty_dict import dotty
 from ..exceptions import InvalidConfigurationLocation, InvalidConfigurationSetup
 
 
-# from PR not merged
+# from PR #147 not merged yet, in the meantime hard-coded here
+# from ..utils.structures import load
+# from ..utils.str import modularize
+
+
 def modularize(path):
     return path.replace("/", ".").rstrip(".py")
 
 
-# add to PR:
-def load_module(module_path):
-    """Module path file or dotted :
-    tests/integrations/app/test.py
-    tests/integrations/app/test
-    tests.integrations.app.test
+def load(path, object_name=None, default=None):
+    """Load the given object from a Python module located at path and returns a default
+    value if not found. If no object name is provided, loads the module.
+
+    Arguments:
+        path {str} -- A file path or a dotted path of a Python module
+        object {str} -- The object name to load in this module (None)
+        default {str} -- The default value to return if object not found in module (None)
+    Returns:
+        {object} -- The value (or default) read in the module or the module if no object name
     """
-    module = pydoc.locate(modularize(module_path))
-    return module
+    # modularize path if needed
+    dotted_path = modularize(path)
+    module = pydoc.locate(dotted_path)
+    if object_name is None:
+        return module
+    else:
+        return getattr(module, object_name, default)
 
 
 class Configuration:
