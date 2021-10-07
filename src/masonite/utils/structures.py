@@ -5,9 +5,9 @@ from dotty_dict import dotty
 from .str import modularize
 
 
-def load(path, object, default=None):
+def load(path, object_name=None, default=None):
     """Load the given object from a Python module located at path and returns a default
-    value if not found.
+    value if not found. If no object name is provided, loads the module.
 
     Arguments:
         path {str} -- A file path or a dotted path of a Python module
@@ -20,7 +20,10 @@ def load(path, object, default=None):
     # modularize path if needed
     dotted_path = modularize(path)
     module = pydoc.locate(dotted_path)
-    return getattr(module, object, default)
+    if object_name is None:
+        return module
+    else:
+        return getattr(module, object_name, default)
 
 
 def data(dictionary={}):

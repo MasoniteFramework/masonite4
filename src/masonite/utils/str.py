@@ -19,13 +19,15 @@ def random_string(length=4):
 
 def modularize(file_path):
     """Transforms a file path to a dotted path.
+
     Keyword Arguments:
         file_path {str} -- A file path such app/controllers
 
     Returns:
         value {str} -- a dotted path such as app.controllers
     """
-    return file_path.replace("/", ".")
+    # if the file had the .py extension remove it as it's not needed for a module
+    return file_path.replace("/", ".").rstrip(".py")
 
 
 def dotted_to_path(dotted_path):
