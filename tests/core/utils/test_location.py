@@ -3,11 +3,12 @@ from tests import TestCase
 
 from src.masonite.utils.location import (
     base_path,
-    view_path,
-    controller_path,
+    views_path,
+    controllers_path,
     seeds_path,
     migrations_path,
     config_path,
+    jobs_path,
 )
 
 
@@ -19,28 +20,28 @@ class TestLocation(TestCase):
         location = base_path("tests/integrations")
         self.assertEqual(os.path.join(base_dir, "tests/integrations"), location)
 
-    def test_view_path(self):
-        location = view_path("app.html")
+    def test_views_path(self):
+        location = views_path("app.html")
         self.assertTrue(location.endswith("tests/integrations/templates/app.html"))
-        location = view_path("account/app.html")
+        location = views_path("account/app.html")
         self.assertTrue(
             location.endswith("tests/integrations/templates/account/app.html")
         )
-        location = view_path("account/app.html", absolute=False)
+        location = views_path("account/app.html", absolute=False)
         self.assertEqual("tests/integrations/templates/account/app.html", location)
-        location = view_path(absolute=False)
+        location = views_path(absolute=False)
         self.assertEqual(location, "tests/integrations/templates/")
 
-    def test_controller_path(self):
-        location = controller_path("MyController.py")
+    def test_controllers_path(self):
+        location = controllers_path("MyController.py")
         self.assertTrue(
             location.endswith("tests/integrations/controllers/MyController.py")
         )
-        location = controller_path("account/MyController.py")
+        location = controllers_path("account/MyController.py")
         self.assertTrue(
             location.endswith("tests/integrations/controllers/account/MyController.py")
         )
-        location = controller_path("MyController.py", absolute=False)
+        location = controllers_path("MyController.py", absolute=False)
         self.assertEqual("tests/integrations/controllers/MyController.py", location)
 
     def test_config_path(self):
@@ -82,3 +83,15 @@ class TestLocation(TestCase):
         )
         location = seeds_path("create_users.py", absolute=False)
         self.assertEqual("tests/integrations/databases/seeds/create_users.py", location)
+
+    def test_jobs_path(self):
+        location = jobs_path("SomeTask.py")
+        self.assertTrue(location.endswith("tests/integrations/jobs/SomeTask.py"))
+        location = jobs_path("critical/SomeTask.py")
+        self.assertTrue(
+            location.endswith("tests/integrations/jobs/critical/SomeTask.py")
+        )
+        location = jobs_path("critical/SomeTask.py", absolute=False)
+        self.assertEqual("tests/integrations/jobs/critical/SomeTask.py", location)
+        location = jobs_path(absolute=False)
+        self.assertEqual(location, "tests/integrations/jobs/")

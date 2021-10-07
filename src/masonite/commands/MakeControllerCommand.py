@@ -3,7 +3,7 @@ from cleo import Command
 import inflection
 import os
 
-from ..utils.location import controller_path
+from ..utils.location import controllers_path
 from ..utils.filesystem import get_module_dir, render_stub_file
 
 
@@ -27,7 +27,7 @@ class MakeControllerCommand(Command):
         content = render_stub_file(self.get_controllers_path(), name)
 
         filename = name + ".py"
-        with open(controller_path(filename), "w") as f:
+        with open(controllers_path(filename), "w") as f:
             f.write(content)
 
         self.info(f"Controller Created ({filename})")
