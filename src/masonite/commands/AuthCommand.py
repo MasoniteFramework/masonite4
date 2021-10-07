@@ -25,6 +25,8 @@ class AuthCommand(Command):
         )
         copy_tree(self.get_controllers_path(), controllers_path("auth"))
 
+        self.info("Auth scaffolded successfully!")
+
     def get_template_path(self):
         return os.path.join(get_module_dir(__file__), "../stubs/templates/auth")
 
