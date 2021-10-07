@@ -15,7 +15,7 @@ class TestValidation(TestCase):
         self.assertEqual(validation.all(), {})
 
     def test_can_validate_request(self):
-        request = self.make_request(data={"QUERY_STRING": ""})
+        request = self.make_request(query_string="")
         validation = request.validate(
             {
                 "email": "required",

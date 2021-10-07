@@ -58,8 +58,10 @@ class TestCase(unittest.TestCase):
     def patch(self, route, data=None):
         return self.fetch(route, data, method="PATCH")
 
-    def make_request(self, data={}):
-        request = Request(generate_wsgi(data))
+    def make_request(
+        self, data={}, path="/", query_string="application=Masonite", method="GET"
+    ):
+        request = Request(generate_wsgi(data, path, query_string, method))
         request.app = self.application
 
         self.application.bind("request", request)

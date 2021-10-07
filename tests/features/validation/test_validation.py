@@ -1529,7 +1529,7 @@ class TestValidationProvider(TestCase):
         self.assertTrue(self.application.make(Validator).numeric)
 
     def test_request_validation(self):
-        request = self.make_request(data={"QUERY_STRING": "id=1&name=Joe"})
+        request = self.make_request(query_string="id=1&name=Joe")
         validate = self.application.make("Validator")
 
         validated = request.validate(validate.required(["id", "name"]))
