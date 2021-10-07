@@ -58,7 +58,7 @@ class Configuration:
                 f"Config directory {config_root} does not contain required configuration files."
             )
 
-    def merge_config_with(self, path, external_config):
+    def merge_with(self, path, external_config):
         """Merge external config at key with project config at same key. It's especially
         useful in Masonite packages in order to merge the configuration default package with
         the package configuration which can be published in project.
