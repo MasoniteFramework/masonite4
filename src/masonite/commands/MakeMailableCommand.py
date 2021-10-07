@@ -1,10 +1,11 @@
-"""New Key Command."""
+"""New Mailable Command."""
 from cleo import Command
 import inflection
 import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
 from ..utils.str import dotted_to_path
+from ..utils.location import base_path
 
 
 class MakeMailableCommand(Command):
@@ -21,24 +22,18 @@ class MakeMailableCommand(Command):
 
     def handle(self):
         name = inflection.camelize(self.argument("name"))
-
         content = render_stub_file(self.get_mailables_path(), name)
 
-        filename = os.path.join(
+        relative_filename = os.path.join(
             dotted_to_path(self.app.make("mailables.location")), name + ".py"
         )
-        make_directory(filename)
+        filepath = base_path(relative_filename)
+        make_directory(filepath)
 
-        with open(filename, "w") as f:
+        with open(filepath, "w") as f:
             f.write(content)
-        self.info(f"Mailable Created ({filename})")
 
-    def get_template_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/templates/")
+        self.info(f"Mailable Created ({relative_filename})")
 
     def get_mailables_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/mailable/Mailable.py")
+        return os.path.join(get_module_dir(__file__), "../stubs/mailable/Mailable.py")

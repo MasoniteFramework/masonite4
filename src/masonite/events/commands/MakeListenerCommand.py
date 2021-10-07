@@ -1,8 +1,11 @@
-"""New Key Command."""
+"""New Listener Command."""
 from cleo import Command
-from ...utils.filesystem import make_directory
 import inflection
 import os
+
+from ...utils.filesystem import make_directory, get_module_dir, render_stub_file
+from ...utils.str import dotted_to_path
+from ...utils.location import base_path
 
 
 class MakeListenerCommand(Command):
@@ -19,22 +22,17 @@ class MakeListenerCommand(Command):
 
     def handle(self):
         name = inflection.camelize(self.argument("name"))
+        content = render_stub_file(self.get_path(), name)
 
-        with open(self.get_path(), "r") as f:
-            content = f.read()
-            content = content.replace("__class__", name)
-
-        file_name = os.path.join(
-            self.app.make("listeners.location").replace(".", "/"), name + ".py"
+        relative_filename = os.path.join(
+            dotted_to_path(self.app.make("listeners.location")), f"{name}.py"
         )
+        filepath = base_path(relative_filename)
+        make_directory(filepath)
 
-        make_directory(file_name)
-
-        with open(file_name, "w") as f:
+        with open(filepath, "w") as f:
             f.write(content)
-        self.info(f"Listener Created ({file_name})")
+        self.info(f"Listener Created ({relative_filename})")
 
     def get_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../../stubs/events/listener.py")
+        return os.path.join(get_module_dir(__file__), "../../stubs/events/Listener.py")

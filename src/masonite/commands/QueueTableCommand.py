@@ -1,7 +1,6 @@
-"""New Key Command."""
+"""New Queue Table Command."""
 from cleo import Command
 import os
-import pathlib
 
 from ..utils.filesystem import make_directory, get_module_dir
 from ..utils.time import migration_timestamp
@@ -19,16 +18,19 @@ class QueueTableCommand(Command):
     def handle(self):
         with open(
             os.path.join(
-                get_module_dir(__file__), "stubs/queue/create_queue_jobs_table.py"
+                get_module_dir(__file__), "../stubs/queue/create_queue_jobs_table.py"
             )
         ) as fp:
             output = fp.read()
 
-        filename = f"{migration_timestamp()}_create_queue_jobs_table.py"
-        path = os.path.join(base_path(self.option("directory")), filename)
-        make_directory(path)
+        relative_filename = os.path.join(
+            self.option("directory"),
+            f"{migration_timestamp()}_create_queue_jobs_table.py",
+        )
+        filepath = base_path(relative_filename)
+        make_directory(filepath)
 
-        with open(path, "w") as fp:
+        with open(filepath, "w") as fp:
             fp.write(output)
 
-        self.info(f"Migration file created: {filename}")
+        self.info(f"Migration file created: {relative_filename}")

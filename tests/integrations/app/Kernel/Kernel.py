@@ -67,6 +67,14 @@ class Kernel:
         self.application.bind("controller.location", "tests/integrations/controllers")
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+        self.application.bind("providers.location", "tests/integrations/providers")
+        self.application.bind("listeners.location", "tests/integrations/listeners")
+        self.application.bind("validation.location", "tests/integrations/validation")
+        self.application.bind("tasks.location", "tests/integrations/tasks")
+        self.application.bind("events.location", "tests/integrations/events")
+        self.application.bind(
+            "notifications.location", "tests/integrations/notifications"
+        )
 
         self.application.bind(
             "server.runner", "src.masonite.commands.ServeCommand.main"

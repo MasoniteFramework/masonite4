@@ -1,4 +1,4 @@
-"""New Key Command."""
+"""New Controller Command."""
 from cleo import Command
 import inflection
 import os
@@ -26,11 +26,11 @@ class MakeControllerCommand(Command):
 
         content = render_stub_file(self.get_controllers_path(), name)
 
-        filename = name + ".py"
+        filename = f"{name}.py"
         with open(controllers_path(filename), "w") as f:
             f.write(content)
 
-        self.info(f"Controller Created ({filename})")
+        self.info(f"Controller Created ({controllers_path(filename, absolute=False)})")
 
     def get_template_path(self):
         return os.path.join(get_module_dir(__file__), "../stubs/templates/")

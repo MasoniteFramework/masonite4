@@ -68,5 +68,5 @@ def render_stub_file(stub_file, name):
     return content
 
 
-def get_module_dir(self, module_file):
+def get_module_dir(module_file):
     return os.path.dirname(os.path.realpath(module_file))

@@ -1,2 +1,2 @@
-from .CreateTaskCommand import CreateTaskCommand
+from .MakeTaskCommand import MakeTaskCommand
 from .ScheduleRunCommand import ScheduleRunCommand

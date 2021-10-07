@@ -1,10 +1,8 @@
 """A Validation Service Provider."""
-
 from ...providers import Provider
 from .. import Validator, ValidationFactory, MessageBag
-from ..commands.RuleEnclosureCommand import RuleEnclosureCommand
-from ..commands.RuleCommand import RuleCommand
-from ...facades import Response, Session
+from ..commands.MakeRuleEnclosureCommand import MakeRuleEnclosureCommand
+from ..commands.MakeRuleCommand import MakeRuleCommand
 
 
 class ValidationProvider(Provider):
@@ -15,8 +13,8 @@ class ValidationProvider(Provider):
         validator = Validator
         self.application.singleton("Validator", validator)
         self.application.make("commands").add(
-            RuleEnclosureCommand(self.application),
-            RuleCommand(self.application),
+            MakeRuleEnclosureCommand(self.application),
+            MakeRuleCommand(self.application),
         )
 
         MessageBag.get_errors = self._get_errors

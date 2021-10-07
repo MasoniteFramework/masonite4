@@ -19,16 +19,19 @@ class NotificationTableCommand(Command):
         with open(
             os.path.join(
                 get_module_dir(__file__),
-                "../stubs/notification/create_notifications_table.py",
+                "../../stubs/notification/create_notifications_table.py",
             )
         ) as fp:
             output = fp.read()
 
-        filename = f"{migration_timestamp()}_create_notifications_table.py"
-        path = os.path.join(base_path(self.option("directory")), filename)
-        make_directory(path)
+        relative_filename = os.path.join(
+            self.option("directory"),
+            f"{migration_timestamp()}_create_notifications_table.py",
+        )
+        filepath = base_path(relative_filename)
+        make_directory(filepath)
 
-        with open(path, "w") as fp:
+        with open(filepath, "w") as fp:
             fp.write(output)
 
-        self.info(f"Migration file created: {filename}")
+        self.info(f"Migration file created: {relative_filename}")
