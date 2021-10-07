@@ -31,7 +31,7 @@ def controllers_path(relative_path="", absolute=True):
     file relative the project controllers directory.
 
     The relative path can be returned instead by setting absolute=False."""
-    return _build_path("controller.location", relative_path, absolute)
+    return _build_path("controllers.location", relative_path, absolute)
 
 
 def config_path(relative_path="", absolute=True):
