@@ -60,7 +60,7 @@ class Configuration:
         """At boot load configuration from all files and store them in here."""
         config_root = self.application.make("config.location")
         for module_loader, name, _ in pkgutil.iter_modules([config_root]):
-            module = load_module(f"{relpath(module_loader.path)}.{name}")
+            module = load(f"{relpath(module_loader.path)}.{name}")
             params = self._get_params_from_module(module)
             for param in params:
                 self._config[f"{name}.{param[0].lower()}"] = param[1]
@@ -85,7 +85,7 @@ class Configuration:
             )
         if isinstance(external_config, str):
             # config is a path and should be loaded
-            module = load_module(external_config)
+            module = load(external_config)
             params = self._get_params_from_module(module)
             base_config = {name.lower(): value for name, value in params}
         else:
