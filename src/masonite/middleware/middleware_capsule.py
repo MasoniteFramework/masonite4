@@ -41,8 +41,17 @@ class MiddlewareCapsule:
     def run_route_middleware(self, middlewares, request, response, callback="before"):
         for middleware in middlewares:
             if ":" in middleware:
-                middleware_to_run, arguments = middleware.split(":")
-                arguments = (arguments,)
+                # get list of arguments if any
+                middleware_to_run, raw_arguments = middleware.split(":")
+                raw_arguments = raw_arguments.split(",")
+                # try to parse arguments with @ from requests
+                arguments = []
+                for arg in raw_arguments:
+                    if "@" in arg:
+                        arg = arg.replace("@", "")
+                        arg = request.input(arg)
+                    arguments.append(arg)
+                arguments = tuple(arguments)
             else:
                 middleware_to_run = middleware
                 arguments = ()
