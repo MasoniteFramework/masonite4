@@ -1,8 +1,10 @@
-"""New Key Command."""
+"""Scaffold Auth Command."""
 from cleo import Command
-from cryptography.fernet import Fernet
 from distutils.dir_util import copy_tree
 import os
+
+from ..utils.location import controllers_path, views_path
+from ..utils.filesystem import get_module_dir
 
 
 class AuthCommand(Command):
@@ -19,21 +21,12 @@ class AuthCommand(Command):
     def handle(self):
         copy_tree(
             self.get_template_path(),
-            os.path.join(self.app.make("views.location").replace(".", "/"), "auth"),
+            views_path("auth"),
         )
-        copy_tree(
-            self.get_controllers_path(),
-            os.path.join(
-                self.app.make("controller.location").replace(".", "/"), "auth"
-            ),
-        )
+        copy_tree(self.get_controllers_path(), controllers_path("auth"))
 
     def get_template_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/templates/auth")
+        return os.path.join(get_module_dir(__file__), "../stubs/templates/auth")
 
     def get_controllers_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
-
-        return os.path.join(current_path, "../stubs/controllers/auth")
+        return os.path.join(get_module_dir(__file__), "../stubs/controllers/auth")

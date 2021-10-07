@@ -1,12 +1,10 @@
 from inspect import isclass
+
 from ..response import Response
 from ..facades import Response as ResponseFacade
 from .Provider import Provider
-from ..routes import Router, Route
+from ..routes import Route
 from ..pipeline import Pipeline
-
-# from ..middleware.route import VerifyCsrfToken
-import pydoc
 
 
 class RouteProvider(Provider):
@@ -16,7 +14,7 @@ class RouteProvider(Provider):
     def register(self):
         # Register the routes?
         Route.set_controller_module_location(
-            self.application.make("controller.location")
+            self.application.make("controllers.location")
         )
 
     def boot(self):
