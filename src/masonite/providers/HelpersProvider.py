@@ -3,7 +3,7 @@ from markupsafe import Markup
 
 from ..providers import Provider
 from ..configuration import config
-from ..helpers.urls import UrlsHelper
+from ..helpers import UrlsHelper, MixHelper
 
 
 class HelpersProvider(Provider):
@@ -30,6 +30,7 @@ class HelpersProvider(Provider):
                 ),
                 "asset": urls_helper.asset,
                 "url": urls_helper.url,
+                "mix": MixHelper(self.application).url,
                 "route": urls_helper.route,
                 "config": config,
             }

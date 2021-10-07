@@ -10,3 +10,5 @@ HASHING = {
 }
 
 APP_URL = os.getenv("APP_URL", "http://localhost:8000/")
+
+MIX_BASE_URL = os.getenv("MIX_BASE_URL", None)

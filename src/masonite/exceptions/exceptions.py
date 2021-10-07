@@ -114,5 +114,13 @@ class NotificationException(Exception):
     pass
 
 
+class MixManifestNotFound(Exception):
+    pass
+
+
+class MixFileNotFound(Exception):
+    pass
+
+
 class InvalidConfigurationLocation(Exception):
     pass
