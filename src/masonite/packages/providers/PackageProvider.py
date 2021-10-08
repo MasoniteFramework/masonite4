@@ -89,8 +89,10 @@ class PackageProvider(Provider):
         # register views into project
         # TODO: the issue here is that package can override project views are views cannot be
         # namespaced...
-        for location in self.package.views:
-            self.application.make("view").add(location)
+        for location in locations:
+            self.application.make("view").add_from_package(
+                "tests.integrations.test_package", location
+            )
 
         if publish:
             resource = PublishableResource("views")
@@ -138,9 +140,6 @@ class PackageProvider(Provider):
                     load(route_group, "ROUTES", []),
                 )
             )
-            import pdb
-
-            pdb.set_trace()
         return self
 
     def add_assets(self, *assets):

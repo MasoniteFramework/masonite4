@@ -3,6 +3,15 @@ from tests.integrations.test_package.commands.Command1 import Command1
 from tests.integrations.test_package.commands.Command2 import Command2
 
 
+"""
+.../mypackage/templates/
+ - admin.html
+ - test.html
+
+../myproject/templates/
+"""
+
+
 class MyTestPackageProvider(PackageProvider):
     def configure(self):
         (

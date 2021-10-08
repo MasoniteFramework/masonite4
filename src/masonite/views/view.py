@@ -173,6 +173,9 @@ class View:
         else:
             self.environments.append(loader(template_location))
 
+    def add_from_package(self, import_path, path_in_package):
+        self.environments.append(PackageLoader(import_path, path_in_package))
+
     def filter(self, name, function):
         """Use to add filters to views.
 
@@ -206,6 +209,9 @@ class View:
             location = list(filter(None, template.split("/")))
             self.filename = location[-1] + self.extension
 
+            import pdb
+
+            pdb.set_trace()
             loader = ChoiceLoader(
                 [PackageLoader(location[0], "/".join(location[1:-1]))]
                 + self.environments
@@ -223,7 +229,6 @@ class View:
             # Set the searchpath since some packages look for this object
             # This is sort of a hack for now
             loader.searchpath = ""
-
             self.env = Environment(
                 loader=loader,
                 autoescape=select_autoescape(["html", "xml"]),
