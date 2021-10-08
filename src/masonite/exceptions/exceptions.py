@@ -128,3 +128,7 @@ class InvalidConfigurationLocation(Exception):
 
 class InvalidConfigurationSetup(Exception):
     pass
+
+
+class InvalidPackageName(Exception):
+    pass

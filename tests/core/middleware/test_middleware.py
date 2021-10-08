@@ -6,9 +6,6 @@ from tests import TestCase
 
 class MockMiddleware:
     def before(self, request, response, arg1):
-        import pdb
-
-        pdb.set_trace()
         return request
 
     def after(self, request, response):

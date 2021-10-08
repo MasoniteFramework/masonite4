@@ -57,6 +57,7 @@ class Kernel:
         self.application.bind(
             "notifications.location", "tests/integrations/notifications"
         )
+        self.application.bind("resources.location", "tests/integrations/resources")
 
         self.application.bind(
             "server.runner", "src.masonite.commands.ServeCommand.main"
