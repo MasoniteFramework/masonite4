@@ -20,9 +20,16 @@ class TestPackageProvider(TestCase):
     #     pdb.set_trace()
 
     def test_views_are_registered(self):
-        self.application.make("view").exists("package")
-        self.application.make("view").exists("package_base")
-        self.application.make("view").exists("admin.settings")
+        self.application.make("view").exists("test_package:package")
+        self.application.make("view").exists("test_package:admin.settings")
+        # this on has been published in project and overriden
+        # check that the project view is used and not the package view
+        self.assertEqual(
+            self.application.make("view")
+            .render("test_package:admin.settings")
+            .rendered_template,
+            "overriden",
+        )
 
     def test_commands_are_registered(self):
         self.craft("test_package:command1").assertSuccess()

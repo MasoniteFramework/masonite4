@@ -39,6 +39,3 @@ class TestPackageHelpCommand(PackageTestCase):
         # self.assertEqual(
         #     self.help_command.io.fetch_output(), "Help for : test-package\n"
         # )
-        import pdb
-
-        pdb.set_trace()

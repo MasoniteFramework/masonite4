@@ -1,8 +1,12 @@
 """View Module."""
 
 
+from collections import defaultdict
+from os import name
 from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 from jinja2.exceptions import TemplateNotFound
+
+from src.masonite.utils.location import views_path
 
 from ..exceptions import RequiredContainerBindingNotFound, ViewException
 
@@ -31,6 +35,7 @@ class View:
 
         self.template = None
         self.environments = []
+        self.namespaces = defaultdict(lambda: [])
         self.extension = ".html"
         self._jinja_extensions = ["jinja2.ext.loopcontrols"]
         self._filters = {}
@@ -166,15 +171,22 @@ class View:
         """
         if loader == PackageLoader:
             template_location = template_location.split(self._splice)
-
             self.environments.append(
                 loader(template_location[0], "/".join(template_location[1:]))
             )
         else:
             self.environments.append(loader(template_location))
 
-    def add_from_package(self, import_path, path_in_package):
-        self.environments.append(PackageLoader(import_path, path_in_package))
+    def add_from_package(self, package_name, path_in_package):
+        self.environments.append(PackageLoader(package_name, path_in_package))
+
+    def add_namespace(self, namespace, path):
+        # TODO: if views have been published, add an other path corresponding to this namespace
+        self.namespaces[namespace].append(
+            views_path(f"vendor/{namespace}/", absolute=False)
+        )
+        # put this one in 2nd as project (overriden) views must be used first
+        self.namespaces[namespace].append(path)
 
     def filter(self, name, function):
         """Use to add filters to views.
@@ -200,42 +212,50 @@ class View:
             template {string} -- Template to load environment from.
         """
         self.template = template
-        self.filename = (
-            template.replace(self._splice, "/").replace(".", "/") + self.extension
-        )
+        # check if view is namespaced
+        if ":" in template:
+            namespace, rel_template_path = template.split(":")
+            self.filename = (
+                rel_template_path.replace(self._splice, "/").replace(".", "/")
+                + self.extension
+            )
+            namespace_paths = self.namespaces.get(namespace, None)
+            if not namespace_paths:
+                raise Exception(f"No such view namespace {namespace}.")
+            loaders = []
+            for namespace_path in namespace_paths:
+                template_location = namespace_path.split(self._splice)
+                loaders.append(
+                    PackageLoader(template_location[0], "/".join(template_location[1:]))
+                )
+            loader = ChoiceLoader(loaders + self.environments)
 
-        if template.startswith("/"):
+        elif template.startswith("/"):
+            self.filename = (
+                template.replace(self._splice, "/").replace(".", "/") + self.extension
+            )
             # Filter blanks strings from the split
             location = list(filter(None, template.split("/")))
             self.filename = location[-1] + self.extension
-
-            import pdb
-
-            pdb.set_trace()
             loader = ChoiceLoader(
                 [PackageLoader(location[0], "/".join(location[1:-1]))]
                 + self.environments
             )
-            self.env = Environment(
-                loader=loader,
-                autoescape=select_autoescape(["html", "xml"]),
-                extensions=self._jinja_extensions,
-                line_statement_prefix="@",
-            )
-
         else:
+            self.filename = (
+                template.replace(self._splice, "/").replace(".", "/") + self.extension
+            )
             loader = ChoiceLoader(self.environments)
-
             # Set the searchpath since some packages look for this object
             # This is sort of a hack for now
             loader.searchpath = ""
-            self.env = Environment(
-                loader=loader,
-                autoescape=select_autoescape(["html", "xml"]),
-                extensions=self._jinja_extensions,
-                line_statement_prefix="@",
-            )
 
+        self.env = Environment(
+            loader=loader,
+            autoescape=select_autoescape(["html", "xml"]),
+            extensions=self._jinja_extensions,
+            line_statement_prefix="@",
+        )
         self.env.filters.update(self._filters)
 
     def __create_cache_template(self, template):

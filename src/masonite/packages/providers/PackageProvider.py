@@ -89,10 +89,13 @@ class PackageProvider(Provider):
         # register views into project
         # TODO: the issue here is that package can override project views are views cannot be
         # namespaced...
-        for location in locations:
-            self.application.make("view").add_from_package(
-                "tests.integrations.test_package", location
-            )
+        # for location in locations:
+        # self.application.make("view").add_from_package(
+        #     "tests.integrations.test_package", location
+        # )
+        self.application.make("view").add_namespace(
+            self.package.name, self.package.views[0]
+        )
 
         if publish:
             resource = PublishableResource("views")
