@@ -124,3 +124,7 @@ class MixFileNotFound(Exception):
 
 class InvalidConfigurationLocation(Exception):
     pass
+
+
+class InvalidConfigurationSetup(Exception):
+    pass
