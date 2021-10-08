@@ -12,7 +12,7 @@ from src.masonite.middleware import (
     LoadUserMiddleware,
 )
 from src.masonite.routes import Route
-from src.masonite.utils.structures import load_routes
+from src.masonite.utils.structures import load
 
 
 class Kernel:
@@ -35,24 +35,6 @@ class Kernel:
     def load_environment(self):
         LoadEnvironment()
 
-    def register_routes(self):
-        Route.set_controller_module_location(
-            self.application.make("controller.location")
-        )
-
-        self.application.bind("routes.web", "tests.integrations.web")
-
-        self.application.make("router").add(
-            Route.group(
-                load_routes(self.application.make("routes.web")), middleware=["web"]
-            )
-        )
-
-    def register_middleware(self):
-        self.application.make("middleware").add(self.route_middleware).add(
-            self.http_middleware
-        )
-
     def register_configurations(self):
         # load configuration
         self.application.bind("config.location", "tests/integrations/config")
@@ -64,12 +46,38 @@ class Kernel:
         self.application.bind("sign", Sign(key))
 
         # set locations
-        self.application.bind("controller.location", "tests.integrations.controllers")
+        self.application.bind("controllers.location", "tests/integrations/controllers")
         self.application.bind("jobs.location", "tests/integrations/jobs")
         self.application.bind("mailables.location", "tests/integrations/mailables")
+        self.application.bind("providers.location", "tests/integrations/providers")
+        self.application.bind("listeners.location", "tests/integrations/listeners")
+        self.application.bind("validation.location", "tests/integrations/validation")
+        self.application.bind("tasks.location", "tests/integrations/tasks")
+        self.application.bind("events.location", "tests/integrations/events")
+        self.application.bind(
+            "notifications.location", "tests/integrations/notifications"
+        )
 
         self.application.bind(
             "server.runner", "src.masonite.commands.ServeCommand.main"
+        )
+
+    def register_middleware(self):
+        self.application.make("middleware").add(self.route_middleware).add(
+            self.http_middleware
+        )
+
+    def register_routes(self):
+        Route.set_controller_module_location(
+            self.application.make("controllers.location")
+        )
+
+        self.application.bind("routes.location", "tests/integrations/web")
+        self.application.make("router").add(
+            Route.group(
+                load(self.application.make("routes.location"), "ROUTES", []),
+                middleware=["web"],
+            )
         )
 
     def register_templates(self):

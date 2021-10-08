@@ -5,7 +5,7 @@ from masonite.response import Response
 from masonite.authentication import Auth
 
 
-class LoginController:
+class LoginController(Controller):
     def show(self, view: View):
         return view.render("auth.login")
 

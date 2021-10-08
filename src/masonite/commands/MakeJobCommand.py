@@ -4,6 +4,7 @@ import inflection
 import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
+from ..utils.location import jobs_path
 
 
 class MakeJobCommand(Command):
@@ -22,15 +23,13 @@ class MakeJobCommand(Command):
         name = inflection.camelize(self.argument("name"))
         content = render_stub_file(self.get_jobs_path(), name)
 
-        filename = os.path.join(
-            self.app.make("jobs.location").replace(".", "/"), name + ".py"
-        )
+        filename = f"{name}.py"
+        filepath = jobs_path(filename)
+        make_directory(filepath)
 
-        make_directory(filename)
-
-        with open(filename, "w") as f:
+        with open(filepath, "w") as f:
             f.write(content)
-        self.info(f"Job Created ({filename})")
+        self.info(f"Job Created ({jobs_path(filename, absolute=False)})")
 
     def get_template_path(self):
         return os.path.join(get_module_dir(__file__), "../stubs/templates/")

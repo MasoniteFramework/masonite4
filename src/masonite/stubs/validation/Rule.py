@@ -31,7 +31,7 @@ class __class__(BaseValidation):
         Returns:
             string
         """
-        return "{} is required".format(key)
+        return f"{key} is required"
 
     def negated_message(self, key):
         """A message to show when this rule is negated using a negation rule like 'isnt()'
@@ -45,4 +45,4 @@ class __class__(BaseValidation):
         Returns:
             string
         """
-        return "{} is not required".format(key)
+        return "{key} is not required"

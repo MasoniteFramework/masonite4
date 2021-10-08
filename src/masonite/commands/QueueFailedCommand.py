@@ -1,10 +1,10 @@
 """New Key Command."""
 from cleo import Command
 import os
-import pathlib
 
-from ..utils.filesystem import make_directory
+from ..utils.filesystem import make_directory, get_module_dir
 from ..utils.time import migration_timestamp
+from ..utils.location import base_path
 
 
 class QueueFailedCommand(Command):
@@ -18,21 +18,16 @@ class QueueFailedCommand(Command):
     def handle(self):
         with open(
             os.path.join(
-                pathlib.Path(__file__).parent.absolute(),
-                "../",
-                "stubs/queue/create_failed_jobs_table.py",
+                get_module_dir(__file__), "stubs/queue/create_failed_jobs_table.py"
             )
         ) as fp:
             output = fp.read()
-            # output = output.replace("__MIGRATION_NAME__", camelize(name))
-            # output = output.replace("__TABLE_NAME__", table)
 
-        file_name = f"{migration_timestamp()}_create_failed_jobs_table.py"
-
-        path = os.path.join(os.getcwd(), self.option("directory"), file_name)
+        filename = f"{migration_timestamp()}_create_failed_jobs_table.py"
+        path = os.path.join(base_path(self.option("directory")), filename)
         make_directory(path)
 
         with open(path, "w") as fp:
             fp.write(output)
 
-        self.info(f"Migration file created: {file_name}")
+        self.info(f"Migration file created: {filename}")

@@ -1,7 +1,8 @@
 import importlib
 import re
 
-from ..exceptions import InvalidRouteCompileException, RouteMiddlewareNotFound
+from ..utils.str import modularize
+from ..exceptions import InvalidRouteCompileException
 
 
 class HTTPRoute:
@@ -12,7 +13,7 @@ class HTTPRoute:
         request_method=["get"],
         name=None,
         compilers=None,
-        module_location="app.http.controllers",
+        module_location="app/http/controllers",
         controller_bindings=[],
         **options
     ):
@@ -110,7 +111,7 @@ class HTTPRoute:
         Returns:
             None
         """
-        module_location = self.module_location
+        module_location = modularize(self.module_location)
         # If the output specified is a string controller
         if isinstance(controller, str):
             mod = controller.split("@")

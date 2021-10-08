@@ -1,39 +1,9 @@
 import inspect
 import pkgutil
-import pydoc
 from os.path import relpath
-from dotty_dict import dotty
 
+from ..utils.structures import data, load
 from ..exceptions import InvalidConfigurationLocation, InvalidConfigurationSetup
-
-
-# from PR #147 not merged yet, in the meantime hard-coded here
-# from ..utils.structures import load
-# from ..utils.str import modularize
-
-
-def modularize(path):
-    return path.replace("/", ".").rstrip(".py")
-
-
-def load(path, object_name=None, default=None):
-    """Load the given object from a Python module located at path and returns a default
-    value if not found. If no object name is provided, loads the module.
-
-    Arguments:
-        path {str} -- A file path or a dotted path of a Python module
-        object {str} -- The object name to load in this module (None)
-        default {str} -- The default value to return if object not found in module (None)
-    Returns:
-        {object} -- The value (or default) read in the module or the module if no object name
-    """
-    # modularize path if needed
-    dotted_path = modularize(path)
-    module = pydoc.locate(dotted_path)
-    if object_name is None:
-        return module
-    else:
-        return getattr(module, object_name, default)
 
 
 class Configuration:
@@ -54,7 +24,7 @@ class Configuration:
 
     def __init__(self, application):
         self.application = application
-        self._config = dotty()
+        self._config = data()
 
     def load(self):
         """At boot load configuration from all files and store them in here."""
@@ -77,7 +47,7 @@ class Configuration:
         the package configuration which can be published in project.
 
         This functions disallow merging configuration using foundation configuration keys
-        (such as 'application'.)
+        (such as 'application').
         """
         if path in self.reserved_keys:
             raise InvalidConfigurationSetup(
