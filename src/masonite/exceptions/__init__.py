@@ -24,4 +24,5 @@ from .exceptions import (
     MixFileNotFound,
     MixManifestNotFound,
     InvalidConfigurationLocation,
+    InvalidConfigurationSetup,
 )
