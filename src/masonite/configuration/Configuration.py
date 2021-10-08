@@ -1,10 +1,8 @@
 import inspect
 import pkgutil
-import pydoc
 from os.path import relpath
 
 from ..utils.structures import data, load
-from ..uitls.str import modularize
 from ..exceptions import InvalidConfigurationLocation, InvalidConfigurationSetup
 
 
