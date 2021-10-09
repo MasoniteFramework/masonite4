@@ -27,6 +27,7 @@ class PackageProvider(Provider):
 
     def __init__(self, application):
         self.application = application
+        # TODO: the default here could be set auto by deciding that its the dirname containing the provider !
         self.package = Package()
         self.files = {}
         self.default_resources = ["config", "views", "migrations", "assets"]

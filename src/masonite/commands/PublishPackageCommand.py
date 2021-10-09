@@ -18,6 +18,20 @@ class PublishPackageCommand(Command):
     def handle(self):
         from ..packages.providers import PackageProvider
 
+        # green text
+        self.line("<info>foo</info>")
+
+        self.add_style("fire", fg="red", bg="yellow", options=["bold"])
+        self.line("<fire>foo</fire>")
+
+        # yellow text
+        self.line("<comment>foo</comment>")
+
+        # black text on a cyan background
+        self.line("<question>foo</question>")
+
+        # white text on a red background
+        self.line("<error>foo</error>")
         name = self.argument("name")
         selected_provider = None
         for provider in self.app.get_providers():

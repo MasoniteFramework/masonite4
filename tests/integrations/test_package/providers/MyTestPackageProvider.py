@@ -21,6 +21,6 @@ class MyTestPackageProvider(PackageProvider):
             .add_views("templates", publish=True)
             .add_commands(Command1(), Command2())
             .add_migrations("migrations/create_some_table.py")
-            # .add_routes("routes/api.py", "routes/web.py")
             .add_assets("assets")
+            # .add_routes("routes/api.py", "routes/web.py")
         )
