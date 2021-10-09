@@ -167,7 +167,7 @@ class View:
             self.loaders.append(loader(template_location))
 
     def add_namespaced_location(self, namespace, template_location):
-        # TODO: if views have been published, add an other path corresponding to this namespace
+        # if views have been published, add the published view directory as a location
         published_path = views_path(f"vendor/{namespace}/", absolute=False)
         if exists(published_path):
             self.namespaces[namespace].append(
