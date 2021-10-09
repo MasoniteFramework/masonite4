@@ -1,28 +1,27 @@
-from tests import TestCase
-from src.masonite.views import View
-from src.masonite.foundation import Application
 import os
+from src.masonite.foundation import Application
+from src.masonite.views import View
+
+from tests import TestCase
 
 
 class TestView(TestCase):
     def setUp(self):
+        # keep this to have a fresh view instance for each test
         self.view = View(Application(os.getcwd()))
-        self.view.add("tests/integrations/templates")
+        self.view.add_location("tests/integrations/templates")
 
     # def test_can_render_view(self):
     #     self.assertTrue("Welcome" in self.view.render("welcome").get_content())
 
     def test_can_pass_dict(self):
-        self.assertTrue(
-            "test" in self.view.render("test", {"test": "test"}).get_content()
-        )
+        self.assertIn("test", self.view.render("test", {"test": "test"}).get_content())
 
     def test_view_exists(self):
         self.assertTrue(self.view.exists("welcome"))
         self.assertFalse(self.view.exists("not_available"))
 
     def test_view_render_does_not_keep_previous_variables(self):
-
         self.view.render("test", {"var1": "var1"})
         self.view.render("test", {"var2": "var2"})
 
@@ -30,7 +29,6 @@ class TestView(TestCase):
         self.assertIn("var2", self.view.dictionary)
 
     def test_global_view_exists(self):
-
         self.assertTrue(self.view.exists("/tests/integrations/templates/welcome"))
         self.assertFalse(
             self.view.exists("/tests/integrations/templates/not_available")
@@ -54,7 +52,7 @@ class TestView(TestCase):
         self.assertEqual(view.composers, {"test": {"test": "test"}})
         self.assertEqual(view.render("test").rendered_template, "test")
 
-    def test_composers_load_all_views_with_astericks(self):
+    def test_composers_load_all_views_with_asterisks(self):
 
         self.view.composer("*", {"test": "test"})
 
@@ -103,3 +101,7 @@ class TestView(TestCase):
         self.assertEqual(
             self.view.dictionary, {"test1": "test1", "test2": "test2", "var1": "var1"}
         )
+
+    def test_can_use_namespaced_view(self):
+        self.view.add_namespaced_location("auth", "tests/integrations/templates/auth")
+        self.assertIn("Welcome", self.view.render("auth:home").get_content())
