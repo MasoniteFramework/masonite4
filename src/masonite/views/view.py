@@ -198,7 +198,7 @@ class View:
         self.template = template
         # transform given template path into a real file path with the configured extension
         self.filename = (
-            dotted_to_path(template).removesuffix(self.extension) + self.extension
+            dotted_to_path(template).replace(self.extension, "") + self.extension
         )
         # assess if new loaders are required for the given template
         template_loaders = []
@@ -206,7 +206,7 @@ class View:
         if ":" in template:
             namespace, rel_template_path = template.split(":")
             self.filename = (
-                dotted_to_path(rel_template_path).removesuffix(self.extension)
+                dotted_to_path(rel_template_path).replace(self.extension, "")
                 + self.extension
             )
             namespace_paths = self.namespaces.get(namespace, None)
@@ -219,7 +219,7 @@ class View:
         # Case 2: an absolute path has been given
         elif template.startswith("/"):
             directory, filename = split(template)
-            self.filename = filename.removesuffix(self.extension) + self.extension
+            self.filename = filename.replace(self.extension, "") + self.extension
             package_name, package_path = path_to_package(directory)
             template_loaders.append(PackageLoader(package_name, package_path))
 
