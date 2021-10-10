@@ -6,7 +6,7 @@ from os.path import exists
 
 from ...utils.filesystem import make_directory, get_module_dir, render_stub_file
 from ...utils.location import base_path
-from ...utils.str import filepath
+from ...utils.str import as_filepath
 
 
 class MakeTaskCommand(Command):
@@ -26,7 +26,7 @@ class MakeTaskCommand(Command):
         output = render_stub_file(self.get_stub_task_path(), name)
 
         relative_file_name = os.path.join(
-            self.option("directory") or filepath(self.app.make("tasks.location")),
+            self.option("directory") or as_filepath(self.app.make("tasks.location")),
             f"{name}.py",
         )
         filepath = base_path(relative_file_name)

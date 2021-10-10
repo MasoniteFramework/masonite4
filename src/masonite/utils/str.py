@@ -30,7 +30,7 @@ def modularize(file_path, suffix=".py"):
     return removesuffix(file_path.replace("/", "."), suffix)
 
 
-def filepath(dotted_path):
+def as_filepath(dotted_path):
     """Inverse of modularize, transforms a dotted path to a file path (with /).
 
     Keyword Arguments:

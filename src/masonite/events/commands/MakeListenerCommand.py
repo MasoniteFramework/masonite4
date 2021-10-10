@@ -4,7 +4,7 @@ import inflection
 import os
 
 from ...utils.filesystem import make_directory, get_module_dir, render_stub_file
-from ...utils.str import filepath
+from ...utils.str import as_filepath
 from ...utils.location import base_path
 
 
@@ -25,7 +25,7 @@ class MakeListenerCommand(Command):
         content = render_stub_file(self.get_path(), name)
 
         relative_filename = os.path.join(
-            filepath(self.app.make("listeners.location")), f"{name}.py"
+            as_filepath(self.app.make("listeners.location")), f"{name}.py"
         )
         filepath = base_path(relative_filename)
         make_directory(filepath)

@@ -4,7 +4,7 @@ import inflection
 import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
-from ..utils.str import filepath
+from ..utils.str import as_filepath
 from ..utils.location import base_path
 
 
@@ -25,7 +25,7 @@ class MakeMailableCommand(Command):
         content = render_stub_file(self.get_mailables_path(), name)
 
         relative_filename = os.path.join(
-            filepath(self.app.make("mailables.location")), name + ".py"
+            as_filepath(self.app.make("mailables.location")), name + ".py"
         )
         filepath = base_path(relative_filename)
         make_directory(filepath)

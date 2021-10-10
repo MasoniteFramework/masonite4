@@ -5,7 +5,7 @@ import os
 
 from ...utils.filesystem import make_directory, get_module_dir, render_stub_file
 from ...utils.location import base_path
-from ...utils.str import filepath
+from ...utils.str import as_filepath
 
 
 class MakeEventCommand(Command):
@@ -26,7 +26,7 @@ class MakeEventCommand(Command):
         content = render_stub_file(self.get_stub_event_path(), name)
 
         relative_filename = os.path.join(
-            filepath(self.app.make("events.location")), name + ".py"
+            as_filepath(self.app.make("events.location")), name + ".py"
         )
         filepath = base_path(relative_filename)
         make_directory(filepath)
