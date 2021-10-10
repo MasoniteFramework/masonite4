@@ -6,7 +6,7 @@ from src.masonite.response import Response
 from src.masonite.authentication import Auth
 
 
-class RegisterController:
+class RegisterController(Controller):
     def show(self, view: View):  # Show register page
         return view.render("auth.register")
 

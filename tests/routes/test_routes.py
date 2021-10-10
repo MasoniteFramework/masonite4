@@ -99,7 +99,7 @@ class TestRoutes(TestCase):
     def test_can_make_route_group_deep_module_nested(self):
         router = Router(
             Route.get(
-                "/test/deep", "/tests.integrations.controllers.api.TestController@show"
+                "/test/deep", "tests.integrations.controllers.api.TestController@show"
             )
         )
 
