@@ -150,7 +150,7 @@ class HTTPRoute:
             except LoaderNotFound as e:
                 self.e = e
                 print("\033[93mTrouble importing controller!", str(e), "\033[0m")
-        # Else it's a controller instance
+        # Else it's a controller instance, we don't have to find it, just get the class
         else:
             if "." in controller.__qualname__:
                 controller_name, controller_method_str = controller.__qualname__.split(

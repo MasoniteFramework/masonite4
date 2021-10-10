@@ -157,6 +157,8 @@ class Route:
         return self
 
     @classmethod
-    def add_controller_locations(self, controllers_location):
-        self.controllers_locations.append(modularize(controllers_location))
+    def add_controller_locations(self, *controllers_locations):
+        self.controllers_locations.extend(
+            modularize(list(map(modularize, controllers_locations)))
+        )
         return self
