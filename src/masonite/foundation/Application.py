@@ -36,11 +36,11 @@ class Application(Container):
 
         return self
 
-    def set_controller_module_location(self, location):
-        self._controller_module_location = location
+    def set_controller_locations(self, location):
+        self._controller_locations = location
 
-    def get_controller_module_location(self, location):
-        return self._controller_module_location
+    def get_controller_locations(self, location):
+        return self._controller_locations
 
     def get_providers(self):
         return self.providers

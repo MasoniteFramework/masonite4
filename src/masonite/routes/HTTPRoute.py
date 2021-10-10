@@ -31,7 +31,7 @@ class HTTPRoute:
         self.list_middleware = []
         self.e = None
         self.compilers = compilers or {}
-        self._find_controller(controller, self.module_location)
+        self._find_controller(controller)
         self.controller_bindings = controller_bindings
         self.compile_route_to_regex()
 
@@ -102,7 +102,7 @@ class HTTPRoute:
 
         return compiled_url
 
-    def _find_controller(self, controller, module):
+    def _find_controller(self, controller, locations=[]):
         """Find the controller to attach to the route.
 
         Arguments:
@@ -111,7 +111,10 @@ class HTTPRoute:
         Returns:
             None
         """
-        module_location = modularize(self.module_location)
+        locations = self.module_location or locations
+        module_locations = []
+        for location in locations:
+            module_locations.append(modularize(location))
         # If the output specified is a string controller
         if isinstance(controller, str):
             mod = controller.split("@")

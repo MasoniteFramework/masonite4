@@ -4,7 +4,7 @@ from src.masonite.routes import Route, Router
 
 class TestRoutes(TestCase):
     def setUp(self):
-        Route.set_controller_module_location("tests.integrations.controllers")
+        Route.set_controller_locations("tests.integrations.controllers")
         pass
 
     def test_can_add_routes(self):

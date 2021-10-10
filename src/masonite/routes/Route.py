@@ -13,6 +13,7 @@ class Route:
         "default": r"([\w.-]+)",
         "signed": r"([\w\-=]+)",
     }
+    controller_locations = []
 
     def __init__(self):
         pass
@@ -24,7 +25,7 @@ class Route:
             controller,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=module_location or self.controller_module_location,
+            module_location=module_location or self.controller_locations,
             **options
         )
 
@@ -35,7 +36,7 @@ class Route:
             controller,
             request_method=["post"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -46,7 +47,7 @@ class Route:
             controller,
             request_method=["put"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -57,7 +58,7 @@ class Route:
             controller,
             request_method=["patch"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -68,7 +69,7 @@ class Route:
             controller,
             request_method=["delete"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -79,7 +80,7 @@ class Route:
             controller,
             request_method=["options"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -94,7 +95,7 @@ class Route:
             RedirectController.redirect,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             controller_bindings=[new_url, options.get("status", 302)],
             **options
         )
@@ -106,7 +107,7 @@ class Route:
             RedirectController.redirect,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             controller_bindings=[new_url, 301],
             **options
         )
@@ -118,7 +119,7 @@ class Route:
             controller,
             request_method=request_methods,
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            module_location=self.controller_locations,
             **options
         )
 
@@ -149,6 +150,11 @@ class Route:
         return self
 
     @classmethod
-    def set_controller_module_location(self, controller_location):
-        self.controller_module_location = controller_location
+    def set_controller_locations(self, controller_locations):
+        self.controller_locations = controller_locations
+        return self
+
+    @classmethod
+    def add_controller_locations(self, controller_location):
+        self.controller_locations.append(controller_location)
         return self
