@@ -128,3 +128,7 @@ class InvalidConfigurationLocation(Exception):
 
 class InvalidConfigurationSetup(Exception):
     pass
+
+
+class LoaderNotFound(Exception):
+    pass
