@@ -4,7 +4,7 @@ import pkgutil
 import os
 
 from ..exceptions import LoaderNotFound
-from ..utils.str import modularize, filepath
+from ..utils.str import filepath
 from ..utils.structures import load
 
 """
@@ -61,11 +61,11 @@ class Loader:
         if not isinstance(files_or_directories, list):
             files_or_directories = [files_or_directories]
 
-        _modules = []
+        _modules = {}
         module_paths = list(map(filepath, files_or_directories))
         for module_loader, name, _ in pkgutil.iter_modules(module_paths):
             module = load(f"{os.path.relpath(module_loader.path)}.{name}")
-            _modules.append(module)
+            _modules.update({name: module})
         return _modules
 
     def find(self, class_instance, paths, class_name, raise_exception=False):
@@ -81,7 +81,7 @@ class Loader:
 
     def find_all(self, class_instance, paths, raise_exception=False):
         _classes = {}
-        for module in self.get_modules(paths):
+        for module in self.get_modules(paths).values():
             for obj_name, obj in inspect.getmembers(module):
                 # check if obj is the same class as the given one
                 if inspect.isclass(obj) and issubclass(obj, class_instance):
@@ -92,17 +92,20 @@ class Loader:
             raise LoaderNotFound(f"No {class_instance} have been found in {paths}")
         return _classes
 
-    def get_objects(self, path, filter_method=None):
+    def get_objects(self, path_or_module, filter_method=None):
         """Returns a dictionary of objects from the given path (file or dotted). The dictionary can
         be filtered if a given callable is given."""
-        module = load(path)
+        if isinstance(path_or_module, str):
+            module = load(path_or_module)
+        else:
+            module = path_or_module
         if not module:
             return None
         return dict(inspect.getmembers(module, filter_method))
 
-    def get_parameters(self, path):
+    def get_parameters(self, module_or_path):
         _parameters = {}
-        for name, obj in self.get_objects(path).items():
+        for name, obj in self.get_objects(module_or_path).items():
             if parameters_filter(name, obj):
                 _parameters.update({name: obj})
 
