@@ -4,7 +4,7 @@ import pkgutil
 import os
 
 from ..exceptions import LoaderNotFound
-from ..utils.str import filepath
+from ..utils.str import as_filepath
 from ..utils.structures import load
 
 """
@@ -62,7 +62,7 @@ class Loader:
             files_or_directories = [files_or_directories]
 
         _modules = {}
-        module_paths = list(map(filepath, files_or_directories))
+        module_paths = list(map(as_filepath, files_or_directories))
         for module_loader, name, _ in pkgutil.iter_modules(module_paths):
             module = load(f"{os.path.relpath(module_loader.path)}.{name}")
             _modules.update({name: module})
