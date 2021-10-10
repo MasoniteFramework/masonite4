@@ -5,7 +5,7 @@ import os
 
 from ...utils.filesystem import get_module_dir, make_directory, render_stub_file
 from ...utils.location import base_path
-from ...utils.str import dotted_to_path
+from ...utils.str import filepath
 
 
 class MakeRuleCommand(Command):
@@ -26,7 +26,7 @@ class MakeRuleCommand(Command):
         content = render_stub_file(self.get_stub_rule_path(), name)
 
         relative_filename = os.path.join(
-            dotted_to_path(self.app.make("validation.location")), name + ".py"
+            filepath(self.app.make("validation.location")), name + ".py"
         )
 
         if os.path.exists(relative_filename):

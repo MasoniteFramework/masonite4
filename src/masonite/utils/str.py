@@ -17,7 +17,7 @@ def random_string(length=4):
     )
 
 
-def modularize(file_path):
+def modularize(file_path, suffix=".py"):
     """Transforms a file path to a dotted path.
 
     Keyword Arguments:
@@ -27,10 +27,10 @@ def modularize(file_path):
         value {str} -- a dotted path such as app.controllers
     """
     # if the file had the .py extension remove it as it's not needed for a module
-    return file_path.replace("/", ".").rstrip(".py")
+    return removesuffix(file_path.replace("/", "."), suffix)
 
 
-def dotted_to_path(dotted_path):
+def filepath(dotted_path):
     """Inverse of modularize, transforms a dotted path to a file path (with /).
 
     Keyword Arguments:
@@ -40,3 +40,19 @@ def dotted_to_path(dotted_path):
         value {str} -- a file path such as app/controllers
     """
     return dotted_path.replace(".", "/")
+
+
+def removeprefix(string, prefix):
+    """Implementation of str.removeprefix() function available for Python versions lower than 3.9."""
+    if string.startswith(prefix):
+        return string[len(prefix) :]
+    else:
+        return string
+
+
+def removesuffix(string, suffix):
+    """Implementation of str.removesuffix() function available for Python versions lower than 3.9."""
+    if suffix and string.endswith(suffix):
+        return string[: -len(suffix)]
+    else:
+        return string
