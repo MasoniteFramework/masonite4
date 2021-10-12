@@ -1,4 +1,5 @@
 from tests import TestCase
+
 from src.masonite.utils.http import generate_wsgi
 from src.masonite.request import Request
 
@@ -11,11 +12,13 @@ class TestRequest(TestCase):
         self.assertEqual(self.request.input("notavailable"), False)
 
     def test_request_can_get_string_value(self):
-        storages = {"test": "value"}
-        self.request.input_bag.query_string = storages
+        self.request.input_bag.query_string = {"test": "value"}
         self.assertEqual(self.request.input("test"), "value")
 
     def test_request_can_get_list_value(self):
-        storages = {"test": ["foo", "bar"]}
-        self.request.input_bag.query_string = storages
+        self.request.input_bag.query_string = {"test": ["foo", "bar"]}
         self.assertEqual(self.request.input("test"), ["foo", "bar"])
+
+    def test_request_can_get_float_value(self):
+        self.request.input_bag.query_string = {"test": 3.1415926}
+        self.assertEqual(self.request.input("test"), 3.1415926)
