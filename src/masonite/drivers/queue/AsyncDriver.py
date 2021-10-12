@@ -2,6 +2,8 @@ import inspect
 import os
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 
+from ...exceptions import QueueException
+
 
 class AsyncDriver:
     def __init__(self, application):
