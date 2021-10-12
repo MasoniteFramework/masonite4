@@ -1,40 +1,40 @@
 """View Module."""
-
-
+from collections import defaultdict
+from os.path import split, exists
 from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 from jinja2.exceptions import TemplateNotFound
 
-from ..exceptions import RequiredContainerBindingNotFound, ViewException
+from ..exceptions import ViewException
+from ..utils.str import dotted_to_path
+from ..utils.location import views_path
+
+
+def path_to_package(path, separator="/"):
+    # ensure no leading/trailing slashes before splitting to avoid blank strings
+    location = path.strip(separator).split(separator)
+    package_name = location[0]
+    package_path = "/".join(location[1:])
+    return package_name, package_path
 
 
 class View:
-    """View class. Responsible for handling everything involved with views and view environments."""
+    """Responsible for handling everything involved with views and view environments."""
 
-    _splice = "/"
+    separator = "/"
+    extension = ".html"
 
-    def __init__(self, container):
-        """View constructor.
+    def __init__(self, application):
+        self.application = application
 
-        Arguments:
-            container {masonite.app.App} -- Container object.
-        """
+        # specific to given view rendering
         self.dictionary = {}
         self.composers = {}
-        self.container = container
-
-        # If the cache_for method is declared
-        self.cache = False
-        # Cache time of cache_for
-        self.cache_time = None
-        # Cache type of cache_for
-        self.cache_type = None
-
         self.template = None
-        self.environments = []
-        self.extension = ".html"
+        self.loaders = []
+        self.namespaces = defaultdict(list)
+        self.env = None
         self._jinja_extensions = ["jinja2.ext.loopcontrols"]
         self._filters = {}
-        self._tests = {}
         self._shared = {}
 
     def render(self, template, dictionary={}):
@@ -56,18 +56,14 @@ class View:
                 )
             )
 
-        self.__load_environment(template)
-        self.dictionary = {}
+        self.load_template(template)
 
+        # prepare template context
+        self.dictionary = {}
         self.dictionary.update(dictionary)
         self.dictionary.update(self._shared)
-
-        # Check if composers are even set for a speed improvement
         if self.composers:
-            self._update_from_composers()
-
-        if self._tests:
-            self.env.tests.update(self._tests)
+            self.hydrate_from_composers()
 
         self.rendered_template = self._render()
 
@@ -84,7 +80,7 @@ class View:
             # Try rendering the direct template the user has supplied
             return self.env.get_template(self.template).render(self.dictionary)
 
-    def _update_from_composers(self):
+    def hydrate_from_composers(self):
         """Add data into the view from specified composers."""
         # Check if the template is directly specified in the composer
         if self.template in self.composers:
@@ -98,7 +94,7 @@ class View:
         compiled_string = ""
 
         # Check for wildcard view composers
-        for template in self.template.split(self._splice):
+        for template in self.template.split(self.separator):
             # Append the template onto the compiled_string
             compiled_string += template
             if self.composers.get("{}*".format(compiled_string)):
@@ -147,7 +143,7 @@ class View:
         Returns:
             bool
         """
-        self.__load_environment(template)
+        self.load_template(template)
 
         try:
             self.env.get_template(self.filename)
@@ -155,23 +151,30 @@ class View:
         except TemplateNotFound:
             return False
 
-    def add(self, template_location, loader=PackageLoader):
-        """Add an environment to the templates.
+    def add_location(self, template_location, loader=PackageLoader):
+        """Add locations from which view templates can be loaded.
 
         Arguments:
-            template_location {string} -- Directory location to attach the environment to.
+            template_location {str} -- Directory location
 
         Keyword Arguments:
             loader {jinja2.Loader} -- Type of Jinja2 loader to use. (default: {jinja2.PackageLoader})
         """
         if loader == PackageLoader:
-            template_location = template_location.split(self._splice)
-
-            self.environments.append(
-                loader(template_location[0], "/".join(template_location[1:]))
-            )
+            package_name, package_path = path_to_package(template_location)
+            self.loaders.append(loader(package_name, package_path))
         else:
-            self.environments.append(loader(template_location))
+            self.loaders.append(loader(template_location))
+
+    def add_namespaced_location(self, namespace, template_location):
+        # if views have been published, add the published view directory as a location
+        published_path = views_path(f"vendor/{namespace}/", absolute=False)
+        if exists(published_path):
+            self.namespaces[namespace].append(
+                views_path(f"vendor/{namespace}/", absolute=False)
+            )
+        # put this one in 2nd as project views must be used first to be able to override package views
+        self.namespaces[namespace].append(template_location)
 
     def filter(self, name, function):
         """Use to add filters to views.
@@ -182,106 +185,71 @@ class View:
         """
         self._filters.update({name: function})
 
-    def test(self, key, obj):
-        self._tests.update({key: obj})
-        return self
-
     def add_extension(self, extension):
         self._jinja_extensions.append(extension)
         return self
 
-    def __load_environment(self, template):
-        """Private method for loading all the environments.
+    def load_template(self, template):
+        """Private method for loading all the locations into the current environment.
 
         Arguments:
             template {string} -- Template to load environment from.
         """
         self.template = template
+        # transform given template path into a real file path with the configured extension
         self.filename = (
-            template.replace(self._splice, "/").replace(".", "/") + self.extension
+            dotted_to_path(template).replace(self.extension, "") + self.extension
         )
-
-        if template.startswith("/"):
-            # Filter blanks strings from the split
-            location = list(filter(None, template.split("/")))
-            self.filename = location[-1] + self.extension
-
-            loader = ChoiceLoader(
-                [PackageLoader(location[0], "/".join(location[1:-1]))]
-                + self.environments
+        # assess if new loaders are required for the given template
+        template_loaders = []
+        # Case 1: the templates needs to be loaded from a namespace
+        if ":" in template:
+            namespace, rel_template_path = template.split(":")
+            self.filename = (
+                dotted_to_path(rel_template_path).replace(self.extension, "")
+                + self.extension
             )
-            self.env = Environment(
-                loader=loader,
-                autoescape=select_autoescape(["html", "xml"]),
-                extensions=self._jinja_extensions,
-                line_statement_prefix="@",
-            )
+            namespace_paths = self.namespaces.get(namespace, None)
+            if not namespace_paths:
+                raise Exception(f"No such view namespace {namespace}.")
+            for namespace_path in namespace_paths:
+                package_name, package_path = path_to_package(namespace_path)
+                template_loaders.append(PackageLoader(package_name, package_path))
 
-        else:
-            loader = ChoiceLoader(self.environments)
+        # Case 2: an absolute path has been given
+        elif template.startswith("/"):
+            directory, filename = split(template)
+            self.filename = filename.replace(self.extension, "") + self.extension
+            package_name, package_path = path_to_package(directory)
+            template_loaders.append(PackageLoader(package_name, package_path))
 
-            # Set the searchpath since some packages look for this object
-            # This is sort of a hack for now
-            loader.searchpath = ""
+        # Else: use already defined view locations to load this template
+        loader = ChoiceLoader(template_loaders + self.loaders)
 
-            self.env = Environment(
-                loader=loader,
-                autoescape=select_autoescape(["html", "xml"]),
-                extensions=self._jinja_extensions,
-                line_statement_prefix="@",
-            )
+        # @josephmancuso: what is this ??
+        # Set the searchpath since some packages look for this object
+        # This is sort of a hack for now
+        loader.searchpath = ""
 
+        self.env = Environment(
+            loader=loader,
+            autoescape=select_autoescape(["html", "xml"]),
+            extensions=self._jinja_extensions,
+            line_statement_prefix="@",
+        )
+        # add filters to environment
         self.env.filters.update(self._filters)
 
-    def __create_cache_template(self, template):
-        """Save in the cache the template.
+    def get_current_loaders(self):
+        if self.env:
+            return self.env.loader.loaders
 
-        Arguments:
-            template {string} -- Creates the cached templates.
-        """
-        self.container.make("Cache").store_for(
-            template,
-            self.rendered_template,
-            self.cache_time,
-            self.cache_type,
-            ".html",
-        )
-
-    def __cached_template_exists(self):
-        """Check if the cache template exists.
-
-        Returns:
-            bool
-        """
-        return self.container.make("Cache").exists(self.template)
-
-    def __is_expired_cache(self):
-        """Check if cache is expired.
-
-        Returns:
-            bool
-        """
-        # Check if cache_for is set and configurate
-        if self.cache_time is None or self.cache_type is None and self.cache:
-            return True
-
-        driver_cache = self.container.make("Cache")
-
-        # True is expired
-        return not driver_cache.is_valid(self.template)
-
-    def __get_cached_template(self):
-        """Return the cached version of the template.
-
-        Returns:
-            self
-        """
-        driver_cache = self.container.make("Cache")
-        self.rendered_template = driver_cache.get(self.template)
+    def set_separator(self, token):
+        self.separator = token
         return self
 
-    def set_splice(self, splice):
-        self._splice = splice
+    def set_file_extension(self, extension):
+        self.extension = extension
         return self
 
     def get_response(self):
