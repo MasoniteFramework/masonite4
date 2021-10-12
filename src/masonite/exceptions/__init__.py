@@ -26,4 +26,5 @@ from .exceptions import (
     InvalidConfigurationLocation,
     InvalidConfigurationSetup,
     LoaderNotFound,
+    QueueException,
 )

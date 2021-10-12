@@ -8,7 +8,7 @@ class ViewProvider(Provider):
 
     def register(self):
         view = View(self.application)
-        view.add(self.application.make("views.location"))
+        view.add_location(self.application.make("views.location"))
 
         self.application.bind("view", view)
 
