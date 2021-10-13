@@ -6,9 +6,10 @@ from tests import TestCase
 class TestView(TestCase):
     def setUp(self):
         super().setUp()
-        # keep this to have a fresh view instance for each test
+        # keep this to have a "fresh view instance" for each test
         self.view = self.application.make("view")
         self.view.loaders = []
+        self.view.composers = {}
         self.view.add_location("tests/integrations/templates")
 
     def test_can_pass_dict(self):
@@ -90,6 +91,8 @@ class TestView(TestCase):
         self.assertEqual(self.view.render("test").rendered_template, "test")
 
     def test_view_share_updates_dictionary_not_overwrite(self):
+        # reset shared data from views
+        self.view._shared = {}
         self.view.share({"test1": "test1"})
         self.view.share({"test2": "test2"})
 
