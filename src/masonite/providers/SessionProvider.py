@@ -13,10 +13,9 @@ class SessionProvider(Provider):
         session = Session(self.application).set_configuration(config("session.drivers"))
         session.add_driver("cookie", CookieDriver(self.application))
         self.application.bind("session", session)
-        self.application.make("view").share({"old": self.old})
 
     def boot(self):
-        pass
+        self.application.make("view").share({"old": self.old})
 
     def old(self, key):
         return self.application.make("session").get(key) or ""
