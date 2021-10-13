@@ -70,7 +70,11 @@ class Configuration:
 
     def get(self, path, default=None):
         try:
-            return self._config[path]
+            config_at_path = self._config[path]
+            if isinstance(config_at_path, dict):
+                return data(config_at_path)
+            else:
+                return config_at_path
         except KeyError:
             return default
 
