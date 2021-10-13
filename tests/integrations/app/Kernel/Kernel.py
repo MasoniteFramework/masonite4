@@ -99,7 +99,7 @@ class Kernel:
         self.application.bind("resolver", config("database.db"))
 
     def register_storage(self):
-        storage = StorageCapsule(self.application.base_path)
+        storage = StorageCapsule()
         storage.add_storage_assets(
             {
                 # folder          # template alias
