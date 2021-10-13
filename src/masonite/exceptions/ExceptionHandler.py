@@ -8,6 +8,10 @@ class ExceptionHandler:
         self.driver_config = driver_config or {}
         self.options = {}
 
+    def set_options(self, options):
+        self.options = options
+        return self
+
     def add_driver(self, name, driver):
         self.drivers.update({name: driver})
 
@@ -39,8 +43,10 @@ class ExceptionHandler:
             ).handle(exception)
 
         handler = Handler(exception)
-        handler.integrate(StackOverflowIntegration())
-        handler.integrate(SolutionsIntegration())
+        if self.options.get("handlers.stack_overflow"):
+            handler.integrate(StackOverflowIntegration())
+        if self.options.get("handlers.solutions"):
+            handler.integrate(SolutionsIntegration())
         handler.context(
             {
                 "WSGI": {
