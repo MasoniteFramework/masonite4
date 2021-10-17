@@ -47,6 +47,7 @@ loader.find(Model, one_module, "User")
 
 """
 
+
 def parameters_filter(obj_name, obj):
     return (
         obj_name.isupper()
