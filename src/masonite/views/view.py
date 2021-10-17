@@ -5,7 +5,7 @@ from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
 from jinja2.exceptions import TemplateNotFound
 
 from ..exceptions import ViewException
-from ..utils.str import dotted_to_path
+from ..utils.str import as_filepath
 from ..utils.location import views_path
 
 
@@ -198,7 +198,7 @@ class View:
         self.template = template
         # transform given template path into a real file path with the configured extension
         self.filename = (
-            dotted_to_path(template).replace(self.extension, "") + self.extension
+            as_filepath(template).replace(self.extension, "") + self.extension
         )
         # assess if new loaders are required for the given template
         template_loaders = []
@@ -206,7 +206,7 @@ class View:
         if ":" in template:
             namespace, rel_template_path = template.split(":")
             self.filename = (
-                dotted_to_path(rel_template_path).replace(self.extension, "")
+                as_filepath(rel_template_path).replace(self.extension, "")
                 + self.extension
             )
             namespace_paths = self.namespaces.get(namespace, None)

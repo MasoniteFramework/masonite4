@@ -1,8 +1,5 @@
-import inspect
-import pkgutil
-from os.path import relpath
-
-from ..utils.structures import data, load
+from ..facades import Loader
+from ..utils.structures import data
 from ..exceptions import InvalidConfigurationLocation, InvalidConfigurationSetup
 
 
@@ -29,11 +26,10 @@ class Configuration:
     def load(self):
         """At boot load configuration from all files and store them in here."""
         config_root = self.application.make("config.location")
-        for module_loader, name, _ in pkgutil.iter_modules([config_root]):
-            module = load(f"{relpath(module_loader.path)}.{name}")
-            params = self._get_params_from_module(module)
-            for param in params:
-                self._config[f"{name}.{param[0].lower()}"] = param[1]
+        for module_name, module in Loader.get_modules(config_root).items():
+            params = Loader.get_parameters(module)
+            for name, value in params.items():
+                self._config[f"{module_name}.{name.lower()}"] = value
 
         # check loaded configuration
         if not self._config.get("application"):
@@ -55,13 +51,10 @@ class Configuration:
             )
         if isinstance(external_config, str):
             # config is a path and should be loaded
-            module = load(relpath(external_config))
-            params = self._get_params_from_module(module)
-            base_config = {name.lower(): value for name, value in params}
+            params = Loader.get_parameters(external_config)
         else:
-            base_config = {
-                name.lower(): value for name, value in external_config.items()
-            }
+            params = external_config
+        base_config = {name.lower(): value for name, value in params.items()}
         merged_config = {**base_config, **self.get(path, {})}
         self.set(path, merged_config)
 
@@ -77,15 +70,3 @@ class Configuration:
                 return config_at_path
         except KeyError:
             return default
-
-    def _get_params_from_module(self, module):
-        params = []
-        for obj in inspect.getmembers(module):
-            obj_name = obj[0]
-            if (
-                obj_name.isupper()
-                and not obj_name.startswith("__")
-                and not obj_name.endswith("__")
-            ):
-                params.append(obj)
-        return params

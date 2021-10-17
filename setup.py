@@ -110,6 +110,7 @@ setup(
         "masonite.headers",
         "masonite.helpers",
         "masonite.input",
+        "masonite.loader",
         "masonite.mail",
         "masonite.mail.drivers",
         "masonite.middleware",

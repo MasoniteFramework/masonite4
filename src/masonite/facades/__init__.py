@@ -8,4 +8,5 @@ from .Session import Session
 from .View import View
 from .Auth import Auth
 from .Config import Config
+from .Loader import Loader
 from .Notification import Notification
