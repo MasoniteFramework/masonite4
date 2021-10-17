@@ -7,6 +7,45 @@ from ..exceptions import LoaderNotFound
 from ..utils.str import as_filepath
 from ..utils.structures import load
 
+"""
+API:
+# all paths can be
+
+## for folders
+tests/integrations/app
+tests.integrations.app
+
+## for files
+tests/integrations/app/User
+tests/integrations/app/User.py
+tests.integrations.app.User
+tests.integrations.app.User.py
+
+# if start with / => look for absolute, else start from project root.
+
+# recursive search of a class in a list of directories or files
+list_of_classes = loader.list_classes(class, paths)
+list_of_classes = loader.list_classes(Model, ["tests/integrations/app", "project/app"])
+
+# load a class from a file
+list_of_classes = loader.get_class(class, path)
+list_of_classes = loader.get_class(class, "tests/integrations/app/User")
+
+# load objects from a module
+list_of_objects = loader.get_objects(path, filter)
+list_of_objects = loader.get_objects(
+    path,
+    lambda obj: obj_name.isupper() and not obj_name.startswith("__") and not obj_name.endswith("__")
+)
+
+# find a given object in a given module or in given modules (the first one find)
+loader.find(Model, [..., ...])
+loader.find(Model, [..., ...], "User")
+OR
+loader.find(Model, one_module)
+loader.find(Model, one_module, "User")
+
+"""
 
 def parameters_filter(obj_name, obj):
     return (
@@ -17,12 +56,12 @@ def parameters_filter(obj_name, obj):
 
 
 class Loader:
-    def get_modules(self, directories):
-        if not isinstance(directories, list):
-            directories = [directories]
+    def get_modules(self, files_or_directories):
+        if not isinstance(files_or_directories, list):
+            files_or_directories = [files_or_directories]
 
         _modules = {}
-        module_paths = list(map(as_filepath, directories))
+        module_paths = list(map(as_filepath, files_or_directories))
         for module_loader, name, _ in pkgutil.iter_modules(module_paths):
             module = load(f"{os.path.relpath(module_loader.path)}.{name}")
             _modules.update({name: module})

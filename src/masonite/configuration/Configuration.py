@@ -52,8 +52,6 @@ class Configuration:
         if isinstance(external_config, str):
             # config is a path and should be loaded
             params = Loader.get_parameters(external_config)
-            module = load(relpath(external_config))
-            base_config = {name.lower(): value for name, value in params}
         else:
             params = external_config
         base_config = {name.lower(): value for name, value in params.items()}
