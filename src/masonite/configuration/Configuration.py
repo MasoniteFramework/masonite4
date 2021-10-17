@@ -52,6 +52,8 @@ class Configuration:
         if isinstance(external_config, str):
             # config is a path and should be loaded
             params = Loader.get_parameters(external_config)
+            module = load(relpath(external_config))
+            base_config = {name.lower(): value for name, value in params}
         else:
             params = external_config
         base_config = {name.lower(): value for name, value in params.items()}
@@ -63,6 +65,10 @@ class Configuration:
 
     def get(self, path, default=None):
         try:
-            return self._config[path]
+            config_at_path = self._config[path]
+            if isinstance(config_at_path, dict):
+                return data(config_at_path)
+            else:
+                return config_at_path
         except KeyError:
             return default
