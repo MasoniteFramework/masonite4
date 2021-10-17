@@ -1,7 +1,8 @@
-from .Provider import Provider
-from exceptionite.errors import Handler, StackOverflowIntegration, SolutionsIntegration
-from ..exceptions import ExceptionHandler, DumpExceptionHandler, DD
 import builtins
+
+from .Provider import Provider
+from ..exceptions import ExceptionHandler, DumpExceptionHandler, DD
+from ..configuration import config
 
 
 class ExceptionProvider(Provider):
@@ -9,7 +10,7 @@ class ExceptionProvider(Provider):
         self.application = application
 
     def register(self):
-        handler = ExceptionHandler(self.application)
+        handler = ExceptionHandler(self.application).set_options(config("exceptions"))
         builtins.dd = DD(self.application).dump
         self.application.bind("exception_handler", handler)
         self.application.bind(

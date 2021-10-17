@@ -3,8 +3,7 @@ import io
 import unittest
 import pendulum
 
-from ..routes import Router, Route
-from .HttpTestResponse import HttpTestResponse
+from ..routes import Route
 from ..foundation.response_handler import testcase_handler
 from ..utils.http import generate_wsgi
 from ..request import Request
@@ -25,10 +24,18 @@ class TestCase(unittest.TestCase):
         if hasattr(self, "startTestRun"):
             self.startTestRun()
         self.withoutCsrf()
+        self._exception_handling = False
 
     def tearDown(self):
+        # be sure to reset this between each test
+        self._exception_handling = False
         if hasattr(self, "stopTestRun"):
             self.stopTestRun()
+
+    def withExceptionsHandling(self):
+        """Enable for the duration of a test the handling of exception through the exception
+        handler."""
+        self._exception_handling = True
 
     def setRoutes(self, *routes):
         self.application.make("router").set(Route.group(*routes, middleware=["web"]))
@@ -103,7 +110,7 @@ class TestCase(unittest.TestCase):
             self.application,
             wsgi_request,
             self.mock_start_response,
-            exception_handling=False,
+            exception_handling=self._exception_handling,
         )
         # add eventual cookies added inside the test (not encrypted to be able to assert value ?)
         for name, value in self._test_cookies.items():
