@@ -6,7 +6,7 @@ from src.masonite.response import Response
 from src.masonite.authentication import Auth
 
 
-class PasswordResetController:
+class PasswordResetController(Controller):
     def show(self, view: View):  # Show password_reset page
         return view.render("auth.password_reset")
 

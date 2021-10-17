@@ -13,9 +13,7 @@ class RouteProvider(Provider):
 
     def register(self):
         # Register the routes?
-        Route.set_controller_module_location(
-            self.application.make("controllers.location")
-        )
+        Route.set_controller_locations(self.application.make("controllers.location"))
 
     def boot(self):
         router = self.application.make("router")

@@ -1,11 +1,14 @@
 """Helpers for multiple data structures"""
-import pydoc
+import importlib
+from importlib.abc import Loader
 from dotty_dict import dotty
+
+from src.masonite.exceptions.exceptions import LoaderNotFound
 
 from .str import modularize
 
 
-def load(path, object_name=None, default=None):
+def load(path, object_name=None, default=None, raise_exception=False):
     """Load the given object from a Python module located at path and returns a default
     value if not found. If no object name is provided, loads the module.
 
@@ -17,12 +20,25 @@ def load(path, object_name=None, default=None):
         {object} -- The value (or default) read in the module or the module if no object name
     """
     # modularize path if needed
-    dotted_path = modularize(path)
-    module = pydoc.locate(dotted_path)
+    module_path = modularize(path)
+    # module = pydoc.locate(dotted_path)
+    try:
+        module = importlib.import_module(module_path)
+    except ModuleNotFoundError:
+        if raise_exception:
+            raise LoaderNotFound(f"{module_path} not found")
+        return None
+
     if object_name is None:
         return module
     else:
-        return getattr(module, object_name, default)
+        try:
+            return getattr(module, object_name)
+        except KeyError:
+            if raise_exception:
+                raise LoaderNotFound(f"{object_name} not found in {module_path}")
+            else:
+                return default
 
 
 def data(dictionary={}):

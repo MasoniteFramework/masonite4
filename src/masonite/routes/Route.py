@@ -1,5 +1,6 @@
 from .HTTPRoute import HTTPRoute
 from ..utils.collections import flatten
+from ..utils.str import modularize
 from ..controllers import RedirectController
 
 
@@ -13,18 +14,20 @@ class Route:
         "default": r"([\w.-]+)",
         "signed": r"([\w\-=]+)",
     }
+    controllers_locations = []
 
     def __init__(self):
         pass
 
     @classmethod
     def get(self, url, controller, module_location=None, **options):
+        print(self.controllers_locations)
         return HTTPRoute(
             url,
             controller,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=module_location or self.controller_module_location,
+            controllers_locations=module_location or self.controllers_locations,
             **options
         )
 
@@ -35,7 +38,7 @@ class Route:
             controller,
             request_method=["post"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -46,7 +49,7 @@ class Route:
             controller,
             request_method=["put"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -57,7 +60,7 @@ class Route:
             controller,
             request_method=["patch"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -68,7 +71,7 @@ class Route:
             controller,
             request_method=["delete"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -79,7 +82,7 @@ class Route:
             controller,
             request_method=["options"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -94,7 +97,7 @@ class Route:
             RedirectController.redirect,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             controller_bindings=[new_url, options.get("status", 302)],
             **options
         )
@@ -106,7 +109,7 @@ class Route:
             RedirectController.redirect,
             request_method=["get"],
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             controller_bindings=[new_url, 301],
             **options
         )
@@ -118,7 +121,7 @@ class Route:
             controller,
             request_method=request_methods,
             compilers=self.compilers,
-            module_location=self.controller_module_location,
+            controllers_locations=self.controllers_locations,
             **options
         )
 
@@ -149,6 +152,13 @@ class Route:
         return self
 
     @classmethod
-    def set_controller_module_location(self, controller_location):
-        self.controller_module_location = controller_location
+    def set_controller_locations(self, *controllers_locations):
+        self.controllers_locations = list(map(modularize, controllers_locations))
+        return self
+
+    @classmethod
+    def add_controller_locations(self, *controllers_locations):
+        self.controllers_locations.extend(
+            modularize(list(map(modularize, controllers_locations)))
+        )
         return self

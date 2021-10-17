@@ -69,9 +69,7 @@ class Kernel:
         )
 
     def register_routes(self):
-        Route.set_controller_module_location(
-            self.application.make("controllers.location")
-        )
+        Route.set_controller_locations(self.application.make("controllers.location"))
 
         self.application.bind("routes.location", "tests/integrations/web")
         self.application.make("router").add(

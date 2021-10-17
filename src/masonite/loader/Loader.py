@@ -47,7 +47,6 @@ loader.find(Model, one_module, "User")
 
 """
 
-
 def parameters_filter(obj_name, obj):
     return (
         obj_name.isupper()
@@ -91,6 +90,9 @@ class Loader:
         if not len(_classes.keys()) and raise_exception:
             raise LoaderNotFound(f"No {class_instance} have been found in {paths}")
         return _classes
+
+    def get_object(self, path_or_module, object_name, raise_exception=False):
+        return load(path_or_module, object_name, raise_exception=raise_exception)
 
     def get_objects(self, path_or_module, filter_method=None):
         """Returns a dictionary of objects from the given path (file or dotted). The dictionary can
