@@ -152,9 +152,20 @@ class ProjectCommand(Command):
             raise e
 
         if success:
-            shutil.move(extracted_path, to_dir)
+            if target == '.':
+                shutil.move(extracted_path, os.getcwd())
+            else:
+                shutil.move(extracted_path, to_dir)
+
             # remove tmp directory
             tmp_dir.cleanup()
+
+            if target == '.':
+                from_dir = os.path.join(os.getcwd(), zfile.infolist()[0].filename)
+
+                for file in os.listdir(zfile.infolist()[0].filename):
+                    shutil.move(os.path.join(from_dir, file), os.getcwd())
+                os.rmdir(from_dir)
 
             self.info("Application Created Successfully!")
             self.info("Installing Dependencies ")
