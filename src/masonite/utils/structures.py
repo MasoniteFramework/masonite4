@@ -3,7 +3,7 @@ import importlib
 from importlib.abc import Loader
 from dotty_dict import dotty
 
-from src.masonite.exceptions.exceptions import LoaderNotFound
+from ..exceptions.exceptions import LoaderNotFound
 
 from .str import modularize
 
