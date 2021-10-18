@@ -152,7 +152,7 @@ class ProjectCommand(Command):
             raise e
 
         if success:
-            if target == '.':
+            if target == ".":
                 shutil.move(extracted_path, os.getcwd())
             else:
                 shutil.move(extracted_path, to_dir)
@@ -160,7 +160,7 @@ class ProjectCommand(Command):
             # remove tmp directory
             tmp_dir.cleanup()
 
-            if target == '.':
+            if target == ".":
                 from_dir = os.path.join(os.getcwd(), zfile.infolist()[0].filename)
 
                 for file in os.listdir(zfile.infolist()[0].filename):
