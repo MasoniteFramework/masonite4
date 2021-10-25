@@ -36,6 +36,7 @@ class View:
         self._jinja_extensions = ["jinja2.ext.loopcontrols"]
         self._filters = {}
         self._shared = {}
+        self._tests = {}
 
     def render(self, template, dictionary={}):
         """Get the string contents of the view.
@@ -64,6 +65,9 @@ class View:
         self.dictionary.update(self._shared)
         if self.composers:
             self.hydrate_from_composers()
+
+        if self._tests:
+            self.env.tests.update(self._tests)
 
         self.rendered_template = self._render()
 
@@ -254,3 +258,7 @@ class View:
 
     def get_response(self):
         return self.rendered_template
+
+    def test(self, key, obj):
+        self._tests.update({key: obj})
+        return self
