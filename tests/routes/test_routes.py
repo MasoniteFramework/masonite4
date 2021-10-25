@@ -80,9 +80,12 @@ class TestRoutes(TestCase):
 
     def test_can_make_base_route_group(self):
         router = Router(
-            Route.group([
-                Route.get("", "WelcomeController@show"),
-            ], prefix="/testing")
+            Route.group(
+                [
+                    Route.get("", "WelcomeController@show"),
+                ],
+                prefix="/testing",
+            )
         )
 
         route = router.find("/testing", "GET")
