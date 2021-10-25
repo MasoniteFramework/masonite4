@@ -21,7 +21,6 @@ class Route:
 
     @classmethod
     def get(self, url, controller, module_location=None, **options):
-        print(self.controllers_locations)
         return HTTPRoute(
             url,
             controller,
@@ -130,7 +129,11 @@ class Route:
         inner = []
         for route in flatten(routes):
             if options.get("prefix"):
-                route.url = options.get("prefix") + route.url
+                if route.url == "" or route.url == "/":
+                    route.url = options.get("prefix")
+                else:
+                    route.url = options.get("prefix") + route.url
+
                 route.compile_route_to_regex()
 
             if options.get("name"):

@@ -78,6 +78,16 @@ class TestRoutes(TestCase):
         route = router.find("/testing/group", "GET")
         self.assertTrue(route)
 
+    def test_can_make_base_route_group(self):
+        router = Router(
+            Route.group([
+                Route.get("", "WelcomeController@show"),
+            ], prefix="/testing")
+        )
+
+        route = router.find("/testing", "GET")
+        self.assertTrue(route)
+
     def test_can_make_route_group_nested(self):
         router = Router(
             Route.group(
