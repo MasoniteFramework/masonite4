@@ -6,10 +6,10 @@ class TestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.addRoutes(
-            Route.set_controller_module_location("tests.integrations.controllers").get(
+            Route.set_controller_locations("tests.integrations.controllers").get(
                 "/", "WelcomeController@show"
             ),
-            Route.set_controller_module_location("tests.integrations.controllers").post(
+            Route.set_controller_locations("tests.integrations.controllers").post(
                 "/", "WelcomeController@show"
             ),
         )

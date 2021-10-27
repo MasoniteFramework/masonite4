@@ -13,6 +13,7 @@ from src.masonite.middleware import (
 )
 from src.masonite.routes import Route
 from src.masonite.utils.structures import load
+from src.masonite.utils.location import base_path
 
 
 class Kernel:
@@ -69,9 +70,7 @@ class Kernel:
         )
 
     def register_routes(self):
-        Route.set_controller_module_location(
-            self.application.make("controllers.location")
-        )
+        Route.set_controller_locations(self.application.make("controllers.location"))
 
         self.application.bind("routes.location", "tests/integrations/web")
         self.application.make("router").add(
@@ -100,7 +99,7 @@ class Kernel:
         self.application.bind("resolver", config("database.db"))
 
     def register_storage(self):
-        storage = StorageCapsule(self.application.base_path)
+        storage = StorageCapsule()
         storage.add_storage_assets(
             {
                 # folder          # template alias
@@ -113,6 +112,4 @@ class Kernel:
         self.application.bind("storage_capsule", storage)
 
         self.application.set_response_handler(response_handler)
-        self.application.use_storage_path(
-            os.path.join(self.application.base_path, "storage")
-        )
+        self.application.use_storage_path(base_path("tests/integrations/storage"))

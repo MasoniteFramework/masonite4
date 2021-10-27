@@ -1,8 +1,11 @@
-import importlib
 import re
+import os
 
-from ..utils.str import modularize
+from ..utils.str import modularize, removeprefix
 from ..exceptions import InvalidRouteCompileException
+from ..facades import Loader
+from ..controllers import Controller
+from ..exceptions import LoaderNotFound
 
 
 class HTTPRoute:
@@ -13,15 +16,15 @@ class HTTPRoute:
         request_method=["get"],
         name=None,
         compilers=None,
-        module_location="app/http/controllers",
+        controllers_locations=["app.http.controllers"],
         controller_bindings=[],
-        **options
+        **options,
     ):
         if not url.startswith("/"):
             url = "/" + url
 
         self.url = url
-        self.module_location = module_location
+        self.controllers_locations = controllers_locations
         self.controller = controller
         self.controller_class = None
         self.controller_method = None
@@ -31,7 +34,7 @@ class HTTPRoute:
         self.list_middleware = []
         self.e = None
         self.compilers = compilers or {}
-        self._find_controller(controller, self.module_location)
+        self._find_controller(controller)
         self.controller_bindings = controller_bindings
         self.compile_route_to_regex()
 
@@ -102,8 +105,9 @@ class HTTPRoute:
 
         return compiled_url
 
-    def _find_controller(self, controller, module):
-        """Find the controller to attach to the route.
+    def _find_controller(self, controller):
+        """Find the controller to attach to the route. Look for controller (str or class) in all
+        specified controllers_location.
 
         Arguments:
             controller {string|object} -- String or object controller to search for.
@@ -111,60 +115,60 @@ class HTTPRoute:
         Returns:
             None
         """
-        module_location = modularize(self.module_location)
-        # If the output specified is a string controller
-        if isinstance(controller, str):
-            mod = controller.split("@")
-            # If trying to get an absolute path via a string
-            if mod[0].startswith("/"):
-                module_location = ".".join(mod[0].replace("/", "").split(".")[0:-1])
-            elif "." in mod[0]:
-                # This is a deeper module controller
-                module_location += "." + ".".join(mod[0].split(".")[:-1])
+        if controller is None:
+            return None
+        # If the output specified is a string controller e.g. "WelcomeController@show"
+        elif isinstance(controller, str):
+            if "@" in controller:
+                controller_path, controller_method_str = controller.split("@")
+            else:
+                controller_path = controller
+                controller_method_str = "__call__"
+
+            controller_path = modularize(controller_path).split(".")
+            if len(controller_path) > 1:
+                controller_name = controller_path.pop()
+                prefix_path = ".".join(controller_path)
+            else:
+                controller_name = controller_path[0]
+                prefix_path = ""
+            # build a list of all locations where the controller can be found
+            # if the controller is defined such as auth.WelcomeController, append the prefix path to
+            # the locations
+            locations = list(
+                map(
+                    lambda loc: f"{loc}.{removeprefix(prefix_path, loc)}"
+                    if prefix_path
+                    else loc,
+                    self.controllers_locations,
+                )
+            )
+            try:
+                self.controller_class = Loader.find(
+                    Controller, locations, controller_name, raise_exception=True
+                )
+            except LoaderNotFound as e:
+                self.e = e
+                print("\033[93mTrouble importing controller!", str(e), "\033[0m")
+        # Else it's a controller instance, we don't have to find it, just get the class
         else:
-            if controller is None:
-                return None
-
-            fully_qualified_name = controller.__qualname__
-            mod = fully_qualified_name.split(".")
-            module_location = controller.__module__
-
-        # Gets the controller name from the output parameter
-        # This is used to add support for additional modules
-        # like 'LoginController' and 'Auth.LoginController'
-        get_controller = mod[0].split(".")[-1]
-
-        try:
-            # Import the module
-            if isinstance(controller, str):
-                module = importlib.import_module(
-                    "{0}.".format(module_location) + get_controller
+            if "." in controller.__qualname__:
+                controller_name, controller_method_str = controller.__qualname__.split(
+                    "."
                 )
             else:
-                module = importlib.import_module("{0}".format(module_location))
+                controller_name = controller.__qualname__
+                controller_method_str = "__call__"
+            try:
+                self.controller_class = Loader.get_object(
+                    controller.__module__, controller_name, raise_exception=True
+                )
+            except LoaderNotFound as e:
+                self.e = e
+                print("\033[93mTrouble importing controller!", str(e), "\033[0m")
 
-            # Get the controller from the module
-            self.controller_class = getattr(module, get_controller)
-
-            # Set the controller method on class. This is a string
-            self.controller_method = mod[1] if len(mod) == 2 else "__call__"
-        except ImportError as e:
-            import sys
-            import traceback
-
-            raise e
-
-            _, _, exc_tb = sys.exc_info()
-            self.e = e
-        except Exception as e:  # skipcq
-            import sys
-            import traceback
-
-            _, _, exc_tb = sys.exc_info()
-            self.e = e
-            print("\033[93mTrouble importing controller!", str(e), "\033[0m")
-        if not self.e:
-            self.module_location = module_location
+        # Set the controller method on class. This is a string
+        self.controller_method = controller_method_str
 
     def get_response(self, app=None):
         # Resolve Controller Constructor

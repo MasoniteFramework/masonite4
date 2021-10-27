@@ -2,13 +2,13 @@
 location."""
 from os.path import join, abspath
 
-from .str import dotted_to_path
+from .str import as_filepath
 
 
 def _build_path(location_key, relative_path, absolute):
     from wsgi import application
 
-    relative_dir = join(dotted_to_path(application.make(location_key)), relative_path)
+    relative_dir = join(as_filepath(application.make(location_key)), relative_path)
     return abspath(relative_dir) if absolute else relative_dir
 
 

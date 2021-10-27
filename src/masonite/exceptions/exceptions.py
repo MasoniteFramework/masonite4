@@ -132,3 +132,7 @@ class InvalidConfigurationSetup(Exception):
 
 class InvalidPackageName(Exception):
     pass
+
+
+class LoaderNotFound(Exception):
+    pass

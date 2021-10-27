@@ -21,6 +21,7 @@ from ..commands import (
 from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
 from ..routes import Router
+from ..loader import Loader
 
 from ..tests.HttpTestResponse import HttpTestResponse
 from ..tests.TestResponseCapsule import TestResponseCapsule
@@ -49,6 +50,7 @@ class Kernel:
             "router",
             Router(),
         )
+        self.application.bind("loader", Loader())
 
     def register_commands(self):
         self.application.bind(

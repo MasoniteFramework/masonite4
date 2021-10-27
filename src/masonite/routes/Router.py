@@ -28,8 +28,8 @@ class Router:
             return route.to_url(parameters)
         raise RouteNotFoundException(f"Could not find route with the name '{name}'")
 
-    def set_controller_module_location(self, location):
-        self.controller_module_location = location
+    def set_controller_locations(self, location):
+        self.controller_locations = location
         return self
 
     def add(self, *routes):

@@ -56,7 +56,7 @@ class Response:
     def header(self, name, value=None):
         if value is None and isinstance(name, dict):
             for name, value in name.items():
-                self.header_bag.add(Header(name, value))
+                self.header_bag.add(Header(name, str(value)))
         elif value is None:
             header = self.header_bag.get(name)
             if isinstance(header, str):

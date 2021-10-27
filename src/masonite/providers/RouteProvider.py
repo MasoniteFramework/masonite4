@@ -13,9 +13,7 @@ class RouteProvider(Provider):
 
     def register(self):
         # Register the routes?
-        Route.set_controller_module_location(
-            self.application.make("controllers.location")
-        )
+        Route.set_controller_locations(self.application.make("controllers.location"))
 
     def boot(self):
         router = self.application.make("router")
@@ -32,12 +30,14 @@ class RouteProvider(Provider):
             self.application.make("middleware").get_http_middleware(),
             handler="before",
         )
+
+        exception = None
+
         if route:
             request.load_params(route.extract_parameters(request.get_path()))
             self.application.make("middleware").run_route_middleware(
                 route.list_middleware, request, response, callback="before"
             )
-            exception = None
 
             try:
                 data = route.get_response(self.application)
@@ -49,11 +49,6 @@ class RouteProvider(Provider):
                     response.view(data)
             except Exception as e:
                 exception = e
-                self.application.make("middleware").run_route_middleware(
-                    route.list_middleware, request, response, callback="after"
-                )
-                if exception:
-                    raise exception
 
             self.application.make("middleware").run_route_middleware(
                 route.list_middleware, request, response, callback="after"
@@ -66,3 +61,6 @@ class RouteProvider(Provider):
             self.application.make("middleware").get_http_middleware(),
             handler="after",
         )
+
+        if exception:
+            raise exception
