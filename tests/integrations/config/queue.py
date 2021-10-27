@@ -6,6 +6,7 @@ DRIVERS = {
         "failed_table": "failed_jobs",
         "attempts": 3,
         "poll": 5,
+        "tz": "UTC",
     },
     "redis": {
         #
@@ -18,6 +19,7 @@ DRIVERS = {
         "host": "localhost",
         "channel": "default",
         "queue": "masonite4",
+        "tz": "UTC",
     },
     "async": {
         "blocking": True,

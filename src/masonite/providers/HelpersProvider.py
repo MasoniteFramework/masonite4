@@ -1,7 +1,9 @@
 import builtins
+from markupsafe import Markup
+
 from ..providers import Provider
-from ..utils.helpers import AssetHelper, UrlHelper
-from jinja2 import Markup
+from ..configuration import config
+from ..helpers import UrlsHelper, MixHelper
 
 
 class HelpersProvider(Provider):
@@ -11,10 +13,12 @@ class HelpersProvider(Provider):
     def register(self):
         builtins.resolve = self.application.resolve
         builtins.container = lambda: self.application
-        self.application.bind("url", UrlHelper(self.application))
+        self.application.bind("url", UrlsHelper(self.application))
 
     def boot(self):
         request = self.application.make("request")
+        urls_helper = self.application.make("url")
+
         self.application.make("view").share(
             {
                 "request": lambda: request,
@@ -24,12 +28,11 @@ class HelpersProvider(Provider):
                 "back": lambda url=request.get_path(): (
                     Markup(f"<input type='hidden' name='__back' value='{url}' />")
                 ),
-                "asset": AssetHelper(self.application).asset,
-                "url": UrlHelper(self.application).url,
-                "route": lambda name, params={}: (
-                    self.application.make("base_url")
-                    + self.application.make("router").route(name, params)
-                ),
+                "asset": urls_helper.asset,
+                "url": urls_helper.url,
+                "mix": MixHelper(self.application).url,
+                "route": urls_helper.route,
+                "config": config,
                 "can": self.application.make("gate").allows,
                 "cannot": self.application.make("gate").denies,
             }

@@ -133,3 +133,23 @@ class GateDoesNotExist(Exception):
 
 class PolicyDoesNotExist(Exception):
     pass
+
+
+class MixManifestNotFound(Exception):
+    pass
+
+
+class MixFileNotFound(Exception):
+    pass
+
+
+class InvalidConfigurationLocation(Exception):
+    pass
+
+
+class InvalidConfigurationSetup(Exception):
+    pass
+
+
+class LoaderNotFound(Exception):
+    pass

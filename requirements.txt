@@ -1,7 +1,7 @@
 pytest
 black
 cryptography
-masonite-orm
+https://github.com/MasoniteFramework/orm/archive/2.0.zip
 python-dotenv
 waitress
 responses

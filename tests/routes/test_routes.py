@@ -4,7 +4,7 @@ from src.masonite.routes import Route, Router
 
 class TestRoutes(TestCase):
     def setUp(self):
-        Route.set_controller_module_location("tests.integrations.controllers")
+        Route.set_controller_locations("tests.integrations.controllers")
         pass
 
     def test_can_add_routes(self):
@@ -78,6 +78,19 @@ class TestRoutes(TestCase):
         route = router.find("/testing/group", "GET")
         self.assertTrue(route)
 
+    def test_can_make_base_route_group(self):
+        router = Router(
+            Route.group(
+                [
+                    Route.get("", "WelcomeController@show"),
+                ],
+                prefix="/testing",
+            )
+        )
+
+        route = router.find("/testing", "GET")
+        self.assertTrue(route)
+
     def test_can_make_route_group_nested(self):
         router = Router(
             Route.group(
@@ -99,7 +112,7 @@ class TestRoutes(TestCase):
     def test_can_make_route_group_deep_module_nested(self):
         router = Router(
             Route.get(
-                "/test/deep", "/tests.integrations.controllers.api.TestController@show"
+                "/test/deep", "tests.integrations.controllers.api.TestController@show"
             )
         )
 

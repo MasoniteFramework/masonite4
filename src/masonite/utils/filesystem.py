@@ -58,3 +58,15 @@ def modified_date(path_to_file):
             # We're probably on Linux. No easy way to get creation dates here,
             # so we'll settle for when its content was last modified.
             return 0
+
+
+def render_stub_file(stub_file, name):
+    """Read stub file, replace placeholders and return content."""
+    with open(stub_file, "r") as f:
+        content = f.read()
+        content = content.replace("__class__", name)
+    return content
+
+
+def get_module_dir(module_file):
+    return os.path.dirname(os.path.realpath(module_file))

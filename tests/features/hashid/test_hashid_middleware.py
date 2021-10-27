@@ -29,6 +29,6 @@ class TestHashID(TestCase):
         )
 
     def test_middleware(self):
-        request = self.make_request({"QUERY_STRING": "id=l9avmeG&name=Joe"})
+        request = self.make_request(query_string="id=l9avmeG&name=Joe")
         HashIDMiddleware().before(request, None)
         assert request.all() == {"id": 10, "name": "Joe"}

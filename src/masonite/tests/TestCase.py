@@ -3,10 +3,9 @@ import io
 import unittest
 import pendulum
 
-from ..routes import Router, Route
-from .HttpTestResponse import HttpTestResponse
+from ..routes import Route
 from ..foundation.response_handler import testcase_handler
-from ..utils.helpers import generate_wsgi
+from ..utils.http import generate_wsgi
 from ..request import Request
 from ..response import Response
 from ..environment import LoadEnvironment
@@ -28,9 +27,15 @@ class TestCase(unittest.TestCase):
         self._exception_handling = False
 
     def tearDown(self):
+        # be sure to reset this between each test
         self._exception_handling = False
         if hasattr(self, "stopTestRun"):
             self.stopTestRun()
+
+    def withExceptionsHandling(self):
+        """Enable for the duration of a test the handling of exception through the exception
+        handler."""
+        self._exception_handling = True
 
     def setRoutes(self, *routes):
         self.application.make("router").set(Route.group(*routes, middleware=["web"]))
@@ -60,8 +65,10 @@ class TestCase(unittest.TestCase):
     def patch(self, route, data=None):
         return self.fetch(route, data, method="PATCH")
 
-    def make_request(self, data={}):
-        request = Request(generate_wsgi(data))
+    def make_request(
+        self, data={}, path="/", query_string="application=Masonite", method="GET"
+    ):
+        request = Request(generate_wsgi(data, path, query_string, method))
         request.app = self.application
 
         self.application.bind("request", request)

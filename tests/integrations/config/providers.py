@@ -15,11 +15,12 @@ from src.masonite.providers import (
     AuthenticationProvider,
     AuthorizationProvider,
     HashServiceProvider,
-    ValidationProvider,
 )
+
 
 from src.masonite.scheduling.providers import ScheduleProvider
 from src.masonite.notification.providers import NotificationProvider
+from src.masonite.validation.providers.ValidationProvider import ValidationProvider
 
 from tests.integrations.providers import AppProvider
 

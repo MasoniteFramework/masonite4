@@ -1,9 +1,10 @@
-from .Provider import Provider
-from ..routes import Router, Route
-from ..pipeline import Pipeline
+from inspect import isclass
 
-# from ..middleware.route import VerifyCsrfToken
-import pydoc
+from ..response import Response
+from ..facades import Response as ResponseFacade
+from .Provider import Provider
+from ..routes import Route
+from ..pipeline import Pipeline
 
 
 class RouteProvider(Provider):
@@ -12,9 +13,7 @@ class RouteProvider(Provider):
 
     def register(self):
         # Register the routes?
-        Route.set_controller_module_location(
-            self.application.make("controller.location")
-        )
+        Route.set_controller_locations(self.application.make("controllers.location"))
 
     def boot(self):
         router = self.application.make("router")
@@ -31,22 +30,25 @@ class RouteProvider(Provider):
             self.application.make("middleware").get_http_middleware(),
             handler="before",
         )
+
+        exception = None
+
         if route:
             request.load_params(route.extract_parameters(request.get_path()))
             self.application.make("middleware").run_route_middleware(
                 route.list_middleware, request, response, callback="before"
             )
-            exception = None
 
             try:
-                response.view(route.get_response(self.application))
+                data = route.get_response(self.application)
+                if isinstance(data, Response) or (
+                    isclass(data) and issubclass(data, ResponseFacade)
+                ):
+                    pass
+                else:
+                    response.view(data)
             except Exception as e:
                 exception = e
-                self.application.make("middleware").run_route_middleware(
-                    route.list_middleware, request, response, callback="after"
-                )
-                if exception:
-                    raise exception
 
             self.application.make("middleware").run_route_middleware(
                 route.list_middleware, request, response, callback="after"
@@ -59,3 +61,6 @@ class RouteProvider(Provider):
             self.application.make("middleware").get_http_middleware(),
             handler="after",
         )
+
+        if exception:
+            raise exception

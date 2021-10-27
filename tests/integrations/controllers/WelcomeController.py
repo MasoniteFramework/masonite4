@@ -4,7 +4,7 @@ from src.masonite.response.response import Response
 from src.masonite.request.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
-from src.masonite.facades import Gate
+from src.masonite.facades import Session, Config, Gate
 
 
 class CanBroadcast:
@@ -37,6 +37,9 @@ class WelcomeController(Controller):
     def flash_data(self, request: Request, response: Response, view: View):
         request.app.make("session").flash("test", "value")
         return response.with_input().redirect("/sessions")
+
+    def form_with_input(self, request: Request, response: Response, view: View):
+        return response.redirect("/sessions").with_input()
 
     def test(self):
         return "test"
@@ -109,13 +112,18 @@ class WelcomeController(Controller):
         request.app.make("session").flash("key", "value")
         return "session"
 
-    def session_with_errors(self, request: Request):
+    def session_with_errors(self, request: Request, response: Response):
         request.app.make("session").flash("key", "value")
         request.app.make("session").flash(
             "errors",
             {"email": "Email required", "password": "Password too short", "name": ""},
         )
         return "session"
+
+    def with_errors(self, response: Response):
+        return response.back().with_errors(
+            {"email": "Email required", "password": "Password too short", "name": ""}
+        )
 
     def session2(self, request: Request):
         request.app.make("session").flash(

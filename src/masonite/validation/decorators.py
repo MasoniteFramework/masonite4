@@ -4,12 +4,13 @@ def validate(*rules, redirect=None, back=None):
             from wsgi import container
 
             request = container.make("Request")
+            response = container.make("Response")
             errors = request.validate(*rules)
             if errors:
                 if redirect:
-                    return request.redirect(redirect).with_errors(errors).with_input()
+                    return response.redirect(redirect).with_errors(errors).with_input()
                 if back:
-                    return request.back().with_errors(errors).with_input()
+                    return response.back().with_errors(errors).with_input()
                 return errors
             else:
                 return container.resolve(func)

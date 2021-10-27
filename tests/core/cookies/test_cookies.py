@@ -1,7 +1,7 @@
 import unittest
 
 from src.masonite.cookies import CookieJar
-from src.masonite.utils.helpers import cookie_expire_time
+from src.masonite.utils.time import cookie_expire_time
 
 
 class TestCookies(unittest.TestCase):

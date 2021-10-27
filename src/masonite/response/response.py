@@ -4,9 +4,10 @@ import json
 import mimetypes
 from pathlib import Path
 
+from ..routes.Router import Router
 from ..exceptions import ResponseError, InvalidHTTPStatusCode
 from ..headers import HeaderBag, Header
-from ..utils.helpers import response_statuses, compile_route_to_url
+from ..utils.http import HTTP_STATUS_CODES
 from ..cookies import CookieJar
 
 
@@ -21,7 +22,7 @@ class Response:
         self.app = app
         self.content = ""
         self._status = None
-        self.statuses = response_statuses()
+        self.statuses = HTTP_STATUS_CODES
         self.header_bag = HeaderBag()
         self.cookie_jar = CookieJar()
         self.original = None
@@ -55,7 +56,7 @@ class Response:
     def header(self, name, value=None):
         if value is None and isinstance(name, dict):
             for name, value in name.items():
-                self.header_bag.add(Header(name, value))
+                self.header_bag.add(Header(name, str(value)))
         elif value is None:
             header = self.header_bag.get(name)
             if isinstance(header, str):
@@ -184,7 +185,7 @@ class Response:
 
         self.make_headers()
 
-        return self.data()
+        return self
 
     def back(self):
         return self.redirect(url=self.app.make("request").get_back_path())
@@ -204,20 +205,19 @@ class Response:
 
         if location:
             self.header_bag.add(Header("Location", location))
-            return self.view("Redirecting ...")
         elif name:
             url = self._get_url_from_route_name(name, params)
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
         elif url:
             self.header_bag.add(Header("Location", url))
-            return self.view("Redirecting ...")
+        self.view("Redirecting ...")
+        return self
 
     def _get_url_from_route_name(self, name, params={}):
         route = self.app.make("router").find_by_name(name)
         if not route:
             raise ValueError(f"Route with the name '{name}' not found.")
-        return compile_route_to_url(route.url, params)
+        return Router.compile_to_url(route.url, params)
 
     def to_bytes(self):
         """Converts the data to bytes so the WSGI server can handle it.

@@ -1,8 +1,11 @@
-"""MakeNotificationCommand Class"""
+"""New Notification Command"""
 from cleo import Command
-from ...utils.filesystem import make_directory
 import inflection
 import os
+
+from ...utils.filesystem import get_module_dir, make_directory, render_stub_file
+from ...utils.location import base_path
+from ...utils.str import as_filepath
 
 
 class MakeNotificationCommand(Command):
@@ -20,21 +23,20 @@ class MakeNotificationCommand(Command):
     def handle(self):
         name = inflection.camelize(self.argument("name"))
 
-        with open(self.get_mailables_path(), "r") as f:
-            content = f.read()
-            content = content.replace("__class__", name)
+        content = render_stub_file(self.get_stub_notification_path(), name)
 
-        file_name = os.path.join(
-            self.app.make("notifications.location").replace(".", "/"), name + ".py"
+        relative_filename = os.path.join(
+            as_filepath(self.app.make("notifications.location")), name + ".py"
         )
+        filepath = base_path(relative_filename)
+        make_directory(filepath)
 
-        make_directory(file_name)
-
-        with open(file_name, "w") as f:
+        with open(filepath, "w") as f:
             f.write(content)
-        self.info(f"Notification Created ({file_name})")
 
-    def get_mailables_path(self):
-        current_path = os.path.dirname(os.path.realpath(__file__))
+        self.info(f"Notification Created ({relative_filename})")
 
-        return os.path.join(current_path, "../stubs/notification/Notification.py")
+    def get_stub_notification_path(self):
+        return os.path.join(
+            get_module_dir(__file__), "../../stubs/notification/Notification.py"
+        )

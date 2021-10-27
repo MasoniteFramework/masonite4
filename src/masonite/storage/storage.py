@@ -1,7 +1,6 @@
 class StorageCapsule:
-    def __init__(self, base_path=None):
+    def __init__(self):
         self.storage_templates = {}
-        self.base_path = base_path or {}
 
     def add_storage_assets(self, templates):
         self.storage_templates.update(templates)

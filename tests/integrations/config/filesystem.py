@@ -1,12 +1,12 @@
 """Cache Config"""
 import os
+from src.masonite.utils.location import base_path
 
 DISKS = {
     "default": "local",
     "local": {
         "driver": "file",
-        "path": os.path.join(os.getcwd(), "storage/framework/filesystem")
-        #
+        "path": base_path("storage/framework/filesystem"),
     },
     "s3": {
         "driver": "s3",

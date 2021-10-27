@@ -2,6 +2,9 @@ import json
 import random
 import operator
 from functools import reduce
+from dotty_dict import Dotty
+
+from .structures import data_get
 
 
 class Collection:
@@ -438,8 +441,10 @@ class Collection:
 
     def _data_get(self, item, key, default=None):
         try:
-            if isinstance(item, (list, tuple, dict)):
+            if isinstance(item, (list, tuple)):
                 item = item[key]
+            elif isinstance(item, (dict, Dotty)):
+                item = data_get(item, key, default)
             elif isinstance(item, object):
                 item = getattr(item, key)
         except (IndexError, AttributeError, KeyError, TypeError):
@@ -520,3 +525,21 @@ class Collection:
             items = items.all()
 
         return items
+
+
+def collect(iterable):
+    """Transform an iterable into a collection."""
+    return Collection(iterable)
+
+
+def flatten(iterable):
+    """Flatten all sub-iterables of an iterable structure (recursively)."""
+    flat_list = []
+    for item in iterable:
+        if isinstance(item, list):
+            for subitem in flatten(item):
+                flat_list.append(subitem)
+        else:
+            flat_list.append(item)
+
+    return flat_list

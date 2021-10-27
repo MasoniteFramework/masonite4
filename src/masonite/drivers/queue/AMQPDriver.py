@@ -1,10 +1,10 @@
 import pickle
 import pendulum
 import inspect
-from ...utils.helpers import HasColoredCommands
+from ...utils.console import HasColoredOutput
 
 
-class AMQPDriver(HasColoredCommands):
+class AMQPDriver(HasColoredOutput):
     def __init__(self, application):
         self.application = application
         self.connection = None
@@ -20,7 +20,7 @@ class AMQPDriver(HasColoredCommands):
                 "obj": job,
                 "args": args,
                 "callback": self.options.get("callback", "handle"),
-                "created": pendulum.now(),
+                "created": pendulum.now(tz=self.options.get("tz", "UTC")),
             }
 
             try:
@@ -151,11 +151,11 @@ class AMQPDriver(HasColoredCommands):
                 obj(*args)
 
             self.success(
-                f"[{method.delivery_tag}][{pendulum.now().to_datetime_string()}] Job Successfully Processed"
+                f"[{method.delivery_tag}][{pendulum.now(tz=self.options.get('tz', 'UTC')).to_datetime_string()}] Job Successfully Processed"
             )
         except Exception as e:
             self.danger(
-                f"[{method.delivery_tag}][{pendulum.now().to_datetime_string()}] Job Failed"
+                f"[{method.delivery_tag}][{pendulum.now(tz=self.options.get('tz', 'UTC')).to_datetime_string()}] Job Failed"
             )
 
             getattr(obj, "failed")(job, str(e))
@@ -173,9 +173,13 @@ class AMQPDriver(HasColoredCommands):
                 "queue": self.options.get("queue", "default"),
                 "name": name,
                 "connection": self.options.get("connection"),
-                "created_at": pendulum.now().to_datetime_string(),
+                "created_at": pendulum.now(
+                    tz=self.options.get("tz", "UTC")
+                ).to_datetime_string(),
                 "exception": exception,
                 "payload": payload,
-                "failed_at": pendulum.now().to_datetime_string(),
+                "failed_at": pendulum.now(
+                    tz=self.options.get("tz", "UTC")
+                ).to_datetime_string(),
             }
         )

@@ -27,8 +27,8 @@ class NotificationManager:
         return self.drivers[name]
 
     def set_configuration(self, config):
-        self.driver_config = config.DRIVERS
-        self.options.update({"dry": config.DRY})
+        self.driver_config = config.get("drivers")
+        self.options.update({"dry": config.get("dry")})
         return self
 
     def get_config_options(self, driver):

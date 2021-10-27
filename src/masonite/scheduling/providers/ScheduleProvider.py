@@ -1,9 +1,7 @@
 """ A ScheduleProvider Service Provider """
 from ...providers import Provider
 
-from ..commands.CreateTaskCommand import CreateTaskCommand
-from ..commands.ScheduleRunCommand import ScheduleRunCommand
-from ..CommandTask import CommandTask
+from ..commands import MakeTaskCommand, ScheduleRunCommand
 from ..TaskHandler import TaskHandler
 
 
@@ -13,7 +11,7 @@ class ScheduleProvider(Provider):
 
     def register(self):
         self.application.make("commands").add(
-            CreateTaskCommand(), ScheduleRunCommand(self.application)
+            MakeTaskCommand(self.application), ScheduleRunCommand(self.application)
         )
 
         self.application.bind("scheduler", TaskHandler(self.application))

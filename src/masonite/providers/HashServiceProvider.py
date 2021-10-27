@@ -1,7 +1,7 @@
 from ..hashing import Hash
 from ..hashing.drivers import BcryptHasher, Argon2Hasher
 from .Provider import Provider
-from ..utils.structures import load
+from ..configuration import config
 
 
 class HashServiceProvider(Provider):
@@ -10,7 +10,7 @@ class HashServiceProvider(Provider):
 
     def register(self):
         hashing = Hash(self.application).set_configuration(
-            load(self.application.make("config.application")).HASHING
+            config("application.hashing")
         )
         hashing.add_driver("bcrypt", BcryptHasher())
         hashing.add_driver("argon2", Argon2Hasher())

@@ -8,7 +8,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="4.0.0a",
+    version="4.0.0b1.post5",
     package_dir={"": "src"},
     description="The Masonite Framework",
     long_description=long_description,
@@ -32,7 +32,7 @@ setup(
         "inflection>=0.3<0.4",
         "exceptionite>=1.0<1.1",
         "pendulum>=2,<3",
-        "jinja2>=2.11<2.12",
+        "jinja2>=3.0.0<3.1",
         "cleo>=0.8.1,<0.9",
         "hupper>=1.10,<1.11",
         "waitress>=1.4,<1.5",
@@ -43,6 +43,7 @@ setup(
         "cryptography>=3.3.1,<4.0",
         "tldextract>=2.2,<2.3",
         "hfilesize>=0.1",
+        "dotty_dict>=1.3.0<1.40",
     ],
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -50,7 +51,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         # Indicate who your project is intended for
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Build Tools",
@@ -64,6 +65,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     # What does your project relate to?
@@ -82,6 +84,8 @@ setup(
         "masonite.cache",
         "masonite.cache.drivers",
         "masonite.commands",
+        "masonite.configuration",
+        "masonite.configuration.providers",
         "masonite.container",
         "masonite.controllers",
         "masonite.cookies",
@@ -104,11 +108,18 @@ setup(
         "masonite.hashing",
         "masonite.hashing.drivers",
         "masonite.headers",
+        "masonite.helpers",
         "masonite.input",
+        "masonite.loader",
         "masonite.mail",
         "masonite.mail.drivers",
         "masonite.middleware",
         "masonite.middleware.route",
+        "masonite.notification",
+        "masonite.notification.commands",
+        "masonite.notification.drivers",
+        "masonite.notification.drivers.vonage",
+        "masonite.notification.providers",
         "masonite.pipeline",
         "masonite.pipeline.tasks",
         "masonite.providers",
@@ -145,6 +156,7 @@ setup(
             "vonage",
             "slackblocks",
             "argon2-cffi",
+            "pwnedapi",
         ],
     },
     # If there are data files included in your packages that need to be
@@ -163,7 +175,6 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         "console_scripts": [
-            "masonite-orm = masoniteorm.commands.Entry:application.run",
             "start = masonite.commands.Entry:application.run",
         ],
     },
