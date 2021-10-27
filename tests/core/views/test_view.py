@@ -91,16 +91,15 @@ class TestView(TestCase):
         self.assertEqual(self.view.render("test").rendered_template, "test")
 
     def test_view_share_updates_dictionary_not_overwrite(self):
-        # reset shared data from views
-        self.view._shared = {}
         self.view.share({"test1": "test1"})
         self.view.share({"test2": "test2"})
 
-        self.assertEqual(self.view._shared, {"test1": "test1", "test2": "test2"})
+        self.assertEqual(self.view._shared["test1"], "test1")
+        self.assertEqual(self.view._shared["test2"], "test2")
         self.view.render("test", {"var1": "var1"})
-        self.assertEqual(
-            self.view.dictionary, {"test1": "test1", "test2": "test2", "var1": "var1"}
-        )
+        self.assertIn("test1", self.view.dictionary.keys())
+        self.assertIn("test2", self.view.dictionary.keys())
+        self.assertIn("var1", self.view.dictionary.keys())
 
     def test_can_use_namespaced_view(self):
         self.view.add_namespaced_location("auth", "tests/integrations/templates/auth")
