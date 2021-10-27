@@ -72,7 +72,7 @@ class PackageProvider(Provider):
         self.package.vendor_name = name
         return self
 
-    def add_config(self, config_filepath, publish=False):
+    def config(self, config_filepath, publish=False):
         # TODO: a name must be specified !
         self.package.add_config(config_filepath)
         Config.merge_with(self.package.name, self.package.config)
@@ -82,7 +82,7 @@ class PackageProvider(Provider):
             self.files.update({resource.key: resource.files})
         return self
 
-    def add_views(self, *locations, publish=False):
+    def views(self, *locations, publish=False):
         """Register views location in the project.
         locations must be a folder containinng the views you want to publish.
         """
@@ -118,11 +118,11 @@ class PackageProvider(Provider):
             self.files.update({resource.key: resource.files})
         return self
 
-    def add_commands(self, *commands):
+    def commands(self, *commands):
         self.application.make("commands").add(*commands)
         return self
 
-    def add_migrations(self, *migrations):
+    def migrations(self, *migrations):
         self.package.add_migrations(*migrations)
         resource = PublishableResource("migrations")
         for migration in self.package.migrations:
@@ -133,7 +133,7 @@ class PackageProvider(Provider):
         self.files.update({resource.key: resource.files})
         return self
 
-    def add_routes(self, *routes):
+    def routes(self, *routes):
         self.package.add_routes(*routes)
         # TODO: For route to work controller location needs to be registered...
         # but for now only one location can be registered in the framework
@@ -146,7 +146,7 @@ class PackageProvider(Provider):
             )
         return self
 
-    def add_assets(self, *assets):
+    def assets(self, *assets):
         self.package.add_assets(*assets)
         resource = PublishableResource("assets")
         for asset_dir_or_file in self.package.assets:
