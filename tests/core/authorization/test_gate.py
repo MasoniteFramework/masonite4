@@ -22,7 +22,7 @@ class TestGate(TestCase):
         self.gate = self.application.make("gate")
         self.make_request()
         self.make_response()
-        self.setRoutes(
+        self.addRoutes(
             Route.get("/not-authorized", "WelcomeController@not_authorized"),
             Route.get(
                 "/authorize-helper", "WelcomeController@use_authorization_helper"
