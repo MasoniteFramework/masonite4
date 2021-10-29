@@ -70,4 +70,6 @@ def main(args=sys.argv[1:]):
     if "-p" in args:
         port = args[args.index("-p") + 1]
 
-    waitress.serve(application, host=host, port=port)
+    waitress.serve(
+        application, host=host, port=port, clear_untrusted_proxy_headers=False
+    )

@@ -26,7 +26,9 @@ def load(path, object_name=None, default=None, raise_exception=False):
         module = importlib.import_module(module_path)
     except ModuleNotFoundError:
         if raise_exception:
-            raise LoaderNotFound(f"{module_path} not found")
+            raise LoaderNotFound(
+                f"{module_path} not found or error when importing this module."
+            )
         return None
 
     if object_name is None:
