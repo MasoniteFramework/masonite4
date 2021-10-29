@@ -26,7 +26,9 @@ class Configuration:
     def load(self):
         """At boot load configuration from all files and store them in here."""
         config_root = self.application.make("config.location")
-        for module_name, module in Loader.get_modules(config_root).items():
+        for module_name, module in Loader.get_modules(
+            config_root, raise_exception=True
+        ).items():
             params = Loader.get_parameters(module)
             for name, value in params.items():
                 self._config[f"{module_name}.{name.lower()}"] = value
