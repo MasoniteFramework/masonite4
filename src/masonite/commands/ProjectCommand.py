@@ -168,16 +168,15 @@ class ProjectCommand(Command):
                 os.rmdir(from_dir)
 
             self.info("Application Created Successfully!")
-            self.info("Installing Dependencies ")
             if target == ".":
+                self.info("Installing Dependencies...")
                 self.call("install")
-
                 self.info(
                     "Installed Successfully. Just Run `python craft serve` To Start Your Application."
                 )
             else:
                 self.info(
-                    "Project Created Successfully. You now will have to go into your new '{}' directory and run `start install` to complete the installation".format(
+                    "You now will have to go into your new '{}' directory and run `start install` to complete the installation".format(
                         target
                     )
                 )

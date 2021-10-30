@@ -65,14 +65,14 @@ class Request(ValidatesRequest):
 
         return self.input_bag.get(name, default=default)
 
-    def cookie(self, name, value=None):
+    def cookie(self, name, value=None, **options):
         if value is None:
             cookie = self.cookie_jar.get(name)
             if not cookie:
                 return
             return cookie.value
 
-        return self.cookie_jar.add(name, value)
+        return self.cookie_jar.add(name, value, **options)
 
     def delete_cookie(self, name):
         self.cookie_jar.delete(name)
