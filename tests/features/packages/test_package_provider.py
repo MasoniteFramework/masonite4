@@ -4,9 +4,6 @@ from tests import TestCase
 
 
 class TestPackageProvider(TestCase):
-    def setUp(self):
-        super().setUp()
-
     def test_config_is_loaded(self):
         self.assertEqual(config("test_package.param_2"), 1)
 
@@ -36,5 +33,11 @@ class TestPackageProvider(TestCase):
         self.craft("test_package:command2").assertSuccess()
 
     def test_routes_are_registered(self):
+        # nb = len(self.application.make("router").routes)
+        # import pdb
+
+        # pdb.set_trace()
+        # for r in self.application.make("router").routes:
+        #     print(f"{r.url} -> {r._name}")
         self.get("/package/test/").assertContains("index")
         self.get("/api/package/test/").assertCreated()
