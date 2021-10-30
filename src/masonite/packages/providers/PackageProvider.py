@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 from os.path import relpath, join, abspath, basename, isdir, isfile
-
+import shutil
 from ...providers.Provider import Provider
 from ...exceptions import InvalidPackageName
 from ...utils.location import (
@@ -50,8 +50,7 @@ class PackageProvider(Provider):
             resource_files = self.files.get(resource, [])
             for source, dest in resource_files:
                 if not dry:
-                    # TODO: perform copying resources and do not override !
-                    pass
+                    shutil.copy(source, dest)
                 published_resources[resource].append(relpath(dest, project_root))
         return published_resources
 
@@ -88,12 +87,6 @@ class PackageProvider(Provider):
         """
         self.package.add_views(*locations)
         # register views into project
-        # TODO: the issue here is that package can override project views are views cannot be
-        # namespaced...
-        # for location in locations:
-        # self.application.make("view").add_from_package(
-        #     "tests.integrations.test_package", location
-        # )
         self.application.make("view").add_namespace(
             self.package.name, self.package.views[0]
         )
@@ -135,15 +128,17 @@ class PackageProvider(Provider):
 
     def routes(self, *routes):
         self.package.add_routes(*routes)
-        # TODO: For route to work controller location needs to be registered...
-        # but for now only one location can be registered in the framework
-        # also how to handle naming conflict between two packages or with the project
         for route_group in self.package.routes:
             self.application.make("router").add(
                 Route.group(
                     load(route_group, "ROUTES", []),
                 )
             )
+        # register controller locations also
+        return self
+
+    def controllers(self, *controller_locations):
+        Route.add_controller_locations(*controller_locations)
         return self
 
     def assets(self, *assets):

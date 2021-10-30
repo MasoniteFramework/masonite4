@@ -1,9 +1,5 @@
 import os
 
-from jinja2.utils import F
-
-from src.masonite.configuration.helpers import config
-
 
 class Package:
     def __init__(self):

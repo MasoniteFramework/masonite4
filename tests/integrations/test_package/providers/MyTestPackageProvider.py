@@ -23,4 +23,5 @@ class MyTestPackageProvider(PackageProvider):
             .migrations("migrations/create_some_table.py")
             .assets("assets")
             # .routes("routes/api.py", "routes/web.py")
+            .controllers("controllers")
         )
