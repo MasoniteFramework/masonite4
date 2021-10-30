@@ -25,7 +25,7 @@ class TestAuthentication(TestCase):
             "idmann509@gmail.com", "secret"
         )
 
-        self.assertTrue(self.application.make("request").cookie("token"))
+        self.assertTrue(self.application.make("response").cookie("token"))
 
         self.application.make("auth").guard("web").logout()
         self.assertFalse(self.application.make("request").cookie("token"))
