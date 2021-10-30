@@ -4,7 +4,7 @@ from ...facades import Auth
 
 class LoadUserMiddleware(Middleware):
     def before(self, request, _):
-        request.set_user(Auth.get_guard().user())
+        request.set_user(Auth.user())
         return request
 
     def after(self, request, _):

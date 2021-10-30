@@ -1,3 +1,5 @@
+import json
+
 class Session:
     def __init__(self, application, driver_config=None):
         self.application = application
@@ -65,6 +67,12 @@ class Session:
         )
 
     def set(self, key, value):
+        try:
+            if isinstance(value, (dict, list, int)) or (isinstance(value, str) and value.isnumeric()):
+                value = json.dumps(value)
+        except json.decoder.JSONDecodeError:
+            pass
+
         return self.added.update({key: value})
 
     def increment(self, key, count=1):
@@ -74,16 +82,28 @@ class Session:
         return self.set(key, str(int(self.get(key)) - count))
 
     def has(self, key):
-        return key in self.get_data()
+        return key in self.added or key in self.flashed
 
     def get(self, key):
         if key in self.flashed:
             value = self.flashed.get(key)
+            
+            try:
+                if value is not None:
+                    value = json.loads(value)
+            except json.decoder.JSONDecodeError:
+                pass
             self.flashed.pop(key)
             self.deleted_flashed.append(key)
             return value
 
-        return self.get_data().get(key)
+        value = self.get_data().get(key)
+        try:
+            if value is not None:
+                value = json.loads(value)
+        except json.decoder.JSONDecodeError:
+            pass
+        return value
 
     def pull(self, key):
         key_value = self.get(key)
@@ -105,6 +125,12 @@ class Session:
             key {string} -- The key to set as the session key.
             value {string} -- The value to set in the session.
         """
+        try:
+            if isinstance(value, (dict, list, int)) or (isinstance(value, str) and value.isnumeric()):
+                value = json.dumps(value)
+        except json.decoder.JSONDecodeError:
+            pass
+
         self.flashed.update({key: value})
 
     def all(self):
