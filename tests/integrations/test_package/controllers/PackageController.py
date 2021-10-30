@@ -3,7 +3,7 @@ from src.masonite.controllers import Controller
 
 class PackageController(Controller):
     def api(self):
-        pass
+        return {"data": "ok"}, 201
 
     def index(self):
-        pass
+        return "index"

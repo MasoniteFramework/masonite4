@@ -161,7 +161,5 @@ class Route:
 
     @classmethod
     def add_controller_locations(self, *controllers_locations):
-        self.controllers_locations.extend(
-            modularize(list(map(modularize, controllers_locations)))
-        )
+        self.controllers_locations.extend(list(map(modularize, controllers_locations)))
         return self

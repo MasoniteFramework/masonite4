@@ -22,6 +22,6 @@ class MyTestPackageProvider(PackageProvider):
             .commands(Command1(), Command2())
             .migrations("migrations/create_some_table.py")
             .assets("assets")
-            # .routes("routes/api.py", "routes/web.py")
-            .controllers("controllers")
+            .controllers("controllers")  # ensure this one is done before routes()
+            .routes("routes/api.py", "routes/web.py")
         )

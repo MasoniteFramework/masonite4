@@ -127,6 +127,7 @@ class PackageProvider(Provider):
         return self
 
     def routes(self, *routes):
+        """Controller locations must have been loaded already !"""
         self.package.add_routes(*routes)
         for route_group in self.package.routes:
             self.application.make("router").add(
@@ -134,11 +135,11 @@ class PackageProvider(Provider):
                     load(route_group, "ROUTES", []),
                 )
             )
-        # register controller locations also
         return self
 
     def controllers(self, *controller_locations):
-        Route.add_controller_locations(*controller_locations)
+        self.package.add_controller_locations(*controller_locations)
+        Route.add_controller_locations(*self.package.controller_locations)
         return self
 
     def assets(self, *assets):
@@ -172,3 +173,4 @@ class PackageProvider(Provider):
                     ),
                 )
         self.files.update({resource.key: resource.files})
+        return self

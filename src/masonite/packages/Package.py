@@ -9,6 +9,7 @@ class Package:
         self.commands = []
         self.views = []
         self.migrations = []
+        self.controller_locations = []
         self.routes = []
         self.assets = []
 
@@ -37,4 +38,9 @@ class Package:
     def add_assets(self, *assets):
         for asset in assets:
             self.assets.append(self._build_path(asset))
+        return self
+
+    def add_controller_locations(self, *controller_locations):
+        for loc in controller_locations:
+            self.controller_locations.append(self._build_path(loc))
         return self

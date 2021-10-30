@@ -22,7 +22,7 @@ class TestPackageProvider(TestCase):
     def test_views_are_registered(self):
         self.application.make("view").exists("test_package:package")
         self.application.make("view").exists("test_package:admin.settings")
-        # this on has been published in project and overriden
+        # this one has been published in project and overriden
         # check that the project view is used and not the package view
         self.assertEqual(
             self.application.make("view")
@@ -35,5 +35,6 @@ class TestPackageProvider(TestCase):
         self.craft("test_package:command1").assertSuccess()
         self.craft("test_package:command2").assertSuccess()
 
-    # def test_routes_are_registered(self):
-    #     self.get("package/test")
+    def test_routes_are_registered(self):
+        self.get("/package/test/").assertContains("index")
+        self.get("/api/package/test/").assertCreated()
