@@ -25,6 +25,6 @@ class SessionMiddleware(Middleware):
         return Response
 
     def with_errors(self, errors):
-        print('with errors', errors, type(errors))
+        print("with errors", errors, type(errors))
         Session.flash("errors", errors)
         return Response

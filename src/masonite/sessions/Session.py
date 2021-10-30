@@ -1,5 +1,6 @@
 import json
 
+
 class Session:
     def __init__(self, application, driver_config=None):
         self.application = application
@@ -68,7 +69,9 @@ class Session:
 
     def set(self, key, value):
         try:
-            if isinstance(value, (dict, list, int)) or (isinstance(value, str) and value.isnumeric()):
+            if isinstance(value, (dict, list, int)) or (
+                isinstance(value, str) and value.isnumeric()
+            ):
                 value = json.dumps(value)
         except json.decoder.JSONDecodeError:
             pass
@@ -87,7 +90,7 @@ class Session:
     def get(self, key):
         if key in self.flashed:
             value = self.flashed.get(key)
-            
+
             try:
                 if value is not None:
                     value = json.loads(value)
@@ -126,7 +129,9 @@ class Session:
             value {string} -- The value to set in the session.
         """
         try:
-            if isinstance(value, (dict, list, int)) or (isinstance(value, str) and value.isnumeric()):
+            if isinstance(value, (dict, list, int)) or (
+                isinstance(value, str) and value.isnumeric()
+            ):
                 value = json.dumps(value)
         except json.decoder.JSONDecodeError:
             pass
