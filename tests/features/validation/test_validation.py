@@ -1530,7 +1530,7 @@ class TestValidationProvider(TestCase):
 
     def test_request_validation(self):
         request = self.make_request(query_string="id=1&name=Joe")
-        validate = self.application.make("Validator")
+        validate = self.application.make("validator")
 
         validated = request.validate(validate.required(["id", "name"]))
 
