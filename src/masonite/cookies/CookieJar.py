@@ -68,8 +68,6 @@ class CookieJar:
     def render_response(self):
         cookies = []
         for name, cookie in {**self.deleted_cookies, **self.all_added()}.items():
-            print(name, ("Set-Cookie", cookie.render()))
             cookies.append(("Set-Cookie", cookie.render()))
 
-        print(cookies)
         return cookies
