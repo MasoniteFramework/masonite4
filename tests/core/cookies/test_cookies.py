@@ -19,7 +19,7 @@ class TestCookies(unittest.TestCase):
     def test_cookie_jar_can_render_cookie_string(self):
         cookiejar = CookieJar()
         cookiejar.add("cookie", "name", http_only=False)
-        self.assertEqual(cookiejar.render_response(), [("Set-Cookie", "cookie=name;")])
+        self.assertEqual(cookiejar.render_response(), [("Set-Cookie", "cookie=name;Path=/;")])
 
     def test_cookie_jar_can_render_multiple_cookies(self):
         cookiejar = CookieJar()
@@ -27,7 +27,7 @@ class TestCookies(unittest.TestCase):
         cookiejar.add("cookie2", "name", http_only=False)
         self.assertEqual(
             cookiejar.render_response(),
-            [("Set-Cookie", "cookie1=name;"), ("Set-Cookie", "cookie2=name;")],
+            [("Set-Cookie", "cookie1=name;Path=/;"), ("Set-Cookie", "cookie2=name;Path=/;")],
         )
 
     def test_cookie_jar_can_render_multiple_cookies_with_different_options(self):
@@ -60,12 +60,12 @@ class TestCookies(unittest.TestCase):
         cookiejar = CookieJar()
         cookiejar.add("cookie1", "name", http_only=False)
         cookiejar.load("csrf_token=tok")
-        self.assertEqual(cookiejar.render_response(), [("Set-Cookie", "cookie1=name;")])
+        self.assertEqual(cookiejar.render_response(), [("Set-Cookie", "cookie1=name;Path=/;")])
         self.assertEqual(cookiejar.get("csrf_token").value, "tok")
 
     def test_cookie_can_make_secure_cookies(self):
         cookiejar = CookieJar()
         cookiejar.add("cookie1", "name", http_only=False, secure=True)
         self.assertEqual(
-            cookiejar.render_response(), [("Set-Cookie", "cookie1=name;Secure;")]
+            cookiejar.render_response(), [("Set-Cookie", "cookie1=name;Secure;Path=/;")]
         )

@@ -12,3 +12,4 @@ from .MakeJobCommand import MakeJobCommand
 from .MakeMailableCommand import MakeMailableCommand
 from .MakeProviderCommand import MakeProviderCommand
 from .PublishPackageCommand import PublishPackageCommand
+from .MakePolicyCommand import MakePolicyCommand

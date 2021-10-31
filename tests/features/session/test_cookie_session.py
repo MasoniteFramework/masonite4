@@ -9,6 +9,28 @@ class TestCookieSession(TestCase):
         session.start()
         self.assertEqual(session.get("hello"), "test")
 
+    def test_can_get_session_dict(self):
+        request = self.make_request()
+        session = self.application.make("session")
+        request.cookie("s_hello", '{"hello": "test"}')
+        session.start()
+        self.assertEqual(type(session.get("hello")), dict)
+
+    def test_can_set_and_get_session_dict(self):
+        request = self.make_request()
+        session = self.application.make("session")
+        session.start()
+        session.set("key1", {"hello": "test"})
+        self.assertEqual(type(session.get("key1")), dict)
+        self.assertEqual(session.get("key1")["hello"], "test")
+
+    def test_can_set_and_get_session_dict(self):
+        request = self.make_request()
+        session = self.application.make("session")
+        session.start()
+        session.flash("key1", {"hello": "test"})
+        self.assertEqual(session.get("key1")["hello"], "test")
+
     def test_can_set_and_get_session(self):
         self.make_request()
         session = self.application.make("session")

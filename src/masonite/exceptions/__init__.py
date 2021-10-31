@@ -28,4 +28,5 @@ from .exceptions import (
     InvalidPackageName,
     LoaderNotFound,
     QueueException,
+    AmbiguousError,
 )

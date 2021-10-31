@@ -6,6 +6,7 @@ from .Hash import Hash
 from .Url import Url
 from .Session import Session
 from .View import View
+from .Gate import Gate
 from .Auth import Auth
 from .Config import Config
 from .Loader import Loader

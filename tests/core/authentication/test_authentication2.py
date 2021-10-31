@@ -18,14 +18,14 @@ class TestAuthentication(TestCase):
 
     def test_auth_class_registers_cookie(self):
         self.auth.guard("web").attempt("idmann509@gmail.com", "secret")
-        self.assertTrue(self.application.make("request").cookie("token"))
+        self.assertTrue(self.application.make("response").cookie("token"))
 
     def test_logout(self):
         self.application.make("auth").guard("web").attempt(
             "idmann509@gmail.com", "secret"
         )
 
-        self.assertTrue(self.application.make("request").cookie("token"))
+        self.assertTrue(self.application.make("response").cookie("token"))
 
         self.application.make("auth").guard("web").logout()
         self.assertFalse(self.application.make("request").cookie("token"))
