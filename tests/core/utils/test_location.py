@@ -9,6 +9,7 @@ from src.masonite.utils.location import (
     migrations_path,
     config_path,
     jobs_path,
+    resources_path,
 )
 
 
@@ -95,3 +96,11 @@ class TestLocation(TestCase):
         self.assertEqual("tests/integrations/jobs/critical/SomeTask.py", location)
         location = jobs_path(absolute=False)
         self.assertEqual(location, "tests/integrations/jobs/")
+
+    def test_resources_path(self):
+        location = resources_path("js/Home.vue")
+        self.assertTrue(location.endswith("tests/integrations/resources/js/Home.vue"))
+        location = resources_path("js/Home.vue", absolute=False)
+        self.assertEqual("tests/integrations/resources/js/Home.vue", location)
+        location = resources_path(absolute=False)
+        self.assertEqual(location, "tests/integrations/resources/")

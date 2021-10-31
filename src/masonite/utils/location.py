@@ -64,3 +64,11 @@ def jobs_path(relative_path="", absolute=True):
 
     The relative path can be returned instead by setting absolute=False."""
     return _build_path("jobs.location", relative_path, absolute)
+
+
+def resources_path(relative_path="", absolute=True):
+    """Build the absolute path to the project resources directory or build the absolute path to a given
+    file relative the project resources directory.
+
+    The relative path can be returned instead by setting absolute=False."""
+    return _build_path("resources.location", relative_path, absolute)

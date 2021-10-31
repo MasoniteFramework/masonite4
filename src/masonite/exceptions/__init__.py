@@ -25,6 +25,7 @@ from .exceptions import (
     MixManifestNotFound,
     InvalidConfigurationLocation,
     InvalidConfigurationSetup,
+    InvalidPackageName,
     LoaderNotFound,
     QueueException,
     AmbiguousError,
