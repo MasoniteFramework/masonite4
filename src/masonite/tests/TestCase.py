@@ -95,6 +95,9 @@ class TestCase(unittest.TestCase):
         self.application.bind("response", request)
         return request
 
+    def withExceptionsHandling(self):
+        self._exception_handling = True
+
     def fetch(self, route, data=None, method=None):
         if data is None:
             data = {}

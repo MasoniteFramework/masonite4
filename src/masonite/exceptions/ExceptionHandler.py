@@ -42,6 +42,9 @@ class ExceptionHandler:
                 f"{exception.__class__.__name__}Handler"
             ).handle(exception)
 
+        if hasattr(exception, "get_response"):
+            return response.view(exception.get_response(), exception.get_status())
+
         handler = Handler(exception)
         if self.options.get("handlers.stack_overflow"):
             handler.integrate(StackOverflowIntegration())

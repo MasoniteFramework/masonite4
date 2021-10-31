@@ -33,5 +33,7 @@ class HelpersProvider(Provider):
                 "mix": MixHelper(self.application).url,
                 "route": urls_helper.route,
                 "config": config,
+                "can": self.application.make("gate").allows,
+                "cannot": self.application.make("gate").denies,
             }
         )

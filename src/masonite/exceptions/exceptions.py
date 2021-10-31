@@ -114,6 +114,27 @@ class NotificationException(Exception):
     pass
 
 
+class AuthorizationException(Exception):
+    def __init__(self, message, status):
+        super().__init__(self)
+        self.message = message or "Action not authorized"
+        self.status = status or 403
+
+    def get_response(self):
+        return self.message
+
+    def get_status(self):
+        return self.status
+
+
+class GateDoesNotExist(Exception):
+    pass
+
+
+class PolicyDoesNotExist(Exception):
+    pass
+
+
 class MixManifestNotFound(Exception):
     pass
 

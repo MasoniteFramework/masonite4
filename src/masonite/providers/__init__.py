@@ -4,6 +4,7 @@ from .ViewProvider import ViewProvider
 from .WhitenoiseProvider import WhitenoiseProvider
 from .ExceptionProvider import ExceptionProvider
 from .AuthenticationProvider import AuthenticationProvider
+from .AuthorizationProvider import AuthorizationProvider
 from .Provider import Provider
 from .MailProvider import MailProvider
 from .SessionProvider import SessionProvider

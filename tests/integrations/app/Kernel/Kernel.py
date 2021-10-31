@@ -55,6 +55,7 @@ class Kernel:
         self.application.bind("validation.location", "tests/integrations/validation")
         self.application.bind("tasks.location", "tests/integrations/tasks")
         self.application.bind("events.location", "tests/integrations/events")
+        self.application.bind("policies.location", "tests/integrations/policies")
         self.application.bind(
             "notifications.location", "tests/integrations/notifications"
         )
