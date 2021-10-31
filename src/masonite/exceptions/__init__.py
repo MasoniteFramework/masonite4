@@ -27,4 +27,5 @@ from .exceptions import (
     InvalidConfigurationSetup,
     LoaderNotFound,
     QueueException,
+    AmbiguousError,
 )

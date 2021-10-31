@@ -10,8 +10,8 @@ class ValidationProvider(Provider):
         self.application = application
 
     def register(self):
-        validator = Validator
-        self.application.singleton("Validator", validator)
+        validator = Validator()
+        self.application.bind("validator", validator)
         self.application.make("commands").add(
             MakeRuleEnclosureCommand(self.application),
             MakeRuleCommand(self.application),
@@ -19,9 +19,10 @@ class ValidationProvider(Provider):
 
         MessageBag.get_errors = self._get_errors
         self.application.make("view").share({"bag": MessageBag.view_helper})
-
-    def boot(self, validator: Validator):
         validator.extend(ValidationFactory().registry)
+
+    def boot(self):
+        pass
 
     def _get_errors(self):
         request = self.application.make("request")

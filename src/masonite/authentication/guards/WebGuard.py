@@ -10,7 +10,7 @@ class WebGuard:
     def attempt(self, username, password):
         attempt = self.options.get("model")().attempt(username, password)
         if attempt and not self.options.get("once"):
-            self.application.make("request").cookie("token", attempt.remember_token)
+            self.application.make("response").cookie("token", attempt.remember_token)
             self.application.make("request").set_user(attempt)
             return attempt
 
@@ -28,8 +28,11 @@ class WebGuard:
             object|bool -- Returns the current authenticated user object or False or None if there is none.
         """
         token = self.application.make("request").cookie("token")
-        if token and self.model:
-            return self.model.where("remember_token", token).first() or False
+        if token and self.options.get("model")():
+            return (
+                self.options.get("model")().where("remember_token", token).first()
+                or False
+            )
 
         return False
 
