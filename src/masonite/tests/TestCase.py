@@ -3,6 +3,8 @@ import io
 import unittest
 import pendulum
 
+from src.masonite.providers.RouteProvider import RouteProvider
+
 from ..routes import Route
 from ..foundation.response_handler import testcase_handler
 from ..utils.http import generate_wsgi
@@ -25,6 +27,18 @@ class TestCase(unittest.TestCase):
             self.startTestRun()
         self.withoutCsrf()
         self._exception_handling = False
+        # boot providers as they won't not be loaded if the test is not doing a request
+        self.application.bind("environ", generate_wsgi())
+        try:
+            for provider in self.application.get_providers():
+                # if no request is made we don't need RouteProvider, and we can't load it anyway
+                # because we don't have created a CSRF token yet
+                if not isinstance(provider, RouteProvider):
+                    application.resolve(provider.boot)
+        except Exception as e:
+            if not self._exception_handling:
+                raise e
+            self.application.make("exception_handler").handle(e)
 
     def tearDown(self):
         # be sure to reset this between each test

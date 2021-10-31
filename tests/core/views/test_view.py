@@ -1,18 +1,16 @@
-import os
-from src.masonite.foundation import Application
-from src.masonite.views import View
-
+from src.masonite.configuration import config
+from src.masonite.helpers import url
 from tests import TestCase
 
 
 class TestView(TestCase):
     def setUp(self):
-        # keep this to have a fresh view instance for each test
-        self.view = View(Application(os.getcwd()))
+        super().setUp()
+        # keep this to have a "fresh view instance" for each test
+        self.view = self.application.make("view")
+        self.view.loaders = []
+        self.view.composers = {}
         self.view.add_location("tests/integrations/templates")
-
-    # def test_can_render_view(self):
-    #     self.assertTrue("Welcome" in self.view.render("welcome").get_content())
 
     def test_can_pass_dict(self):
         self.assertIn("test", self.view.render("test", {"test": "test"}).get_content())
@@ -96,12 +94,22 @@ class TestView(TestCase):
         self.view.share({"test1": "test1"})
         self.view.share({"test2": "test2"})
 
-        self.assertEqual(self.view._shared, {"test1": "test1", "test2": "test2"})
+        self.assertEqual(self.view._shared["test1"], "test1")
+        self.assertEqual(self.view._shared["test2"], "test2")
         self.view.render("test", {"var1": "var1"})
-        self.assertEqual(
-            self.view.dictionary, {"test1": "test1", "test2": "test2", "var1": "var1"}
-        )
+        self.assertIn("test1", self.view.dictionary.keys())
+        self.assertIn("test2", self.view.dictionary.keys())
+        self.assertIn("var1", self.view.dictionary.keys())
 
     def test_can_use_namespaced_view(self):
         self.view.add_namespaced_location("auth", "tests/integrations/templates/auth")
         self.assertIn("Welcome", self.view.render("auth:home").get_content())
+
+    def test_can_access_shared_helpers(self):
+        content = self.view.render("test_helpers").get_content()
+        self.assertIn(
+            config("application.app_url"),
+            content,
+        )
+        self.assertIn(url.asset("local", "avatar.jpg"), content)
+        self.assertIn(url.url("welcome"), content)
