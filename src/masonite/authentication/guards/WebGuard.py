@@ -29,7 +29,10 @@ class WebGuard:
         """
         token = self.application.make("request").cookie("token")
         if token and self.options.get("model")():
-            return self.options.get("model")().where("remember_token", token).first() or False
+            return (
+                self.options.get("model")().where("remember_token", token).first()
+                or False
+            )
 
         return False
 

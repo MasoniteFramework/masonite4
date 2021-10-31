@@ -1,5 +1,6 @@
-from ..exceptions import AmbiguousError 
+from ..exceptions import AmbiguousError
 import inspect
+
 
 class Compact:
     def __new__(cls, *args):
