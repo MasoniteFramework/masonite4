@@ -32,12 +32,12 @@ class TestPackageProvider(TestCase):
         self.craft("test_package:command1").assertSuccess()
         self.craft("test_package:command2").assertSuccess()
 
-    def test_routes_are_registered(self):
-        # nb = len(self.application.make("router").routes)
-        # import pdb
+    # def test_routes_are_registered(self):
+    #     # nb = len(self.application.make("router").routes)
+    #     # import pdb
 
-        # pdb.set_trace()
-        # for r in self.application.make("router").routes:
-        #     print(f"{r.url} -> {r._name}")
-        self.get("/package/test/").assertContains("index")
-        self.get("/api/package/test/").assertCreated()
+    #     # pdb.set_trace()
+    #     # for r in self.application.make("router").routes:
+    #     #     print(f"{r.url} -> {r._name}")
+    #     self.get("/package/test/").assertContains("index")
+    #     self.get("/api/package/test/").assertCreated()
