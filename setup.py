@@ -122,6 +122,8 @@ setup(
         "masonite.notification.drivers",
         "masonite.notification.drivers.vonage",
         "masonite.notification.providers",
+        "masonite.packages",
+        "masonite.packages.providers",
         "masonite.pipeline",
         "masonite.pipeline.tasks",
         "masonite.providers",
