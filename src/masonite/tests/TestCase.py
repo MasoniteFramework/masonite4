@@ -3,7 +3,6 @@ import io
 import unittest
 import pendulum
 
-from src.masonite.providers.RouteProvider import RouteProvider
 
 from ..routes import Route
 from ..foundation.response_handler import testcase_handler
@@ -11,6 +10,7 @@ from ..utils.http import generate_wsgi
 from ..request import Request
 from ..response import Response
 from ..environment import LoadEnvironment
+from ..providers.RouteProvider import RouteProvider
 from .TestCommand import TestCommand
 
 
