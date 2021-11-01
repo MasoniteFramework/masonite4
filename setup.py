@@ -78,6 +78,8 @@ setup(
         "masonite.authentication",
         "masonite.authentication.models",
         "masonite.authentication.guards",
+        "masonite.authorization",
+        "masonite.authorization.models",
         "masonite.broadcasting",
         "masonite.broadcasting.drivers",
         "masonite.broadcasting.providers",
