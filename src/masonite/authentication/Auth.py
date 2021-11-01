@@ -151,4 +151,3 @@ class Auth:
             "/change_password", "auth.PasswordResetController@store_changed_password"
         ).name("change_password.store")
         Route.post("/login", "auth.LoginController@store").name("login.store")
-        Route.post("/login", "auth.LoginController@store").name("login.store")
