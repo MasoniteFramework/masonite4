@@ -2,6 +2,7 @@ include src/masonite/stubs/queue/*
 include src/masonite/stubs/controllers/*
 include src/masonite/stubs/controllers/auth/*
 include src/masonite/stubs/jobs/*
+include src/masonite/templates/*
 include src/masonite/stubs/mailable/*
 include src/masonite/stubs/scheduling/*
 include src/masonite/stubs/scheduling/templates/auth/*
