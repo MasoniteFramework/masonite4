@@ -12,7 +12,7 @@ class MakeTestCommand(Command):
 
     test
         {name : Name of the test case (CamelCase) }
-        {--directory=tests/unit : Directory to create the test file}
+        {--d|--directory=tests/unit : Directory to create the test file}
     """
 
     def __init__(self, application):
