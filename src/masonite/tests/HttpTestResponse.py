@@ -278,7 +278,7 @@ class HttpTestResponse:
         except ValueError:
             raise ValueError("The response was not JSON serializable")
 
-    def assertJson(self, data):
+    def assertJson(self, data={}):
         """Assert that response is JSON and contains the given data dictionary. The assertion will
         pass even if it is not an exact match."""
         response_data = self._ensure_response_is_json()
