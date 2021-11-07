@@ -260,9 +260,9 @@ class TestTestingAssertions(TestCase):
         self.get("/test/3").assertRouteHasParameter("id")
         with self.assertRaises(AssertionError):
             self.get("/test/3").assertRouteHasParameter("key")
-        # self.get("/test/3").assertRouteHasParameter("id", 3)
-        # with self.assertRaises(AssertionError):
-        #     self.get("/test/3").assertRouteHasParameter("id", 4)
+        self.get("/test/3").assertRouteHasParameter("id", 3)
+        with self.assertRaises(AssertionError):
+            self.get("/test/3").assertRouteHasParameter("id", 4)
 
     def test_assert_has_route_middleware(self):
         self.get("/test").assertHasRouteMiddleware("web")
