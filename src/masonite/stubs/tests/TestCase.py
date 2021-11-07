@@ -1,4 +1,4 @@
-from masonite.tests import TestCase
+from tests.TestCase import TestCase
 
 
 class __class__(TestCase):
