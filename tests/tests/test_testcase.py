@@ -1,10 +1,12 @@
 import pendulum
+import pytest
 
 from tests import TestCase
 from tests.integrations.controllers.WelcomeController import WelcomeController
 from masoniteorm.models import Model
 from src.masonite.routes import Route
 from src.masonite.authentication import Authenticates
+from src.masonite.middleware import EncryptCookies
 
 
 class User(Model, Authenticates):
@@ -74,14 +76,14 @@ class TestTestCase(TestCase):
         self.fakeTimeInFuture(1, "months")
         self.assertEqual(pendulum.now().diff(real_now).in_months(), 1)
 
-    # def test_fake_time_in_past(self):
-    #     real_now = pendulum.now()
-    #     self.fakeTimeInPast(10)
-    #     self.assertEqual(pendulum.now().diff(real_now).in_days(), 10)
-    #     self.assertLess(pendulum.now(), real_now)
+    def test_fake_time_in_past(self):
+        real_now = pendulum.now()
+        self.fakeTimeInPast(10)
+        self.assertEqual(pendulum.now().diff(real_now).in_days(), 10)
+        self.assertLess(pendulum.now(), real_now)
 
-    #     self.fakeTimeInPast(3, "hours")
-    #     self.assertEqual(real_now.hour - pendulum.now().hour, 3)
+        self.fakeTimeInPast(3, "hours")
+        self.assertEqual(real_now.hour - pendulum.now().hour, 3)
 
 
 class TestTestingAssertions(TestCase):
@@ -241,8 +243,11 @@ class TestTestingAssertions(TestCase):
     def test_assert_guest(self):
         self.get("/test").assertGuest()
 
-    # def test_assert_authenticated(self):
-    #     self.get("/test-authenticates").assertAuthenticated()
+    @pytest.mark.skip(
+        reason="Assertion code looks okay, but test is still failing ? What's the problem ?"
+    )
+    def test_assert_authenticated(self):
+        self.get("/test-authenticates").assertAuthenticated()
 
     def test_assert_authenticated_as(self):
         self.make_request()
@@ -268,9 +273,7 @@ class TestTestingAssertions(TestCase):
         self.get("/test").assertHasRouteMiddleware("web")
 
     def test_assert_has_http_middleware(self):
-        # TODO: add one for testing purposes
-        # self.get("/test").assertHasHttpMiddleware()
-        pass
+        self.get("/test").assertHasHttpMiddleware(EncryptCookies)
 
     def test_assert_json(self):
         self.get("/test-json").assertJson({"key": "value"})
