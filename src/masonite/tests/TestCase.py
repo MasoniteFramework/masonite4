@@ -54,7 +54,7 @@ class TestCase(unittest.TestCase):
 
     def withoutExceptionsHandling(self):
         """Disable handling of exceptions."""
-        self._exception_handling = True
+        self._exception_handling = False
 
     def setRoutes(self, *routes):
         self.application.make("router").set(Route.group(*routes, middleware=["web"]))
