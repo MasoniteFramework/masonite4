@@ -35,7 +35,7 @@ class TinkerCommand(Command):
         version = "{}.{}.{}".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
-        models = Loader.find_all(Model, "tests/integrations/app")
+        models = Loader.find_all(Model, "tests/integrations/app/models")
         banner = BANNER.format(
             version,
             "env, optional, load, collect, url, asset, route, load, data_get, base_path, config_path",
