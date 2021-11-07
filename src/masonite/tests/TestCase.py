@@ -47,8 +47,12 @@ class TestCase(unittest.TestCase):
             self.stopTestRun()
 
     def withExceptionsHandling(self):
-        """Enable for the duration of a test the handling of exception through the exception
+        """Enable for the duration of a test the handling of exceptions through the exception
         handler."""
+        self._exception_handling = True
+
+    def withoutExceptionsHandling(self):
+        """Disable handling of exceptions."""
         self._exception_handling = True
 
     def setRoutes(self, *routes):
@@ -94,9 +98,6 @@ class TestCase(unittest.TestCase):
 
         self.application.bind("response", request)
         return request
-
-    def withExceptionsHandling(self):
-        self._exception_handling = True
 
     def fetch(self, route, data=None, method=None):
         if data is None:
