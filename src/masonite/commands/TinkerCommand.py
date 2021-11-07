@@ -1,6 +1,7 @@
 """Starts Interactive Console Command."""
 import code
 import sys
+import pendulum
 from cleo import Command
 
 from ..environment import env
@@ -44,6 +45,7 @@ class TinkerCommand(Command):
         helpers = {
             "app": application,
             "env": env,
+            "pendulum": pendulum,
             "optional": optional,
             "collect": collect,
             "url": url.url,
