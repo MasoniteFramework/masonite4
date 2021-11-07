@@ -5,6 +5,7 @@ import pendulum
 from cleo import Command
 
 from ..environment import env
+from ..configuration import config
 from ..utils.collections import collect
 from ..utils.structures import load, data_get
 from ..utils.location import base_path, config_path
@@ -14,9 +15,9 @@ from ..facades import Loader
 
 BANNER = """Masonite Python \033[92m {} \033[0m Console
 This interactive console has the following things imported:
-    -\033[92m app(container), \033[0m
-    - Utils:\033[92m {}, \033[0m
-    - Models:\033[92m {}, \033[0m
+    -\033[92m app (container), \033[0m
+    - Utils:\033[92m {} \033[0m
+    - Models:\033[92m {} \033[0m
 
 Type `exit()` to exit."""
 
@@ -27,6 +28,7 @@ class TinkerCommand(Command):
 
     tinker
         {--i|ipython : Run a IPython shell}
+        {--d|directory=app/models : Directory to auto-load models from}
     """
 
     def handle(self):
@@ -36,12 +38,7 @@ class TinkerCommand(Command):
         version = "{}.{}.{}".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
-        models = Loader.find_all(Model, "tests/integrations/app/models")
-        banner = BANNER.format(
-            version,
-            "env, optional, load, collect, url, asset, route, load, data_get, base_path, config_path",
-            ",".join(models.keys()),
-        )
+        models = Loader.find_all(Model, self.option("directory"))
         helpers = {
             "app": application,
             "env": env,
@@ -52,10 +49,16 @@ class TinkerCommand(Command):
             "asset": url.asset,
             "route": url.route,
             "load": load,
+            "config": config,
             "data_get": data_get,
             "base_path": base_path,
             "config_path": config_path,
         }
+        banner = BANNER.format(
+            version,
+            ", ".join(list(helpers.keys())[1:]),
+            ", ".join(models.keys()),
+        )
         context = {**helpers, **models}
 
         if self.option("ipython"):
