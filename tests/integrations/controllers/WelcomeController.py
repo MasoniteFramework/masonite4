@@ -1,7 +1,7 @@
 from src.masonite.controllers import Controller
 from src.masonite.views import View
 from src.masonite.response.response import Response
-from src.masonite.request.request import Request
+from src.masonite.request import Request
 from src.masonite.filesystem import Storage
 from src.masonite.broadcasting import Broadcast, Channel
 from src.masonite.facades import Session, Config, Gate

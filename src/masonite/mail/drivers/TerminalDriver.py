@@ -18,6 +18,9 @@ class TerminalDriver:
         print(f"Cc: {Recipient(self.options.get('cc')).header()}")
         print(f"Bcc: {Recipient(self.options.get('bcc')).header()}")
         print(f"Subject: {self.options.get('subject')}")
+        if self.options.get("headers"):
+            for header, value in self.options.get("headers").items():
+                print(f"{header}: {value}")
         print("-------------------------------------")
         print(f"{self.options.get('html_content')}")
         if self.options.get("text_content"):
@@ -28,3 +31,4 @@ class TerminalDriver:
             for index, attachment in enumerate(self.options.get("attachments")):
                 index += 1
                 print(f"Attachment {index}: {attachment.alias} from {attachment.path}")
+
