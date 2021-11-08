@@ -31,4 +31,3 @@ class TerminalDriver:
             for index, attachment in enumerate(self.options.get("attachments")):
                 index += 1
                 print(f"Attachment {index}: {attachment.alias} from {attachment.path}")
-

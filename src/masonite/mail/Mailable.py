@@ -27,7 +27,7 @@ class Mailable:
     def bcc(self, bcc):
         self._bcc = bcc
         return self
-    
+
     def header(self, key, value):
         self.headers.update({key: value})
         return self

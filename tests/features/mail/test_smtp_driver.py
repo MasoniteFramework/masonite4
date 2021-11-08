@@ -8,7 +8,7 @@ class Welcome(Mailable):
         return (
             self.to("idmann509@gmail.com")
             .subject("Masonite 4")
-            .header("X-Custom", 'value')
+            .header("X-Custom", "value")
             .from_("joe@masoniteproject.com")
             .text("Hello from Masonite!")
             .html("<h1>Hello from Masonite!</h1>")

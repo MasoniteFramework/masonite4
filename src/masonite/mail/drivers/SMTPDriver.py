@@ -41,7 +41,7 @@ class SMTPDriver:
             message["X-Priority"] = self.options.get("priority")
 
         if self.options.get("headers"):
-            for header, value in self.options.get('headers').items():
+            for header, value in self.options.get("headers").items():
                 message[header] = value
 
         for attachment in self.options.get("attachments", []):
