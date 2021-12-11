@@ -15,7 +15,7 @@ class RegisterController(Controller):
         errors = request.validate({
             'email': 'required',
             'name': 'required',
-            'password': 'required|strong',
+            'password': 'required|strong|confirmed',
         })
 
         if errors:

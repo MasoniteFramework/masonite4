@@ -26,7 +26,7 @@ class PasswordResetController(Controller):
         self, auth: Auth, request: Request, response: Response
     ):
         errors = request.validate({
-            'password': 'required|strong',
+            'password': 'required|strong|confirmed',
         })
 
         if errors:
