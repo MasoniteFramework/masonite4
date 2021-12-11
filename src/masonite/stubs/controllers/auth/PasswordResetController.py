@@ -25,6 +25,13 @@ class PasswordResetController(Controller):
     def store_changed_password(
         self, auth: Auth, request: Request, response: Response
     ):
+        errors = request.validate({
+            'password': 'required|strong',
+        })
+
+        if errors:
+            return response.back().with_errors(errors)
+
         if auth.reset_password(request.input("password"), request.param("token")):
             return response.back().with_success(["Password Reset Successfully"])
 

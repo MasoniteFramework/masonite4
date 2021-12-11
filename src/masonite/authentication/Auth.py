@@ -127,6 +127,7 @@ class Auth:
             .where("token", token)
             .first()
         )
+
         auth_config = self.get_config_options()
         (
             self.get_guard()
@@ -141,6 +142,8 @@ class Auth:
             .where("token", token)
             .delete()
         )
+
+        return True
 
     @classmethod
     def routes(self):
