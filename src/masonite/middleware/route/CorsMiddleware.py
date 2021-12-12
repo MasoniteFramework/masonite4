@@ -1,7 +1,5 @@
-from masonite.middleware import Middleware
 
-
-class CorsMiddleware(Middleware):
+class CorsMiddleware:
 
     headers = {}
 
