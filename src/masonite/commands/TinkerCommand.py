@@ -9,7 +9,7 @@ from ..environment import env
 from ..configuration import config
 from ..utils.collections import collect
 from ..utils.structures import load, data_get
-from ..utils.location import base_path, config_path
+from ..utils.location import base_path, config_path, models_path
 from ..helpers import optional, url
 from ..facades import Loader
 
@@ -29,7 +29,7 @@ class TinkerCommand(Command):
 
     tinker
         {--i|ipython : Run a IPython shell}
-        {--d|directory=app/models : Directory to auto-load models from}
+        {--d|directory=? : Override the directory to auto-load models from}
     """
 
     def handle(self):
@@ -39,7 +39,8 @@ class TinkerCommand(Command):
         version = "{}.{}.{}".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
-        models = Loader.find_all(Model, self.option("directory"))
+        models_directory = self.option("directory") or models_path()
+        models = Loader.find_all(Model, models_directory)
         helpers = {
             "app": application,
             "env": env,
