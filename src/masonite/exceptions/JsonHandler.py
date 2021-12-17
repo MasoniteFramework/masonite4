@@ -135,4 +135,3 @@ class SimpleStackLine:
         self.start_line = self.lineno - 5
         self.end_line = self.lineno + 5
         self.variables = variables
-
