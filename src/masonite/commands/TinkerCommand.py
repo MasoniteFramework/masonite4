@@ -1,4 +1,5 @@
 """Starts Interactive Console Command."""
+import os
 import code
 import sys
 import pendulum
@@ -74,4 +75,19 @@ class TinkerCommand(Command):
             c.TerminalInteractiveShell.banner1 = banner
             IPython.start_ipython(argv=[], user_ns=context, config=c)
         else:
-            code.interact(banner=banner, local=context)
+            console = code.InteractiveConsole(context)
+            try:
+                import readline
+            except ImportError:
+                pass
+            # When not using IPython, PYTHONSTARTUP is not used by default, so load any
+            # scripts defined in this var at startup
+            startup_file = os.environ.get("PYTHONSTARTUP")
+            if startup_file:
+                if os.path.isfile(startup_file):
+                    with open(startup_file, "r") as f:
+                        compiled_code = code.compile_command(
+                            f.read(), startup_file, "exec"
+                        )
+                        console.runcode(compiled_code)
+            console.interact(banner, exitmsg="Goodbye !")
