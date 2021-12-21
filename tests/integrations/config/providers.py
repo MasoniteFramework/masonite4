@@ -15,12 +15,11 @@ from src.masonite.providers import (
     AuthenticationProvider,
     AuthorizationProvider,
     HashServiceProvider,
-    InternalORMProvider,
+    ORMProvider,
 )
 
 
 from src.masonite.scheduling.providers import ScheduleProvider
-from masoniteorm.providers import ORMProvider
 from src.masonite.notification.providers import NotificationProvider
 from src.masonite.validation.providers.ValidationProvider import ValidationProvider
 from ..test_package import MyTestPackageProvider
@@ -50,5 +49,4 @@ PROVIDERS = [
     MyTestPackageProvider,
     AppProvider,
     ORMProvider,
-    InternalORMProvider,
 ]

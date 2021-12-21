@@ -1,1 +1,1 @@
-from .InternalORMProvider import InternalORMProvider
+from .InternalORMProvider import ORMProvider
