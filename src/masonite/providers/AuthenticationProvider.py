@@ -3,6 +3,7 @@ from ..request import Request
 from ..response import Response
 from ..authentication import Auth
 from ..authentication.guards import WebGuard
+from ..api.guards import JWTGuard
 from ..configuration import config
 from .Provider import Provider
 
@@ -14,6 +15,7 @@ class AuthenticationProvider(Provider):
     def register(self):
         auth = Auth(self.application).set_configuration(config("auth.guards"))
         auth.add_guard("web", WebGuard(self.application))
+        auth.add_guard("jwt", JWTGuard(self.application))
 
         self.application.bind("auth", auth)
 
