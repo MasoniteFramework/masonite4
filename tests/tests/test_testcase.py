@@ -32,20 +32,17 @@ class TestTestCase(TestCase):
 
     def test_add_routes(self):
         count = len(self.application.make("router").routes)
-        self.addRoutes(
-            Route.get("/test", "WelcomeController@show"),
-        )
+        print(count)
+        self.addRoutes(Route.get("/some-dumb-route", "WelcomeController@show"))
         self.assertEqual(len(self.application.make("router").routes), count + 1)
 
-    # def test_use_custom_test_response(self):
-    #     self.application.make("tests.response").add(
-    #         CustomTestResponse, OtherCustomTestResponse
-    #     )
-    #     # can use default assertions and custom from different classes
-    #     self.addRoutes(
-    #         Route.get("/", "WelcomeController@show"),
-    #     )
-    #     self.get("/").assertContains("Welcome").assertCustom().assertOtherCustom()
+    def test_use_custom_test_response(self):
+        self.application.make("tests.response").add(
+            CustomTestResponse, OtherCustomTestResponse
+        )
+        # can use default assertions and custom from different classes
+        self.addRoutes(Route.get("/", "WelcomeController@show"))
+        self.get("/").assertContains("Welcome").assertCustom().assertOtherCustom()
 
     def test_fake_time(self):
         given_date = pendulum.datetime(2015, 2, 5)

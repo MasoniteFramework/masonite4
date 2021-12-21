@@ -16,6 +16,8 @@ from .TestCommand import TestCommand
 
 
 class TestCase(unittest.TestCase):
+    routes_to_restore = ()
+
     def setUp(self):
         LoadEnvironment("testing")
         from wsgi import application
@@ -41,9 +43,14 @@ class TestCase(unittest.TestCase):
                 raise e
             self.application.make("exception_handler").handle(e)
 
+        self.routes_to_restore = set(self.application.make("router").routes)
+
     def tearDown(self):
         # be sure to reset this between each test
         self._exception_handling = False
+        # restore routes
+        if self.routes_to_restore:
+            self.application.make("router").routes = list(self.routes_to_restore)
         if hasattr(self, "stopTestRun"):
             self.stopTestRun()
 
@@ -57,11 +64,15 @@ class TestCase(unittest.TestCase):
         self._exception_handling = False
 
     def setRoutes(self, *routes):
+        """Set all routes of router during lifetime of a test."""
         self.application.make("router").set(Route.group(*routes, middleware=["web"]))
         return self
 
     def addRoutes(self, *routes):
+        """Add routes to router during lifetime of a test."""
+        print("before", len(self.application.make("router").routes))
         self.application.make("router").add(Route.group(*routes, middleware=["web"]))
+        print("after", len(self.application.make("router").routes))
         return self
 
     def withCsrf(self):
