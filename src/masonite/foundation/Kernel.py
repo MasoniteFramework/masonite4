@@ -17,7 +17,6 @@ from ..commands import (
     MakeJobCommand,
     MakeMailableCommand,
     MakeProviderCommand,
-    MakeModelCommand,
     PublishPackageCommand,
     MakeTestCommand,
 )
@@ -74,7 +73,6 @@ class Kernel:
                 MakeProviderCommand(self.application),
                 PublishPackageCommand(self.application),
                 MakeTestCommand(self.application),
-                MakeModelCommand(self.application),
             ),
         )
 

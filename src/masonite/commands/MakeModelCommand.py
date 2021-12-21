@@ -5,7 +5,7 @@ import os
 
 from ..utils.filesystem import make_directory, render_stub_file, get_module_dir
 from ..utils.str import as_filepath
-from ..utils.location import base_path
+from ..utils.location import base_path, migrations_path
 
 
 class MakeModelCommand(Command):
@@ -42,12 +42,12 @@ class MakeModelCommand(Command):
             if self.option("create"):
                 self.call(
                     "migration",
-                    f"create_{tableize(name)}_table --create {tableize(name)}",
+                    f"create_{tableize(name)}_table --create {tableize(name)} --directory {migrations_path()}",
                 )
             else:
                 self.call(
                     "migration",
-                    f"update_{tableize(name)}_table --table {tableize(name)}",
+                    f"update_{tableize(name)}_table --table {tableize(name)} --directory {migrations_path()}",
                 )
 
     def get_models_path(self):
