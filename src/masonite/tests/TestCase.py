@@ -70,9 +70,7 @@ class TestCase(unittest.TestCase):
 
     def addRoutes(self, *routes):
         """Add routes to router during lifetime of a test."""
-        print("before", len(self.application.make("router").routes))
         self.application.make("router").add(Route.group(*routes, middleware=["web"]))
-        print("after", len(self.application.make("router").routes))
         return self
 
     def withCsrf(self):

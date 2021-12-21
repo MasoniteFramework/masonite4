@@ -32,8 +32,7 @@ class TestTestCase(TestCase):
 
     def test_add_routes(self):
         count = len(self.application.make("router").routes)
-        print(count)
-        self.addRoutes(Route.get("/some-dumb-route", "WelcomeController@show"))
+        self.addRoutes(Route.get("/some-route", "WelcomeController@show"))
         self.assertEqual(len(self.application.make("router").routes), count + 1)
 
     def test_use_custom_test_response(self):
@@ -83,11 +82,6 @@ class TestTestCase(TestCase):
 class TestTestingAssertions(TestCase):
     def setUp(self):
         super().setUp()
-        print(
-            "Initial routes before setRoutes():",
-            len(self.application.make("router").routes),
-        )
-        self.saved_routes = self.application.make("router").routes
         self.setRoutes(
             Route.get("/", "WelcomeController@show").name("home"),
             Route.get("/test", "WelcomeController@show").name("test"),
@@ -118,17 +112,6 @@ class TestTestingAssertions(TestCase):
             ).name("session"),
             Route.get("/test-session-2", "WelcomeController@session2").name("session2"),
             Route.get("/test-authenticates", "WelcomeController@auth").name("auth"),
-        )
-        print(
-            "Routes nb in TestAssertsions:", len(self.application.make("router").routes)
-        )
-
-    def tearDown(self):
-        super().tearDown()
-        self.application.make("router").routes = self.saved_routes
-        print(
-            "Routes nb in TestAssertsions backed up:",
-            len(self.application.make("router").routes),
         )
 
     def test_assert_contains(self):
