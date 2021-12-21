@@ -129,12 +129,16 @@ class PackageProvider(Provider):
     def routes(self, *routes):
         """Controller locations must have been loaded already !"""
         self.package.add_routes(*routes)
+        print(len(self.application.make("router").routes))
         for route_group in self.package.routes:
             self.application.make("router").add(
                 Route.group(
                     load(route_group, "ROUTES", []),
                 )
             )
+        print(len(self.application.make("router").routes))
+        for route in self.application.make("router").routes:
+            print(route)
         return self
 
     def controllers(self, *controller_locations):
