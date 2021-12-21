@@ -27,7 +27,5 @@ class TestPackageProvider(TestCase):
         self.craft("test_package:command2").assertSuccess()
 
     def test_routes_are_registered(self):
-        for r in self.application.make("router").routes:
-            print(r)
         self.get("/package/test/").assertContains("index")
         self.get("/api/package/test/").assertCreated()
