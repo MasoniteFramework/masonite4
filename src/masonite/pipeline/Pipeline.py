@@ -9,5 +9,5 @@ class Pipeline:
             response = getattr(pipe(), handler)(self.payload, *self.args)
             if response != passthrough:
                 return False
-        
+
         return True

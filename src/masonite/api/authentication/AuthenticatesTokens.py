@@ -1,5 +1,6 @@
 import jwt
 
+
 class AuthenticatesTokens:
 
     __TOKEN_COLUMN__ = "api_token"
