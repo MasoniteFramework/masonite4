@@ -26,21 +26,26 @@ class OtherCustomTestResponse:
 
 
 class TestTestCase(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.setRoutes(
+            Route.get("/", "WelcomeController@show").name("home"),
+        )
+
     def tearDown(self):
         super().tearDown()
         self.restoreTime()
 
     def test_add_routes(self):
-        count = len(self.application.make("router").routes)
+        self.assertEqual(len(self.application.make("router").routes), 1)
         self.addRoutes(Route.get("/some-route", "WelcomeController@show"))
-        self.assertEqual(len(self.application.make("router").routes), count + 1)
+        self.assertEqual(len(self.application.make("router").routes), 2)
 
     def test_use_custom_test_response(self):
         self.application.make("tests.response").add(
             CustomTestResponse, OtherCustomTestResponse
         )
         # can use default assertions and custom from different classes
-        self.addRoutes(Route.get("/", "WelcomeController@show"))
         self.get("/").assertContains("Welcome").assertCustom().assertOtherCustom()
 
     def test_fake_time(self):
