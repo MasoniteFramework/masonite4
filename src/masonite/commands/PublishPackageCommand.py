@@ -24,7 +24,7 @@ class PublishPackageCommand(Command):
             if isinstance(provider, PackageProvider) and provider.package.name == name:
                 selected_provider = provider
         if not selected_provider:
-            self.line_error(
+            self.error(
                 f"No package has been registered under the name {name}.", style="error"
             )
             return
