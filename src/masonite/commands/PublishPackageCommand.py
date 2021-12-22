@@ -1,4 +1,4 @@
-from cleo import Command
+from .Command import Command
 
 
 class PublishPackageCommand(Command):

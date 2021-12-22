@@ -2,7 +2,7 @@ import os
 import shutil
 from subprocess import call
 
-from cleo import Command
+from .Command import Command
 
 
 class InstallCommand(Command):

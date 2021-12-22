@@ -1,4 +1,3 @@
-from cleo import Command
 import os
 import shutil
 import zipfile
@@ -12,6 +11,7 @@ from ..exceptions import (
     ProjectProviderHttpError,
     ProjectTargetNotEmpty,
 )
+from .Command import Command
 
 
 class ProjectCommand(Command):
