@@ -4,31 +4,19 @@
  * building robust, powerful web applications using Vue and Masonite.
  */
 
-require("./bootstrap")
-
-/**
- * Next, we will create a fresh Vue application instance
- */
 import { createApp } from "vue/dist/vue.esm-bundler.js"
 import App from "./App.vue"
-const app = createApp(App)/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Masonite.
- */
-
 require("./bootstrap")
 
 /**
  * Next, we will create a fresh Vue application instance
  */
-import { createApp } from "vue"
-import App from "./App.vue"
 const app = createApp(App)
 
 /** You can also create an application without the App.vue
 const app = createApp({})
 */
+
 
 /**
  * The following block of code may be used to automatically register your
