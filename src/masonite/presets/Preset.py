@@ -54,7 +54,7 @@ class Preset:
     def update_css(self):
         """Create/Override an app.css file configured for the preset."""
         shutil.copyfile(
-            self.get_template_path("app.css"), resources_path("css/app.css")
+            self.get_base_template_path("app.css"), resources_path("css/app.css")
         )
 
     def update_js(self):

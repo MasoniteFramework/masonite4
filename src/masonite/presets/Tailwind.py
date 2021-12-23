@@ -1,7 +1,7 @@
 """Tailwind Preset"""
 import shutil
 
-from ..utils.location import base_path
+from ..utils.location import base_path, resources_path
 from .Preset import Preset
 
 
@@ -26,4 +26,10 @@ class Tailwind(Preset):
         shutil.copyfile(
             self.get_template_path("tailwind.config.js"),
             base_path("tailwind.config.js"),
+        )
+
+    def update_css(self):
+        """Create/Override an app.css file configured for the preset."""
+        shutil.copyfile(
+            self.get_template_path("app.css"), resources_path("css/app.css")
         )

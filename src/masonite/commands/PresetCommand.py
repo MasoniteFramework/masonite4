@@ -9,10 +9,11 @@ class PresetCommand(Command):
     Scaffold frontend preset in your project
 
     preset
-        {name : Name of the preset [tailwind, vue, react, bootstrap, remove]}
+        {name? : Name of the preset [tailwind, vue, react, bootstrap]}
+        {--r|remove=? : Remove all scaffolded presets}
     """
 
-    presets = ["vue", "tailwind", "react", "bootstrap", "remove"]
+    presets = ["vue", "tailwind", "react", "bootstrap"]
 
     def __init__(self, application):
         super().__init__()
@@ -20,6 +21,10 @@ class PresetCommand(Command):
 
     def handle(self):
         preset_name = self.argument("name")
+        remove_presets = self.option("remove")
+        if remove_presets:
+            return self.remove()
+
         if preset_name not in self.presets:
             return self.error(
                 f"Invalid preset. Available presets are: {', '.join(self.presets)}"
