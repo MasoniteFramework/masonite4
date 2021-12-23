@@ -17,4 +17,5 @@ from .MakeTestCommand import MakeTestCommand
 from .MakeCommandCommand import MakeCommandCommand
 from .MakeViewCommand import MakeViewCommand
 from .MakeMiddlewareCommand import MakeMiddlewareCommand
+from .PresetCommand import PresetCommand
 from .Command import Command

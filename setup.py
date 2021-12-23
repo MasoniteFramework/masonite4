@@ -130,6 +130,7 @@ setup(
         "masonite.packages",
         "masonite.pipeline.tasks",
         "masonite.pipeline",
+        "masonite.presets",
         "masonite.providers",
         "masonite.queues",
         "masonite.request",
