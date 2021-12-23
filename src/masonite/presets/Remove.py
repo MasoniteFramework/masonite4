@@ -34,15 +34,14 @@ class Remove(Preset):
 
     def remove_all_presets_file(self):
         presets_resources_files = [
-            "css/_variable.scss"
-            "css/app.scss"
-            "js/components/HelloWorld.vue"
-            "js/components/Example.js"
-            "js/App.vue"
+            "css/_variables.scss",
+            "css/app.scss",
+            "js/components/HelloWorld.vue",
+            "js/components/Example.js",
+            "js/App.vue",
         ]
         for f in presets_resources_files:
             filepath = resources_path(f)
-            print(filepath)
             if os.path.exists(filepath):
                 os.remove(filepath)
 
