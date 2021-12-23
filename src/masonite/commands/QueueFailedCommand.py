@@ -18,7 +18,7 @@ class QueueFailedCommand(Command):
     def handle(self):
         with open(
             os.path.join(
-                get_module_dir(__file__), "stubs/queue/create_failed_jobs_table.py"
+                get_module_dir(__file__), "../stubs/queue/create_failed_jobs_table.py"
             )
         ) as fp:
             output = fp.read()
