@@ -19,5 +19,5 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://docs.masoniteproject.com/security/csrf-protection#ajax-vue-axios');
+    console.error('CSRF token not found: https://docs.masoniteproject.com/features/csrf#ajax-vue-axios');
 }
