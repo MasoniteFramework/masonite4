@@ -24,6 +24,7 @@ from ..commands import (
     MakeCommandCommand,
     MakeViewCommand,
     MakeMiddlewareCommand,
+    PresetCommand,
 )
 from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
@@ -83,6 +84,7 @@ class Kernel:
                 MakeCommandCommand(self.application),
                 MakeViewCommand(self.application),
                 MakeMiddlewareCommand(self.application),
+                PresetCommand(self.application),
             ),
         )
 

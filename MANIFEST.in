@@ -8,6 +8,11 @@ include src/masonite/stubs/mailable/*
 include src/masonite/stubs/middlewares/*
 include src/masonite/stubs/notification/*
 include src/masonite/stubs/policies/*
+include src/masonite/stubs/presets/base/*
+include src/masonite/stubs/presets/tailwind/*
+include src/masonite/stubs/presets/vue/*
+include src/masonite/stubs/presets/react/*
+include src/masonite/stubs/presets/boostrap/*
 include src/masonite/stubs/providers/*
 include src/masonite/stubs/queue/*
 include src/masonite/stubs/scheduling/*
