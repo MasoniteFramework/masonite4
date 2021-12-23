@@ -19,10 +19,9 @@ from src.masonite.utils.location import base_path
 
 class Kernel:
 
-    http_middleware = [EncryptCookies]
+    http_middleware = [EncryptCookies, MaintenanceModeMiddleware]
     route_middleware = {
         "web": [
-            MaintenanceModeMiddleware,
             SessionMiddleware,
             LoadUserMiddleware,
             VerifyCsrfToken,
