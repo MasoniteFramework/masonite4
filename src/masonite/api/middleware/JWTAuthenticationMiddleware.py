@@ -1,17 +1,20 @@
 from masonite.middleware import Middleware
-from masonite.facades import Auth
+
+from masonite.api.facades import Api
 
 
 class JWTAuthenticationMiddleware(Middleware):
     def before(self, request, response):
         token = request.input("token")
         if not token:
-            return response.view(
+            return response.json(
                 {"message": "Authentication token missing"}, status="401"
             )
 
-        if not Auth.guard("jwt").attempt_by_token(token):
-            return response.view({"message": "Token invalid"}, status="401")
+        # Check token is not expired
+        validate = Api.validate_token(token)
+        if not validate:
+            return response.json({"message": "Token invalid. Try reauthenticating."}, status=401)
 
         return request
 
