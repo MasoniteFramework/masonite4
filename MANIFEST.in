@@ -5,6 +5,7 @@ include src/masonite/stubs/controllers/auth/*
 include src/masonite/stubs/events/*
 include src/masonite/stubs/jobs/*
 include src/masonite/stubs/mailable/*
+include src/masonite/stubs/middlewares/*
 include src/masonite/stubs/notification/*
 include src/masonite/stubs/policies/*
 include src/masonite/stubs/providers/*
