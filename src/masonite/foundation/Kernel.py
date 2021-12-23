@@ -21,6 +21,9 @@ from ..commands import (
     MakeTestCommand,
     DownCommand,
     UpCommand,
+    MakeCommandCommand,
+    MakeViewCommand,
+    MakeMiddlewareCommand,
 )
 from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
@@ -77,6 +80,9 @@ class Kernel:
                 MakeTestCommand(self.application),
                 DownCommand(),
                 UpCommand(),
+                MakeCommandCommand(self.application),
+                MakeViewCommand(self.application),
+                MakeMiddlewareCommand(self.application),
             ),
         )
 

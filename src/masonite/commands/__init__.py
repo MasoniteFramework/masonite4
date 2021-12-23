@@ -16,3 +16,7 @@ from .MakePolicyCommand import MakePolicyCommand
 from .MakeTestCommand import MakeTestCommand
 from .DownCommand import DownCommand
 from .UpCommand import UpCommand
+from .MakeCommandCommand import MakeCommandCommand
+from .MakeViewCommand import MakeViewCommand
+from .MakeMiddlewareCommand import MakeMiddlewareCommand
+from .Command import Command
