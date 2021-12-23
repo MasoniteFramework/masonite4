@@ -14,7 +14,7 @@ class Preset:
     removed_packages = []
 
     def get_base_stubs_directory(self):
-        return os.path.join(get_module_dir(__file__), f"../stubs/presets/base/")
+        return os.path.join(get_module_dir(__file__), "../stubs/presets/base/")
 
     def get_stubs_directory(self):
         return os.path.join(get_module_dir(__file__), f"../stubs/presets/{self.key}/")
