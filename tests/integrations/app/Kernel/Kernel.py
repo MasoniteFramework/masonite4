@@ -10,6 +10,7 @@ from src.masonite.middleware import (
     SessionMiddleware,
     EncryptCookies,
     LoadUserMiddleware,
+    MaintenanceModeMiddleware,
 )
 from src.masonite.routes import Route
 from src.masonite.utils.structures import load
@@ -18,8 +19,14 @@ from src.masonite.utils.location import base_path
 
 class Kernel:
 
-    http_middleware = [EncryptCookies]
-    route_middleware = {"web": [SessionMiddleware, LoadUserMiddleware, VerifyCsrfToken]}
+    http_middleware = [EncryptCookies, MaintenanceModeMiddleware]
+    route_middleware = {
+        "web": [
+            SessionMiddleware,
+            LoadUserMiddleware,
+            VerifyCsrfToken,
+        ]
+    }
 
     def __init__(self, app):
         self.application = app
