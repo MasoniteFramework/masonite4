@@ -36,7 +36,7 @@ If you find any discrepencies or anything that doesn't make sense, be sure to co
 
 If you are more of a visual learner you can watch Masonite related tutorial videos at [masonitecasts.com](https://masonitecasts.com)
 
-Also be sure to join the [Masonite Slack Community](http://slack.masoniteproject.com/)!
+Also be sure to join the [Masonite Discord Community](https://discord.gg/TwKeFahmPZ)!
 
 ## Getting Started Quickly
 
