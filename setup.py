@@ -124,6 +124,8 @@ setup(
         "masonite.notification.drivers",
         "masonite.notification.providers",
         "masonite.notification",
+        "masonite.orm",
+        "masonite.orm.providers",
         "masonite.packages.providers",
         "masonite.packages",
         "masonite.pipeline.tasks",
