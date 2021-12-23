@@ -15,4 +15,5 @@ from .PublishPackageCommand import PublishPackageCommand
 from .MakePolicyCommand import MakePolicyCommand
 from .MakeTestCommand import MakeTestCommand
 from .MakeCommandCommand import MakeCommandCommand
+from .MakeViewCommand import MakeViewCommand
 from .Command import Command

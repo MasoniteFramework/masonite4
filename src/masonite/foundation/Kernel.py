@@ -20,6 +20,7 @@ from ..commands import (
     PublishPackageCommand,
     MakeTestCommand,
     MakeCommandCommand,
+    MakeViewCommand,
 )
 from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
@@ -75,6 +76,7 @@ class Kernel:
                 PublishPackageCommand(self.application),
                 MakeTestCommand(self.application),
                 MakeCommandCommand(self.application),
+                MakeViewCommand(self.application),
             ),
         )
 
