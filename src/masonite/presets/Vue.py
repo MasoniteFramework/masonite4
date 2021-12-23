@@ -46,13 +46,6 @@ class Vue(Preset):
         )
         shutil.copyfile(self.get_template_path("App.vue"), resources_path("js/App.vue"))
 
-    def update_js(self):
-        """Copies template app.js and bootstrap.js into application"""
-        super().update_js()
-        shutil.copyfile(
-            self.get_template_path("bootstrap.js"), resources_path("js/bootstrap.js")
-        )
-
     def create_view(self):
         """Copy an example app view with assets included."""
         shutil.copyfile(self.get_template_path("app.html"), views_path("app_vue3.html"))

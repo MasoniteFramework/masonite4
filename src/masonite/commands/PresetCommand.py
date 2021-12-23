@@ -1,10 +1,7 @@
 """New Preset Command."""
 
 from .Command import Command
-from ..presets import Tailwind, Vue
-
-# from ..commands.presets.React import React
-# from ..commands.presets.Bootstrap import Bootstrap
+from ..presets import Tailwind, Vue, React, Bootstrap, Remove
 
 
 class PresetCommand(Command):
@@ -12,10 +9,10 @@ class PresetCommand(Command):
     Scaffold frontend preset in your project
 
     preset
-        {name : Name of the preset [tailwind, vue, react, bootstrap]}
+        {name : Name of the preset [tailwind, vue, react, bootstrap, remove]}
     """
 
-    presets = ["vue", "tailwind", "react", "boostrap"]
+    presets = ["vue", "tailwind", "react", "bootstrap", "remove"]
 
     def __init__(self, application):
         super().__init__()
@@ -31,18 +28,16 @@ class PresetCommand(Command):
         self.info(f"Scaffolding {preset_name} preset...")
         return getattr(self, preset_name)()
 
-    # def remove(self):
-    #     """Removes frontend scaffolding"""
-    #     Remove().install()
-    #     self.info("Frontend scaffolding removed successfully.")
+    def remove(self):
+        Remove().install()
+        self.info("Frontend scaffolding removed successfully.")
 
-    # def react(self):
-    #     """Add React frontend while also removing Vue (if it was previously selected)"""
-    #     React().install()
-    #     self.info("React scaffolding installed successfully.")
-    #     self.comment(
-    #         'Please run "npm install && npm run dev" to compile your fresh scaffolding.'
-    #     )
+    def react(self):
+        React().install()
+        self.info("React installed successfully.")
+        self.comment(
+            'Please run "npm install && npm run dev" to compile your fresh scaffolding.'
+        )
 
     def vue(self):
         Vue().install()
@@ -52,13 +47,12 @@ class PresetCommand(Command):
         )
         self.comment("Then you can use the view app_vue3 as demo.")
 
-    # def bootstrap(self):
-    #     """Add Bootstrap Sass scafolding"""
-    #     Bootstrap().install()
-    #     self.info("Bootstrap scaffolding installed successfully.")
-    #     self.comment(
-    #         'Please run "npm install && npm run dev" to compile your fresh scaffolding.'
-    #     )
+    def bootstrap(self):
+        Bootstrap().install()
+        self.info("Bootstrap installed successfully.")
+        self.comment(
+            'Please run "npm install && npm run dev" to compile your fresh scaffolding.'
+        )
 
     def tailwind(self):
         Tailwind().install()

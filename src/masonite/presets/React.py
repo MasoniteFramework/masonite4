@@ -38,22 +38,19 @@ class React(Preset):
         # make components directory if does not exists
         make_directory(resources_path("js/components/Example.js"))
 
-        # delete Vue component if exists
-        react_file = resources_path("js/components/HelloWorld.vue")
-        if os.path.exists(react_file):
-            os.remove(react_file)
+        # delete Vue components if exists
+        vue_files = [
+            resources_path("js/components/HelloWorld.vue"),
+            resources_path("js/App.vue"),
+        ]
+        for vue_file in vue_files:
+            if os.path.exists(vue_file):
+                os.remove(vue_file)
 
         # add Vue components
         shutil.copyfile(
             self.get_template_path("Example.js"),
             resources_path("js/components/Example.js"),
-        )
-
-    def update_js(self):
-        """Copies template app.js and bootstrap.js into application"""
-        super().update_js()
-        shutil.copyfile(
-            self.get_template_path("bootstrap.js"), resources_path("js/bootstrap.js")
         )
 
     def create_view(self):

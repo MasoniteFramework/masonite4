@@ -13,8 +13,14 @@ class Preset:
     packages = {}
     removed_packages = []
 
+    def get_base_stubs_directory(self):
+        return os.path.join(get_module_dir(__file__), f"../stubs/presets/base/")
+
     def get_stubs_directory(self):
         return os.path.join(get_module_dir(__file__), f"../stubs/presets/{self.key}/")
+
+    def get_base_template_path(self, template):
+        return os.path.join(self.get_base_stubs_directory(), template)
 
     def get_template_path(self, template):
         return os.path.join(self.get_stubs_directory(), template)
@@ -46,7 +52,7 @@ class Preset:
             f.write(json.dumps(packages, sort_keys=True, indent=4))
 
     def update_css(self):
-        """Create/Override an app.scss file configured for the preset."""
+        """Create/Override an app.css file configured for the preset."""
         shutil.copyfile(
             self.get_template_path("app.css"), resources_path("css/app.css")
         )
@@ -54,6 +60,10 @@ class Preset:
     def update_js(self):
         """Create/Override an app.js file configured for the preset."""
         shutil.copyfile(self.get_template_path("app.js"), resources_path("js/app.js"))
+        shutil.copyfile(
+            self.get_base_template_path("bootstrap.js"),
+            resources_path("js/bootstrap.js"),
+        )
 
     def remove_node_modules(self):
         """Remove the installed Node modules."""

@@ -19,7 +19,6 @@ class Tailwind(Preset):
         self.update_webpack_mix()
         self.add_tailwind_config()
         self.update_css()
-        # self.update_base_views()
         self.remove_node_modules()
 
     def add_tailwind_config(self):
@@ -28,14 +27,3 @@ class Tailwind(Preset):
             self.get_template_path("tailwind.config.js"),
             base_path("tailwind.config.js"),
         )
-
-    # def update_base_views(self):
-    #     """Update base views"""
-    #     shutil.copyfile(
-    #         os.path.dirname(__file__) + "/tailwind-stubs/base.html",
-    #         "resources/templates/base.html",
-    #     )
-    #     shutil.copyfile(
-    #         os.path.dirname(__file__) + "/tailwind-stubs/welcome.html",
-    #         "resources/templates/welcome.html",
-    #     )
