@@ -133,6 +133,7 @@ setup(
         "masonite.request",
         "masonite.response",
         "masonite.routes",
+        "masonite.routes.commands",
         "masonite.scheduling.commands",
         "masonite.scheduling.providers",
         "masonite.scheduling",
