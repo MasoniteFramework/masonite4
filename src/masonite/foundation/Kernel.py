@@ -19,6 +19,8 @@ from ..commands import (
     MakeProviderCommand,
     PublishPackageCommand,
     MakeTestCommand,
+    DownCommand,
+    UpCommand,
 )
 from ..environment import LoadEnvironment
 from ..middleware import MiddlewareCapsule
@@ -73,6 +75,8 @@ class Kernel:
                 MakeProviderCommand(self.application),
                 PublishPackageCommand(self.application),
                 MakeTestCommand(self.application),
+                DownCommand(),
+                UpCommand(),
             ),
         )
 
