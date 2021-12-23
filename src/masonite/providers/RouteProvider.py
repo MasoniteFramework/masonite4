@@ -4,6 +4,7 @@ from ..response import Response
 from ..facades import Response as ResponseFacade
 from .Provider import Provider
 from ..routes import Route
+from ..routes.commands import RouteListCommand
 from ..pipeline import Pipeline
 
 
@@ -14,6 +15,7 @@ class RouteProvider(Provider):
     def register(self):
         # Register the routes?
         Route.set_controller_locations(self.application.make("controllers.location"))
+         self.application.make("commands").add(RouteListCommand(self.application))
 
     def boot(self):
         router = self.application.make("router")
