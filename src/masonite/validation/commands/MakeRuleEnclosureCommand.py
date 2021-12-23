@@ -14,6 +14,7 @@ class MakeRuleEnclosureCommand(Command):
 
     rule:enclosure
         {name : Name of the rule enclosure}
+        {--f|force=? : Force overriding file if already exists}
     """
 
     def __init__(self, application):
