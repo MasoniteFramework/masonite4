@@ -14,3 +14,7 @@ from .MakeProviderCommand import MakeProviderCommand
 from .PublishPackageCommand import PublishPackageCommand
 from .MakePolicyCommand import MakePolicyCommand
 from .MakeTestCommand import MakeTestCommand
+from .MakeCommandCommand import MakeCommandCommand
+from .MakeViewCommand import MakeViewCommand
+from .MakeMiddlewareCommand import MakeMiddlewareCommand
+from .Command import Command
