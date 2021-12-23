@@ -1,4 +1,5 @@
 include src/masonite/stubs/auth/mailables/*
+include src/masonite/stubs/commands/*
 include src/masonite/stubs/controllers/*
 include src/masonite/stubs/controllers/auth/*
 include src/masonite/stubs/events/*
